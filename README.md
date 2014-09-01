@@ -38,3 +38,9 @@ IFJ Project 2014/2015
 * Each commit should leave project in working state
 * Code block separated by 1 empty line, functions separated by 2 lines
 * Commit message should explain what it does, not just "fix", or "update"
+* Use multi include header file protection
+
+         #ifndef _FILENAME_H_
+         #define _FILENAME_H_
+         ... content ...
+         #endif
