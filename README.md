@@ -8,7 +8,7 @@ IFJ Project 2014/2015
 
     Ubuntu/Debian:
 
-         sudo yum install git gcc make
+         sudo apt-get install git gcc make
     Fedora:
 
          sudo yum install git gcc make
