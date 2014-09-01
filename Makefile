@@ -9,7 +9,7 @@ CFLAGS=-O2 -std=c99 -lm -Wall -pedantic
 all: objects
 	$(CC) $(CFLAGS) build/*.o -o ifj
 
-objects: src/*
+objects: src/*.c
 	$(CC) $(CFLAGS) -c $< -o $(subst src/, build/, $<.o)
 
 # Clean compiled files
