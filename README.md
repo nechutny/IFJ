@@ -6,10 +6,10 @@ IFJ Project 2014/2015
 ## How to start
 1. Install git, gcc, GNU make
 
-Ubuntu/Debian:
+    Ubuntu/Debian:
 
          sudo yum install git gcc make
-Fedora:
+    Fedora:
 
          sudo yum install git gcc make
 
