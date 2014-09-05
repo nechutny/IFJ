@@ -4,12 +4,13 @@
 
 CC=gcc
 CFLAGS=-O2 -std=c99 -lm -Wall -pedantic
+OBJFILES=$(patsubst src/%.c, build/%.o, $(shell ls src/*.c))
 
 # build
-all: objects
+all: $(OBJFILES)
 	$(CC) $(CFLAGS) build/*.o -o ifj
 
-objects: src/*.c
+build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $(subst src/, build/, $<.o)
 
 # Clean compiled files

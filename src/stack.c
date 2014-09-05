@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-#include "types.h"
+//include "types.h"
 #include "stack.h"
 #include "main.h"
 
