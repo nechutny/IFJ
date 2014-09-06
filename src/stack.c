@@ -55,3 +55,7 @@ void * stack_top( TStack *stack ){
 	}
 
 }
+
+int stack_count(TStack *stack){
+	return stack->count;
+}
