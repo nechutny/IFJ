@@ -19,4 +19,6 @@ void * stack_top( TStack *stack );
 
 void stack_free( TStack *stack );
 
+int stack_count(TStack * stack);
+
 #endif
