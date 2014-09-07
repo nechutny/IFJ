@@ -2,9 +2,11 @@
 #include "lex.h"
 #include "types.h"
 #include "expr.h"
+#include "garbage.h"
 
 int main(int argc, char* argv[])
 {
+	global_init();
 	TToken * token;
 	FILE * file;
 	file=fopen(argv[1],"r");
