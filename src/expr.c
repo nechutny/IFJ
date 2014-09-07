@@ -34,6 +34,12 @@ const int precedence_table[table_size][table_size]=
 	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '#' }, // $
 };
 
+
+/**
+*Fucntion to recognize sign from token and revert it to operator_number made in expr.h
+* @param token token
+* @return operator_number
+**/
 operator_number recon_sign(TToken * token)
 {
 	switch(token->type){
@@ -93,29 +99,231 @@ operator_number recon_sign(TToken * token)
 		case token_identifier:
 			return operator_ID;
 
-		default:
+		case token_semicolon:
 			return operator_dolar;
+
+		default:
+			return sign_fault;
 	}
 }
 
 
 /**
-*Function precedence making syntax analysition of expressions.
+* Function that revert sing in precedence table to operator_number
+* @param sing sign from precedence table
+* @return operator_number
+**/
+precedence_number enum_sign(int sign)
+{
+	switch(sign){
+		case '=':
+			return sign_equal;
+		
+		case '<':
+			return sign_less;
+
+		case '>':
+			return sign_greater;
+
+		case '#': 
+			return sign_fault;
+
+		default:
+			return sign_fault;
+			//default fault, but it's from table where isn't anything else
+	}
+}
+
+
+/**
+* Function that get sign from table ... revert to operator_number
+* @param token token from file
+* @param stack stack with operation_number
+* @return operator_number
+**/
+precedence_number get_sign(TToken * token, TStack * stack)
+{
+	int pom = 0;
+	if ((int)stack_top(stack) != operator_non_term)
+	{
+		pom = precedence_table[(int)stack_top(stack)][recon_sign(token)];
+	}
+	else
+	{
+		stack_pop(stack);
+		pom = precedence_table[(int)stack_top(stack)][recon_sign(token)];
+		stack_push(stack,(void *)operator_non_term);
+	}
+	return enum_sign(pom);
+}
+
+
+/**
+* Function precedence making syntax analysition of expressions.
 * @param filename is file to translate
 * @return number of failiure or correct
 **/
 int precedence(FILE *filename)
 {
-	TStack *stack;
-	stack = stack_init();
-	operator_number end;
-	end = operator_dolar;
-	stack_push( stack , (void *)end);
-	//printf("Ahoooj\n");
-	//printf("%d\n",(operator_number)stack_top(stack) );
 	TToken * token;
 	token = token_init();
 	token = token_get(filename);
+
+	TStack *stack;
+	stack = stack_init();
+	stack_push(stack , (void *)operator_dolar);
+
+	//printf("stack_top: %d\n", (int)stack_top(stack));
+	//printf("dolar: %d\n",operator_dolar );
+
+	do
+	{
+		printf("stack_top: %d\n", (int)stack_top(stack));
+		printf("token_type: %d\n", token->type);
+		printf("stack_count: %d\n", stack_count(stack));
+		switch(get_sign(token,stack)){
+			case sign_equal:
+				stack_push(stack,(void *)recon_sign(token));
+				token_free(token);
+				token = token_get(filename);
+				break;
+
+			case sign_less:
+				if ((int)stack_top(stack) != operator_non_term)
+				{
+					stack_push(stack,(void *)sign_less);
+					stack_push(stack,(void *)recon_sign(token));
+				}
+				else{
+					stack_pop(stack);
+					stack_push(stack,(void *)sign_less);
+					stack_push(stack,(void *)operator_non_term);
+					stack_push(stack,(void *)recon_sign(token));
+				}
+
+				token_free(token);
+				token = token_get(filename);
+				break;	
+
+			case sign_greater:
+				//This condition handle rule E -> ID
+				if ((int)stack_top(stack) == operator_ID){
+					stack_pop(stack);
+					if((int)stack_top(stack) == sign_less)
+					{
+						stack_pop(stack);
+						stack_push(stack,(void *)operator_non_term);
+						printf("Precedence syntax used rule 1: E -> ID\n");
+					}
+					else{
+						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+					}
+				}
+				//This condition handle rule E -> (E)
+				else if((int)stack_top(stack) == operator_right_parenthesis)
+				{
+					stack_pop(stack);
+					if ((int)stack_top(stack) == operator_non_term)
+					{
+						stack_pop(stack);
+						if ((int)stack_top(stack) == operator_left_parenthesis)
+						{
+							stack_pop(stack);
+							//stack_push(stack,(void *)operator_non_term);
+							if((int)stack_top(stack) == sign_less)
+							{
+								stack_pop(stack);
+								stack_push(stack,(void *)operator_non_term);
+							}
+							else
+							{
+								printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+							}
+						}
+						else
+						{
+							printf("ERROR: Excpects: ( but it gets: %d \n",(int)stack_top(stack));
+						}
+					}
+					else
+					{
+						printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+					}
+				}
+				//This condition should handle with others rules, ended with E
+				else if ((int)stack_top(stack) == operator_non_term)
+				{
+					printf("hmm\n");
+
+					printf("stack_top-: %d\n", (int)stack_top(stack));
+					stack_pop(stack);
+					switch((int)stack_top(stack)){
+						case operator_not:
+			  			case operator_mul:
+	          			case operator_div:
+	          			case operator_sign_div:
+	         			case operator_mod:
+	          			case operator_and:
+	          			case operator_plus:
+	          			case operator_minus:
+	             		case operator_or:
+	          			case operator_equal:
+	          			case operator_diff:
+	          			case operator_less:
+	          			case operator_less_equal:
+	                    case operator_greater:
+	                    case operator_greater_equal:
+	          			case operator_in:
+	          				stack_pop(stack);
+	          				printf("stack_top--: %d\n", (int)stack_top(stack));
+	          				if ((int)stack_top(stack) == operator_non_term)
+	          				{
+	          					//printf("stack_top---: %d\n", (int)stack_top(stack));
+	          					stack_pop(stack);
+	          					printf("stack_top---: %d\n", (int)stack_top(stack));
+	          					if ((int)stack_top(stack) == sign_less)
+	          					{
+	          						stack_pop(stack);
+	          						stack_push(stack,(void *)operator_non_term);
+	          						printf("used Rule\n");
+	          					}
+	          					else
+	          					{
+	          						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+	          					}
+
+	          				}
+	          				else
+	          				{
+	          					printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+	          				}
+	          				break;
+
+	          			default:
+	          				printf("ERROR:: Excpects: operator but it gets: %d \n",(int)stack_top(stack));
+					}
+				}
+				else
+				{
+					printf("ERROR Fault syntax\n");
+					return 0;
+				}
+				
+
+				break;
+
+			case sign_fault:
+				printf("ERROR: Got error sign from precedence table\n");
+				return 0;
+		}
+		if ((token->type == token_semicolon) && (stack_count(stack) == 2) && ((int)stack_top(stack) == operator_non_term))
+			stack_pop(stack);
+
+	}while( !((stack_count(stack) == 1) && ((operator_number)stack_top(stack) == operator_dolar )) );
+
+	//printf("hmmm%d\n",get_sign(token,stack) );
+	//printf("aaaaa%d\n",(int)stack_top(stack) );
+	//printf("token%d\n",token->type );
 	token_free(token);
 	
 	return 1;

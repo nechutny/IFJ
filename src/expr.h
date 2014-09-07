@@ -22,10 +22,16 @@ typedef enum {operator_not,
 	          operator_right_parenthesis,
 	          operator_ID,
 	          operator_dolar,
-	          sign_equal,
-	          sing_less,
-	          sign_greather,
-	          sign_fault
+	          operator_non_term
 }operator_number;
 
+typedef enum{
+			sign_equal = 21,
+	        sign_less,
+	        sign_greater,
+	        sign_fault
+}precedence_number;
+
 int precedence();
+precedence_number get_stack();
+precedence_number enum_sign();
