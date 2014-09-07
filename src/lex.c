@@ -39,6 +39,14 @@ void token_free( TToken * token ) {
 void set_identifier(TToken *token){
  	if (strcmp("var",token->data->data)==0)
  		token->type = token_var;
+ 	else if (strcmp("in",token->data->data)==0)
+ 		token->type = token_in;
+ 	else if (strcmp("mod",token->data->data)==0)
+ 		token->type = token_mod;
+ 	else if (strcmp("div",token->data->data)==0)
+ 		token->type = token_div;
+ 	else if (strcmp("not",token->data->data)==0)
+ 		token->type = token_not;
  	else if (strcmp("and",token->data->data)==0)
  		token->type = token_and;
  	else if (strcmp("or",token->data->data)==0)
@@ -49,6 +57,8 @@ void set_identifier(TToken *token){
  		token->type = token_end;
  	else if (strcmp("while",token->data->data)==0)
  		token->type = token_while;
+ 	else if (strcmp("for",token->data->data)==0)
+ 		token->type = token_for;
  	else if (strcmp("end",token->data->data)==0)
  		token->type = token_end;
  	else if (strcmp("if",token->data->data)==0)

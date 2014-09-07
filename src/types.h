@@ -15,7 +15,10 @@ typedef enum {
 	token_slash,		//6
 	token_mul,			//7
 	token_sub,			//8
+	token_div,
+	token_mod,
 	
+	token_in,
 	token_dot,			//9
 //comaring
 	token_equal,		//10
@@ -41,6 +44,7 @@ typedef enum {
 	token_begin,			//24
 	token_end,				//25
 	token_while,
+	token_for,
 	token_if,
 	token_then,
 	token_else,
@@ -52,6 +56,7 @@ typedef enum {
 	token_null,
 	token_or,
 	token_and,
+	token_not,
 // integrated functions not working yet (it depands on task from teachers)
 	token_f_boolval,
 	token_f_doubleval,
