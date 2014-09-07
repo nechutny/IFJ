@@ -36,7 +36,7 @@ void global_init();
  */
 void global_free();
 
-void* _malloc();
+void* _malloc(unsigned long size);
 
 #define _free(_ptr)								\
 do {										\
