@@ -20,6 +20,11 @@
  */
 struct TGlobal global;
 
+/**
+ * Handle SIGINT and SIGTERM, clean memory and exit(1);
+ *
+ * @param	signo	Code of received signal
+ **/
 void sig_handler(int signo)
 {
 	global_free();
@@ -63,7 +68,7 @@ void global_init()
 
 
 /**
- * Loop on linked list of allocated memmory and free
+ * Loop on linked list of allocated memory and free
  **/
 void global_free()
 {

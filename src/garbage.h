@@ -1,3 +1,6 @@
+#ifndef _GARBAGE_H_
+#define _GARBAGE_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,32 +15,38 @@
  *            The Cleaner v1.0
  */
 
+/*
+ * Structure representing one allocated pointer
+ */
 struct TAllocItem
 {
 	void* ptr;
 	struct TAllocItem* next;
 };
 
+/*
+ * Global variable accessable as "global" after including garbage.h
+ */
 struct TGlobal
 {
 	struct TAllocItem* allocated;
 	struct TAllocItem* allocated_last;
 };
-
 extern struct TGlobal global;
 
-/**
- * Inicialize global variable with correct values
- */
+
 void global_init();
-
-/**
- * Free all allocated memory by _malloc
- */
 void global_free();
-
 void* _malloc(unsigned long size);
 
+/**
+ * Free allocated memory by _malloc
+ *
+ * Find item in list, free it and remove from list. normal free() can't be used
+ * on memory allocated via _malloc.
+ *
+ * @param	_ptr	pointer to memory
+ **/
 #define _free(_ptr)								\
 do {										\
 	struct TAllocItem* tmp = global.allocated;				\
@@ -83,3 +92,5 @@ do {										\
 		_ptr = NULL;							\
 	}									\
 } while(0);
+
+#endif
