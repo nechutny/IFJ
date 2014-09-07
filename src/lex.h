@@ -33,7 +33,6 @@ typedef enum {
 } TState;
 
 TToken * token_init();
-TToken_type set_identifier( TToken * token);
 void set_identifier( TToken * token);
 void token_free( TToken * token );
 TToken *token_get();
