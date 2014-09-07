@@ -15,8 +15,8 @@ typedef enum {operator_not,
 	          operator_diff,
 	          operator_less,
 	          operator_less_equal,
-	          operator_greather,
-	          operator_greather_equal,
+	          operator_greater,
+	          operator_greater_equal,
 	          operator_in,
 	          operator_left_parenthesis,
 	          operator_right_parenthesis,
@@ -28,4 +28,4 @@ typedef enum {operator_not,
 	          sign_fault
 }operator_number;
 
-int precedence(FILE);
+int precedence();
