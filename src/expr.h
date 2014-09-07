@@ -15,17 +15,23 @@ typedef enum {operator_not,
 	          operator_diff,
 	          operator_less,
 	          operator_less_equal,
-	          operator_greather,
-	          operator_greather_equal,
+	          operator_greater,
+	          operator_greater_equal,
 	          operator_in,
 	          operator_left_parenthesis,
 	          operator_right_parenthesis,
 	          operator_ID,
 	          operator_dolar,
-	          sign_equal,
-	          sing_less,
-	          sign_greather,
-	          sign_fault
+	          operator_non_term
 }operator_number;
 
-int precedence(FILE);
+typedef enum{
+			sign_equal = 21,
+	        sign_less,
+	        sign_greater,
+	        sign_fault
+}precedence_number;
+
+int precedence();
+precedence_number get_stack();
+precedence_number enum_sign();
