@@ -1,14 +1,15 @@
-
-
-
 #include "expr.h"
+#include <stdlib.h>
+#include <ctype.h>
+
+#define table_size 20
 
 /**
 * Precedence table with priorities.
 * Rows are tokens on the top of the stack and collums are actual tokens.
 * Sign '<' means shift to the stack. Sign '>' means reduction.
 **/
-uint8_t precedence_table[][]=
+const int precedence_table[table_size][table_size]=
 {
 //    not    *     /    div   mod   and    +     -    or     =    <>     <    <=     >    >=    in     (     )    ID     $
 	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '>' }, // not
@@ -31,4 +32,27 @@ uint8_t precedence_table[][]=
 	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '>' }, // )
 	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '>' }, // ID
 	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '#' }, // $
+};
+
+
+/**
+*Function precedence making syntax analysition of expressions.
+* @param filename is file to translate
+* @return number of failiure or correct
+**/
+int precedence(FILE *filename)
+{
+	TStack *stack;
+	stack = stack_init();
+	stack_push( stack , (void *)(int)'$');
+	stack_push( stack, (void *)precedence_table[2][2]);
+	printf("%c\n",(int)stack_top(stack) );
+	TToken * token;
+	token = token_init();
+	token = token_get(filename);
+	token_free(token);
+	
+	return 1;
+
 }
+
