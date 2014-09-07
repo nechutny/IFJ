@@ -90,8 +90,10 @@ TToken *token_get(FILE * file) {
 		return NULL;
 	}
 	TState state = state_init;
+	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
 	string_clear(token->data);
 	char c;
+	char sign='+';
 	/*token->type = token_block_begin;
 	string_add_chr(token->data, 'a');
 	string_add_chr(token->data, 'c');
@@ -159,6 +161,7 @@ TToken *token_get(FILE * file) {
 						else if (isdigit(c))
 						{
 							state = state_int;
+							number_state = state_int;
 							string_add_chr(token->data, c);
 							break;
 						}
@@ -194,6 +197,7 @@ TToken *token_get(FILE * file) {
 				else if (c=='+' || c=='-')
 				{
 					string_add_chr(token->data, c);
+					sign = c;
 					state = state__double_sign_e;
 				}
 				else if (c=='e' || c=='E')
@@ -221,6 +225,7 @@ TToken *token_get(FILE * file) {
 				{
 					string_add_chr(token->data, c);
 					state = state_double;
+					number_state = state_double;
 				}
 				else
 				{
@@ -266,8 +271,20 @@ TToken *token_get(FILE * file) {
 				}
 				else
 				{
-					token->type=token_invalid;
-					return token;
+					ungetc(c, file);
+					ungetc(sign, file);
+					if(number_state==state_int)
+					{
+						token->type=token_int;
+						return token;
+					}
+					else
+					{
+						token->type=token_double;
+						return token;
+					}
+					//token->type=token_invalid;
+					//return token;
 				}
 				break;
 			case state__double_e:
