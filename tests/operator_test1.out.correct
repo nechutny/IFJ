@@ -1,49 +1,9 @@
-stack_top: 19
-token_type: 19
-stack_count: 1
-stack_top: 18
-token_type: 5
-stack_count: 3
 Precedence syntax used rule 1: E -> ID
-stack_top: 20
-token_type: 5
-stack_count: 2
-stack_top: 6
-token_type: 19
-stack_count: 4
-stack_top: 18
-token_type: 7
-stack_count: 6
 Precedence syntax used rule 1: E -> ID
-stack_top: 20
-token_type: 7
-stack_count: 5
-stack_top: 1
-token_type: 19
-stack_count: 7
-stack_top: 18
-token_type: 10
-stack_count: 9
 Precedence syntax used rule 1: E -> ID
-stack_top: 20
-token_type: 10
-stack_count: 8
-hmm
-stack_top-: 20
-stack_top--: 20
-stack_top---: 22
-used Rule
-stack_top: 20
-token_type: 10
-stack_count: 5
-stack_top: 4
-token_type: 9
-stack_count: 7
-ERROR Fault syntax
-or 40
-i 26
-not 42
-and 41
- 8
- 13
- 14
+Precedence syntax used rule 4: E -> E * E
+Precedence syntax used rule 1: E -> ID
+Precedence syntax used rule 5: E -> E / E
+Precedence syntax used rule 1: E -> ID
+Precedence syntax used rule 7: E -> E mod E
+Precedence syntax used rule 9: E -> E + E
