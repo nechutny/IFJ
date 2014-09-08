@@ -51,6 +51,22 @@ void* _malloc(unsigned long size)
 	return global.allocated_last->ptr;
 }
 
+void* _realloc(void* ptr, unsigned long size)
+{
+	struct TAllocItem* tmp = global.allocated;
+	while(tmp != NULL)
+	{
+		if(tmp->ptr == ptr)
+		{
+			tmp->ptr = realloc(tmp->ptr, size);
+			return tmp->ptr;
+		}
+		tmp = tmp->next;
+	}
+	
+	return NULL;
+}
+
 
 /**
  * Inicialize global variable and set handler for auto-free

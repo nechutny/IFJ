@@ -6,18 +6,19 @@
 #include "types.h"
 #include "string.h"
 #include "main.h"
+#include "garbage.h"
 
 /* naalokuje novej string */
 TString * string_new() {
 	TString * string;
 	
-	string = ( TString * ) malloc( sizeof( TString ) );
+	string = ( TString * ) _malloc( sizeof( TString ) );
 	if( string == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		return NULL;
 	}
 	
-	string->data = (char *) malloc( sizeof( char ) * 50 );
+	string->data = (char *) _malloc( sizeof( char ) * 50 );
 	if( string->data == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		free( string );
@@ -34,7 +35,7 @@ TString * string_new() {
 
 int string_add_chr( TString * string, char c ) {
 	if( string->allocated < ( string->length + 1 ) ) {
-		string = ( TString * ) realloc( string, ( sizeof( char ) * ( string->allocated + 10 ) ) );
+		string = ( TString * ) _realloc( string, ( sizeof( char ) * ( string->allocated + 10 ) ) );
 		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
@@ -55,7 +56,7 @@ int string_add( TString * string, char * text ) {
 	int total_len = len + string->length;
 	
 	if( ( total_len + 1 ) >= string->allocated ) {
-		string->data = ( char * ) realloc( string->data, ( sizeof( char ) * ( string->allocated + ( ( total_len+1 ) / string->allocated ) * 10 ) ) );
+		string->data = ( char * ) _realloc( string->data, ( sizeof( char ) * ( string->allocated + ( ( total_len+1 ) / string->allocated ) * 10 ) ) );
 		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
@@ -88,8 +89,8 @@ void string_free( TString * string ) {
 	if( string == NULL )
 		return;
 
-	free( string->data );
-	free( string );
+	_free( string->data );
+	_free( string );
 	
 	string = NULL;
 }
