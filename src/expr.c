@@ -427,9 +427,8 @@ int precedence(FILE *filename)
 
 	}while( !((stack_count(stack) == 1) && ((operator_number)stack_top(stack) == operator_dolar )) );
 
-	//printf("hmmm%d\n",get_sign(token,stack) );
-	//printf("aaaaa%d\n",(int)stack_top(stack) );
-	//printf("token%d\n",token->type );
+	printf("Precedence syntax analysis OK! \n");
+
 	token_free(token);
 	
 	return 1;
