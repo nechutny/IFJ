@@ -18,7 +18,7 @@ build/%.c.o: src/%.c
 
 # Clean compiled files
 clean:
-	rm -rf build/* ifj IFJ.zip tests/*.out
+	rm -rf build/* ifj IFJ.zip tests/*.out.run
 
 # Commit changes
 commit: clean

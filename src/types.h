@@ -67,6 +67,10 @@ typedef enum {
 	token_to,
 	token_program,
 	token_id,
+	token_real,
+	token_integer,
+	token_boolean,
+	token_char,
 
 // integrated functions not working yet (it depands on task from teachers)
 	token_f_boolval,

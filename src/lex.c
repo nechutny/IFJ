@@ -10,13 +10,14 @@
 #include "types.h"
 #include "lex.h"
 #include "string.h"
+#include "garbage.h"
 #include "main.h"
 
 
 TToken * token_init() {
 	TToken * token;
 	
-	token = ( TToken * ) malloc( sizeof( TToken ) );
+	token = ( TToken * ) _malloc( sizeof( TToken ) );
 	if( token == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		return NULL;
@@ -30,9 +31,15 @@ TToken * token_init() {
 	return token;
 }
 
+TToken * token_buffer;
+
+void token_return_token(TToken * token) {
+	token_buffer = token;
+}
+
 void token_free( TToken * token ) {
 	string_free( token->data );
-	free( token );
+	_free( token );
 }
 
 //set correct type of token (is it keyword or indentifier?)
@@ -99,6 +106,14 @@ void set_identifier(TToken *token){
  		token->type = token_false;
  	else if (strcmp("null",token->data->data)==0)
  		token->type = token_null;
+ 	else if (strcmp("integer",token->data->data)==0)
+ 		token->type = token_integer;
+ 	else if (strcmp("real",token->data->data)==0)
+ 		token->type = token_real;
+ 	else if (strcmp("char",token->data->data)==0)
+ 		token->type = token_char;
+ 	else if (strcmp("boolean",token->data->data)==0)
+ 		token->type = token_boolean;
  	else
  		token->type = token_identifier;
 }
@@ -106,6 +121,13 @@ void set_identifier(TToken *token){
 //return next token from file
 TToken *token_get(FILE * file) {
 	TToken *token;
+	if(token_buffer != NULL)
+	{
+		token = token_buffer;
+		token_buffer = NULL;
+		return token;
+	}
+	
 	if((token = token_init()) == NULL){		//alokace noveho tokenu
 		return NULL;
 	}

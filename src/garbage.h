@@ -31,6 +31,8 @@ struct TGlobal
 {
 	struct TAllocItem* allocated;
 	struct TAllocItem* allocated_last;
+
+	FILE* file;
 };
 extern struct TGlobal global;
 

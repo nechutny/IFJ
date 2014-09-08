@@ -3,24 +3,25 @@
 #include "types.h"
 #include "expr.h"
 #include "garbage.h"
+#include "parser.h"
 
 int main(int argc, char* argv[])
 {
 	global_init();
+	
 	TToken * token;
-	FILE * file;
-	file=fopen(argv[1],"r");
-	if (file==NULL)
+	global.file=fopen(argv[1],"r");
+	if (global.file==NULL)
 		return 0;
-	precedence(file);
-	token = token_get(file);
+	parser(global.file);
+	precedence(global.file);
+	token = token_get(global.file);
 	while (token->type!=token_eof)
 	{
-		printf("%s ",token->data->data);
-		printf("%d\n",token->type);
+		//printf("%s ",token->data->data);
+		//printf("%d\n",token->type);
 		token_free(token);
-		token = token_get(file);
+		token = token_get(global.file);
 	}
-	fclose(file);
 	return 0;
 }

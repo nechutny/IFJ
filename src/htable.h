@@ -10,6 +10,9 @@
 * 	Repository:	git@nechutny.net:vut.git
 */
 
+#ifndef _HTABLE_H_
+#define _HTABLE_H_
+
 // List item
 typedef struct  htab_listitem_s {
   struct htab_listitem_s *next;
@@ -47,3 +50,5 @@ void htab_free(htab_t *t);
 
 //  tisk průměrné a min/max. délky seznamů v tabulce - vhodné pro ladění a testování
 void htab_statistics(htab_t *t);
+
+#endif

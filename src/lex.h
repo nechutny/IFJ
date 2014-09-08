@@ -35,6 +35,7 @@ typedef enum {
 TToken * token_init();
 void set_identifier( TToken * token);
 void token_free( TToken * token );
+void token_return_token(TToken * token);
 TToken *token_get();
 
 #endif

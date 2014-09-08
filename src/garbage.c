@@ -88,5 +88,7 @@ void global_free()
 		ptr = ptr->next;
 		free(tmp);
 	}
+
+	fclose(global.file);
 	
 }
