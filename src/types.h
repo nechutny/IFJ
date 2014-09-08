@@ -57,6 +57,17 @@ typedef enum {
 	token_or,				//40
 	token_and,				//41
 	token_not,				//42
+	token_do,
+	token_repeat,
+	token_until,
+	token_label,
+	token_goto,
+	token_case,
+	token_of,
+	token_to,
+	token_program,
+	token_id,
+
 // integrated functions not working yet (it depands on task from teachers)
 	token_f_boolval,
 	token_f_doubleval,

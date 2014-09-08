@@ -41,6 +41,26 @@ void set_identifier(TToken *token){
  		token->type = token_var;
  	else if (strcmp("in",token->data->data)==0)
  		token->type = token_in;
+ 	else if (strcmp("do",token->data->data)==0)
+ 		token->type = token_do;
+ 	else if (strcmp("repeat",token->data->data)==0)
+ 		token->type = token_repeat;
+ 	else if (strcmp("until",token->data->data)==0)
+ 		token->type = token_until;
+ 	else if (strcmp("label",token->data->data)==0)
+ 		token->type = token_label;
+ 	else if (strcmp("goto",token->data->data)==0)
+ 		token->type = token_goto;
+ 	else if (strcmp("case",token->data->data)==0)
+ 		token->type = token_case;
+ 	else if (strcmp("of",token->data->data)==0)
+ 		token->type = token_of;
+ 	else if (strcmp("to",token->data->data)==0)
+ 		token->type = token_to;
+ 	else if (strcmp("program",token->data->data)==0)
+ 		token->type = token_program;
+ 	else if (strcmp("ID",token->data->data)==0)
+ 		token->type = token_id;
  	else if (strcmp("mod",token->data->data)==0)
  		token->type = token_mod;
  	else if (strcmp("div",token->data->data)==0)
