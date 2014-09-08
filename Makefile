@@ -35,5 +35,5 @@ tests: ifj $(TESTFILES)
 	# Done
 
 tests/%.out: tests/%.pas
-	-$(shell ./ifj $< > $@; diff $@ $@.correct; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@; else echo "# ERROR ... $<"; fi)
+	-$(shell ./ifj $< > $@.run; diff $@.run $@.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@.run; else echo "# ERROR ... $<"; fi)
 	
