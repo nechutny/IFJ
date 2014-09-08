@@ -205,6 +205,11 @@ int precedence(FILE *filename)
 
 	//printf("stack_top: %d\n", (int)stack_top(stack));
 	//printf("dolar: %d\n",operator_dolar );
+	if (token->type == token_semicolon)
+	{
+		printf("ERROR: Wrong syntax\n");
+		return 1;
+	}
 
 	do
 	{
