@@ -5,6 +5,7 @@
 CC=gcc
 CFLAGS=-O2 -std=c99 -lm -Wall -pedantic
 OBJFILES=$(patsubst src/%.c, build/%.c.o, $(shell ls src/*.c))
+TESTFILES=$(patsubst tests/%.pas, tests/%.out, $(shell ls tests/*.pas));
 
 # build
 all: ifj
@@ -17,7 +18,7 @@ build/%.c.o: src/%.c
 
 # Clean compiled files
 clean:
-	rm -rf build/* ifj IFJ.zip
+	rm -rf build/* ifj IFJ.zip tests/*.out
 
 # Commit changes
 commit: clean
@@ -28,3 +29,11 @@ commit: clean
 # Create zip file for submitting
 zip: clean
 	zip IFJ.zip src build doc Makefile
+
+# Test
+tests: ifj $(TESTFILES)
+	# Done
+
+tests/%.out: tests/%.pas
+	-$(shell ./ifj $< > $@; diff $@ $@.correct; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@; else echo "# ERROR ... $<"; fi)
+	
