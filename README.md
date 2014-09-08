@@ -26,6 +26,7 @@ IFJ Project 2014/2015
 * make clean - clean build/ directory, delete executable file and zip file
 * make commit - utilize git. Delete temporary files (object files etc.), call commit -a, pull before push (for auto-merge) and then push
 * make zip - create zip file named IFJ.zip containing sources, empty build directory, documentation and Makefile
+* make tests - run all tests in tests directory. Compare output with expected (tests/name.out.correct) and in case of error leave file tests/name.out.run for debuging
 
 ## Code-style
 * Tabs
