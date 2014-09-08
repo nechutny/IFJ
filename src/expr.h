@@ -35,3 +35,4 @@ typedef enum{
 int precedence();
 precedence_number get_stack();
 precedence_number enum_sign();
+int check_rule();

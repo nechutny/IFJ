@@ -158,6 +158,36 @@ precedence_number get_sign(TToken * token, TStack * stack)
 }
 
 
+int check_rule(TStack * stack, char * rule)
+{
+	stack_pop(stack);
+	//printf("stack_top--: %d\n", (int)stack_top(stack));
+	if ((int)stack_top(stack) == operator_non_term)
+    {
+		stack_pop(stack);
+		//printf("stack_top---: %d\n", (int)stack_top(stack));
+	    if ((int)stack_top(stack) == sign_less)
+	    {
+	        stack_pop(stack);
+	      	stack_push(stack,(void *)operator_non_term);
+	       	printf("Precedence syntax used rule %s\n",rule);
+	       	return 0;
+	    }
+	    else
+	    {
+	    printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+	    return 1;
+	    }
+
+	}
+	else
+	{
+	printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+	return 1;
+	}
+}
+
+
 /**
 * Function precedence making syntax analysition of expressions.
 * @param filename is file to translate
@@ -178,9 +208,9 @@ int precedence(FILE *filename)
 
 	do
 	{
-		printf("stack_top: %d\n", (int)stack_top(stack));
-		printf("token_type: %d\n", token->type);
-		printf("stack_count: %d\n", stack_count(stack));
+		//printf("stack_top: %d\n", (int)stack_top(stack));
+		//printf("token_type: %d\n", token->type);
+		//printf("stack_count: %d\n", stack_count(stack));
 		switch(get_sign(token,stack)){
 			case sign_equal:
 				stack_push(stack,(void *)recon_sign(token));
@@ -234,70 +264,143 @@ int precedence(FILE *filename)
 							{
 								stack_pop(stack);
 								stack_push(stack,(void *)operator_non_term);
+								printf("Precedence syntax used rule 2: E -> (E)\n");
 							}
 							else
 							{
 								printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+								return 1;
 							}
 						}
 						else
 						{
 							printf("ERROR: Excpects: ( but it gets: %d \n",(int)stack_top(stack));
+							return 1;
 						}
 					}
 					else
 					{
 						printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+						return 1;
 					}
 				}
 				//This condition should handle with others rules, ended with E
 				else if ((int)stack_top(stack) == operator_non_term)
 				{
-					printf("hmm\n");
-
-					printf("stack_top-: %d\n", (int)stack_top(stack));
+					//printf("stack_top-: %d\n", (int)stack_top(stack));
 					stack_pop(stack);
 					switch((int)stack_top(stack)){
 						case operator_not:
-			  			case operator_mul:
-	          			case operator_div:
-	          			case operator_sign_div:
-	         			case operator_mod:
-	          			case operator_and:
-	          			case operator_plus:
-	          			case operator_minus:
-	             		case operator_or:
-	          			case operator_equal:
-	          			case operator_diff:
-	          			case operator_less:
-	          			case operator_less_equal:
-	                    case operator_greater:
-	                    case operator_greater_equal:
-	          			case operator_in:
-	          				stack_pop(stack);
-	          				printf("stack_top--: %d\n", (int)stack_top(stack));
-	          				if ((int)stack_top(stack) == operator_non_term)
-	          				{
-	          					//printf("stack_top---: %d\n", (int)stack_top(stack));
-	          					stack_pop(stack);
-	          					printf("stack_top---: %d\n", (int)stack_top(stack));
-	          					if ((int)stack_top(stack) == sign_less)
-	          					{
-	          						stack_pop(stack);
-	          						stack_push(stack,(void *)operator_non_term);
-	          						printf("used Rule\n");
-	          					}
-	          					else
-	          					{
-	          						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
-	          					}
+							if ((check_rule(stack,"3: E -> E not E")) == 1 )
+							{
+								return 1;
+							}
+							break;
 
-	          				}
-	          				else
-	          				{
-	          					printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
-	          				}
-	          				break;
+			  			case operator_mul:
+			  				if ((check_rule(stack,"4: E -> E * E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_div:
+	          				if ((check_rule(stack,"5: E -> E / E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_sign_div:
+	          				if ((check_rule(stack,"6: E -> E div E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	         			case operator_mod:
+	         				if ((check_rule(stack,"7: E -> E mod E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_and:
+	          				if ((check_rule(stack,"8: E -> E and E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_plus:
+	          				if ((check_rule(stack,"9: E -> E + E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_minus:
+	          				if ((check_rule(stack,"10: E -> E - E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	             		case operator_or:
+	             			if ((check_rule(stack,"11: E -> E or E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_equal:
+	          				if ((check_rule(stack,"12: E -> E = E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_diff:
+	          				if ((check_rule(stack,"13: E -> E <> E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_less:
+	          				if ((check_rule(stack,"14: E -> E < E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_less_equal:
+	          				if ((check_rule(stack,"15: E -> E <= E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	                    case operator_greater:
+	                    	if ((check_rule(stack,"16: E -> E > E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	                    case operator_greater_equal:
+	                    	if ((check_rule(stack,"17: E -> E >= E")) == 1 )
+							{
+								return 1;
+							}
+							break;
+
+	          			case operator_in:
+	          				if ((check_rule(stack,"18: E -> E in E")) == 1 )
+							{
+								return 1;
+							}
+							break;
 
 	          			default:
 	          				printf("ERROR:: Excpects: operator but it gets: %d \n",(int)stack_top(stack));
@@ -305,11 +408,9 @@ int precedence(FILE *filename)
 				}
 				else
 				{
-					printf("ERROR Fault syntax\n");
+					printf("ERROR Wrong syntax\n");
 					return 0;
 				}
-				
-
 				break;
 
 			case sign_fault:
