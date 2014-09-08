@@ -1,30 +1,3 @@
-stack_top: 19
-token_type: 19
-stack_count: 1
-stack_top: 18
-token_type: 5
-stack_count: 3
 Precedence syntax used rule 1: E -> ID
-stack_top: 20
-token_type: 5
-stack_count: 2
-stack_top: 6
-token_type: 19
-stack_count: 4
-stack_top: 18
-token_type: 7
-stack_count: 6
 Precedence syntax used rule 1: E -> ID
-stack_top: 20
-token_type: 7
-stack_count: 5
-stack_top: 1
-token_type: 19
-stack_count: 7
-stack_top: 18
-token_type: 21
-stack_count: 9
-stack_top: 24
-token_type: 21
-stack_count: 11
 ERROR: Got error sign from precedence table
