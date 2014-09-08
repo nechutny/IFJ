@@ -1,1 +1,1 @@
-7 + 3 * 2 mod div or i not and - = <>
+7 + 3 * 2 / 5 mod 8;
