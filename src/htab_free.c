@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
+#include "garbage.h"
 
 /*
  * Destrohy hash table and free memory
@@ -24,6 +25,6 @@ void htab_free(htab_t *t)
 	if(t != NULL)
 	{
 		htab_clear(t);
-		free(t);
+		_free(t);
 	}
 }

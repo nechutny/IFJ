@@ -21,7 +21,7 @@ TString * string_new() {
 	string->data = (char *) _malloc( sizeof( char ) * 50 );
 	if( string->data == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
-		free( string );
+		_free( string );
 		return NULL;
 	}
 	

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
+#include "garbage.h"
 
 /*
  * Remove item from hash table
@@ -37,7 +38,7 @@ void htab_remove(htab_t *t, const char *key)
 			}
 			item_ptr->next = item->next;
 
-			free(item);
+			_free(item);
 			
 			break;
 		}
