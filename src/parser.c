@@ -350,6 +350,7 @@ void parser_main()
 		token_return_token(token);
 		printf("parser_code\n");
 		parser_code();
+		token = token_get(global.file);
 	}
 	token_return_token(token);
 }
