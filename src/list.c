@@ -80,12 +80,12 @@ void list_insert_prev(TList *list, void *data)
 
 void list_next(TList *list)
 {
-	if( list->act != list->last)
+	if( list->act != NULL)
 		list->act = list->act->n;
 }
 
 void list_prev(TList *list)
 {
-	if (list->act != list->first)
+	if (list->act != NULL)
 		list->act = list->act->p;
 }
