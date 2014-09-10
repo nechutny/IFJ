@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
+#include "garbage.h"
 
 /*
  * Helpfull function for creating item in hash table
@@ -24,7 +25,7 @@ inline htab_listitem* htab_create(const char *key)
 {
 	htab_listitem* item;
 	// allocate memory for structure size + size of key (length + 1 byte for null-terminating)
-	item = malloc(sizeof(htab_listitem) + sizeof(char)*(strlen(key)+1));
+	item = _malloc(sizeof(htab_listitem) + sizeof(char)*(strlen(key)+1));
 	if(item == NULL)
 	{ // Check malloc
 		return NULL;

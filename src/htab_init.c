@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
+#include "garbage.h"
 
 /*
  * Hash function used for table
@@ -40,7 +41,7 @@ unsigned int hash_function(const char *str, unsigned htab_size)
  */
 htab_t* htab_init(unsigned size)
 {
-	htab_t* result = malloc(sizeof(htab_t)+size*sizeof(htab_listitem));
+	htab_t* result = _malloc(sizeof(htab_t)+size*sizeof(htab_listitem));
 	if(result == NULL)
 	{ // check malloc
 		return NULL;

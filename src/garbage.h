@@ -40,6 +40,7 @@ extern struct TGlobal global;
 void global_init();
 void global_free();
 void* _malloc(unsigned long size);
+void* _realloc(void* ptr, unsigned long size);
 
 /**
  * Free allocated memory by _malloc
@@ -94,5 +95,6 @@ do {										\
 		_ptr = NULL;							\
 	}									\
 } while(0);
+
 
 #endif

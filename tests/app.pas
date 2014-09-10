@@ -18,6 +18,6 @@ begin
 		destine = 1.25;
 	end;
 
-	repeat until keypressed();
+	keypressed();
 	
 end.

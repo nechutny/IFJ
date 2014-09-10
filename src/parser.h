@@ -8,5 +8,10 @@ void parser(FILE* file);
 void parser_file();
 void parser_vars();
 void parser_var();
+void parser_function();
+void parser_args();
+void parser_body();
+void parser_main();
+void parser_code();
 
 #endif 

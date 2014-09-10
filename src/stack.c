@@ -12,18 +12,19 @@
 //include "types.h"
 #include "stack.h"
 #include "main.h"
+#include "garbage.h"
 
 TStack * stack_init(){
 	TStack *stack;
-	stack = malloc( sizeof ( TStack ) );
+	stack = _malloc( sizeof ( TStack ) );
 	if( stack == NULL ){
 		fprintf( stderr, "%s", strerror( errno ) );
 		return NULL;
 	}
-	stack->data = malloc( sizeof ( void * )*10 );
+	stack->data = _malloc( sizeof ( void * )*10 );
 	if( stack->data == NULL ){
 		fprintf( stderr, "%s", strerror( errno ) );
-		free( stack );
+		_free( stack );
 		return NULL;
 	}
 
@@ -34,7 +35,7 @@ TStack * stack_init(){
 
 void stack_push( TStack *stack, void *item ){
 	if( stack->allocated < ( stack->count + 1 ) ){
-		stack->data = realloc( stack->data, ( sizeof( void * ) * ( stack->allocated + 10 ) ) );
+		stack->data = _realloc( stack->data, ( sizeof( void * ) * ( stack->allocated + 10 ) ) );
 		stack->allocated += 10;
 	}
 	stack->data[stack->count++] = item;
