@@ -29,7 +29,7 @@ void list_insert(TList *list, void *data)
 void list_insert_next(TList *list, void *data)
 {
 	TNode *tmp;
-	tmp = _malloc(sizeof(TNode))
+	tmp = _malloc(sizeof(TNode));
 
 	tmp->data = data;
 	tmp->p = list->act;
@@ -48,7 +48,7 @@ void list_insert_prev(TList *list, void *data)
 	if( list->act != NULL)
 	{
 		TNode *tmp;
-		tmp = _malloc(sizeof(TNode))
+		tmp = _malloc(sizeof(TNode));
 
 		tmp->data = data;
 		tmp->n = list->act;
