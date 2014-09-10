@@ -1,4 +1,6 @@
 #include "expr.h"
+#include "garbage.h"
+#include "generator.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -171,6 +173,7 @@ int check_rule(TStack * stack, char * rule)
 	        stack_pop(stack);
 	      	stack_push(stack,(void *)operator_non_term);
 	       	printf("Precedence syntax used rule %s\n",rule);
+	       	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
 	       	return 0;
 	    }
 	    else
@@ -249,6 +252,7 @@ int precedence(FILE *filename)
 						stack_pop(stack);
 						stack_push(stack,(void *)operator_non_term);
 						printf("Precedence syntax used rule 1: E -> ID\n");
+	       				gen_ins("1: E -> ID", global.ins_list, NULL, NULL, NULL);
 					}
 					else{
 						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
@@ -270,6 +274,7 @@ int precedence(FILE *filename)
 								stack_pop(stack);
 								stack_push(stack,(void *)operator_non_term);
 								printf("Precedence syntax used rule 2: E -> (E)\n");
+	       						gen_ins("2: E -> (E)", global.ins_list, NULL, NULL, NULL);
 							}
 							else
 							{
