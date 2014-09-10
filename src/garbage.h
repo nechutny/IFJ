@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "list.h"
 /*
  *   __      __  _____    _____   _______    ____    _____  
  *   \ \    / / |_   _|  / ____| |__   __|  / __ \  |  __ \ 
@@ -33,6 +34,7 @@ struct TGlobal
 	struct TAllocItem* allocated_last;
 
 	FILE* file;
+	TList* ins_list;
 };
 extern struct TGlobal global;
 
