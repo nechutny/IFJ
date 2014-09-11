@@ -14,8 +14,10 @@ int main(int argc, char* argv[])
 	global.file=fopen(argv[1],"r");
 	if (global.file==NULL)
 		return 0;
-//	parser(global.file);
-	precedence(global.file);
+		
+	parser(global.file);
+	
+	/*precedence(global.file);
 	while(global.ins_list->act != NULL){
 		printf("ins: %d list first: %d list act: %d list last: %d\n", ((TIns*)global.ins_list->act->data)->type, 
 		global.ins_list->first, global.ins_list->act, global.ins_list->last);
@@ -29,6 +31,6 @@ int main(int argc, char* argv[])
 		//printf("%d\n",token->type);
 		token_free(token);
 		token = token_get(global.file);
-	}
+	}*/
 	return 0;
 }

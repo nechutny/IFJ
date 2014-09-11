@@ -4,6 +4,7 @@
 #include "lex.h"
 #include "types.h"
 #include "garbage.h"
+#include "expr.h"
 
 static int isVariableType(int type);
 
@@ -97,40 +98,15 @@ void parser_var()
 				if(token->type == token_equal)
 				{
 					token_free(token);
-					token = token_get(global.file);
-
-					if(token->type == token_int || token->type == token_double)
-					{
-						token_free(token);
-						token = token_get(global.file);
-
-						if(token->type == token_semicolon)
-						{
-							token_free(token);
-							parser_var();
-						}
-						else
-						{
-							token_free(token);
-							printf("Error: Expected ';'.\n");
-						}
-					}
-					else
-					{
-						token_free(token);
-						printf("Error: Bad inicialization value.\n");
-					}
+					precedence(global.file);
+					
 				}
 				else if(token->type == token_semicolon)
 				{
 					token_free(token);
-					parser_var();
 				}
-				else
-				{
-					token_free(token);
-					printf("Error: Expected ';' or '='.\n");
-				}
+
+				parser_var();
 			}
 			else
 			{
@@ -153,19 +129,20 @@ void parser_var()
 void parser_function()
 {
 	TToken * token = token_get(global.file);
-
 	if(token->type == token_function)
 	{
 		token_free(token);
 		token = token_get(global.file);
 		if(token->type == token_identifier)
 		{
+			printf("function %s:\n",token->data->data);
 			token_free(token);
 			token = token_get(global.file);
 			if(token->type == token_parenthesis_left)
 			{
 				token_free(token);
 				parser_args();
+				
 				token = token_get(global.file);
 				if(token->type == token_parenthesis_right)
 				{
@@ -236,14 +213,14 @@ void parser_function()
 				}
 				else
 				{
+					printf("Error: Expected ')' %d.\n",token->type);
 					token_free(token);
-					printf("Error: Expected ')'.\n");
 				}
 			}
 			else
 			{
+				printf("Error: Expected '(' %d.\n",token->type);
 				token_free(token);
-				printf("Error: Expected '('.\n");
 			}
 		}
 		else
@@ -296,10 +273,14 @@ void parser_args()
 			printf("Error: Expected identifier.\n");
 		}
 	}
+	else if(token->type == token_parenthesis_right)
+	{
+		token_return_token(token);
+	}
 	else
 	{
+		printf("Error: Expected identifier %d.\n",token->type);
 		token_free(token);
-		printf("Error: Expected identifier.\n");
 	}
 }
 
@@ -311,33 +292,14 @@ void parser_body()
 		if(token->type == token_return)
 		{
 			token_free(token);
-			token = token_get(global.file);
-			if(token->type == token_identifier || token->type == token_int)
-			{
-				token_free(token);
-				token = token_get(global.file);
-				if(token->type == token_semicolon)
-				{
-					token_free(token);
-				}
-				else
-				{
-					token_free(token);
-					printf("Error: Function return expresion should end with ';'.\n");
-				}
-			}
-			else
-			{
-				token_free(token);
-				printf("Error: Function return bad expresion.\n");
-			}
+			precedence(global.file);
 		}
 		else
 		{
 			token_return_token(token);
-			printf("parser_main\n");
 			parser_main();
 		}
+		token = token_get(global.file);
 	}
 	token_return_token(token);
 }
@@ -345,10 +307,9 @@ void parser_body()
 void parser_main()
 {
 	TToken * token = token_get(global.file);
-	while(token->type != token_end)
+	while(token->type != token_end && token->type != token_return)
 	{
 		token_return_token(token);
-		printf("parser_code\n");
 		parser_code();
 		token = token_get(global.file);
 	}
@@ -358,19 +319,45 @@ void parser_main()
 void parser_code()
 {
 	TToken * token = token_get(global.file);
-	
 	if(token->type == token_identifier)
-	{ 
-		// přiřazení, nebo volání funkce
+	{
 		token_free(token);
+		token = token_get(global.file);
+		if(token->type == token_assign)
+		{ // asign
+			precedence(global.file);
+		}
+		else if(token->type == token_parenthesis_left)
+		{ // function call
+			token_free(token);
+			token = token_get(global.file);
+			while(token->type != token_parenthesis_right && token->type != token_semicolon)
+			{
+				token_return_token(token);
+				precedence(global.file);
+				token = token_get(global.file);
+			}
+		}
+		else
+		{
+			printf("Error: Unkown variable operation %d.\n",token->type);
+			token_free(token);
+		}
+		
 	}
 	else if(token->type == token_if)
 	{ // if
 		token_free(token);
+		precedence(global.file);
+		token = token_get(global.file);
+		printf("If %d\n",token->type);
 	}
 	else if(token->type == token_while)
 	{// while
 		token_free(token);
+		precedence(global.file);
+		token = token_get(global.file);
+		printf("While %d\n",token->type);
 	}
 	else if(token->type == token_repeat)
 	{ // repeat
@@ -423,7 +410,7 @@ void parser_code()
 	}
 	else
 	{
-		printf("Error: Unkown command.");
+		printf("Error: Unkown command %d.\n",token->type);
 		token_free(token);
 	}
 
