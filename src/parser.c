@@ -450,6 +450,7 @@ void parser_code()
 		case token_for:
 			/* for */
 			token_free(token);
+			parser_for();
 			break;
 			
 		case token_label:
@@ -640,6 +641,72 @@ void parser_repeat()
 	
 	
 	printf("end repeat\n");
+}
+
+
+/**
+ * for ID := <expr> to <expr> do <block>;
+ */
+void parser_for()
+{
+	printf("for\n");
+
+	TToken *token = token_get(global.file);
+	if(token->type != token_identifier)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected identifier.\n");
+		return;
+	}
+	token_free(token);
+
+	token = token_get(global.file);
+	if(token->type != token_assign)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected ':='.\n");
+		return;
+	}
+	token_free(token);
+
+	/* Inicial. value */
+	precedence(global.file);
+
+	token = token_get(global.file);
+	if(token->type != token_to)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected 'to'.\n");
+		return;
+	}
+	token_free(token);
+
+	/* Target value */
+	precedence(global.file);
+
+	token = token_get(global.file);
+	if(token->type != token_do)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected 'do'.\n");
+		return;
+	}
+	token_free(token);
+
+	token = token_get(global.file);
+	if(token->type == token_begin)
+	{ /* Code block */
+		token_free(token);
+		parser_main();
+		token = token_get(global.file);
+	}
+	else
+	{ /* Only one command */
+		token_return_token(token);
+		parser_code();
+	}
+
+	printf("end for\n");
 }
 
 

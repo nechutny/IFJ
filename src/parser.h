@@ -20,9 +20,10 @@ void parser_body();
 void parser_main();
 void parser_code();
 void parser_if();
-void parser_goto();
 void parser_while();
 void parser_repeat();
+void parser_for();
+void parser_goto();
 void parser_label();
 
 #endif 
