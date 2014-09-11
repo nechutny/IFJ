@@ -25,5 +25,6 @@ void parser_repeat();
 void parser_for();
 void parser_goto();
 void parser_label();
+void parser_switch();
 
 #endif 
