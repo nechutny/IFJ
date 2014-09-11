@@ -24,12 +24,13 @@ typedef enum {operator_not,
 	          operator_left_parenthesis,
 	          operator_right_parenthesis,
 	          operator_ID,
+	          operator_comma,
 	          operator_dolar,
 	          operator_non_term
 }operator_number;
 
 typedef enum{
-			sign_equal = 21,
+			sign_equal = 22,
 	        sign_less,
 	        sign_greater,
 	        sign_fault
@@ -55,7 +56,8 @@ typedef enum
 	rule_15,
 	rule_16,
 	rule_17,
-	rule_18
+	rule_18,
+	rule_19
 }TRule;
 
 int precedence();
