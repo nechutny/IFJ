@@ -1,6 +1,6 @@
 program fooo;
 
-var	cislo : integer = 5;
+var	cislo, cislo2 : integer = 5;
 	desetine : real = 12.5;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
@@ -17,7 +17,7 @@ begin
 		funkce2( );
 		desetine := desetine - 15;
 	end;
-	funkce3( cislo);
+	funkce1( 1234,5, cislo);
 end;
 function funkce3( arg1 : integer ) : integer;
 var var1 : integer = 10;

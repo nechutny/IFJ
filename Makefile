@@ -3,7 +3,7 @@
 #
 
 CC=gcc
-CFLAGS=-O2 -std=c99 -lm -Wall -pedantic -rdynamic
+CFLAGS=-O2 -std=c99 -lm -Wall -pedantic -g -rdynamic
 OBJFILES=$(patsubst src/%.c, build/%.c.o, $(shell ls src/*.c))
 TESTFILES=$(patsubst tests/%.pas, tests/%.out, $(shell ls tests/*.pas));
 
