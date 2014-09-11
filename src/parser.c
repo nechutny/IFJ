@@ -35,74 +35,71 @@ void parser()
 void parser_file()
 {
 	TToken * token = token_get(global.file);
+	
 	/* Program name */
-	if(token->type == token_program)
-	{
-		token_free(token);
-		token = token_get(global.file);
-		if(token->type == token_identifier)
-		{
-			printf("Program name %s\n",token->data->data);
-			token_free(token);
-			token = token_get(global.file);
-			if(token->type == token_semicolon)
-			{
-				token_free(token);
-				
-				/* Global variables */
-				parser_vars();
-				
-				/* Functions */
-				parser_function();
-				
-				token = token_get(global.file);
-				if(token->type == token_begin)
-				{ /* Main body */
-					printf("Main body\n");
-					parser_main();
-					token_free(token);
-					token = token_get(global.file);
-					if(token->type == token_end)
-					{
-						token_free(token);
-						token = token_get(global.file);
-						if(token->type == token_dot)
-						{
-							printf("Main body end\n");
-						}
-						else
-						{
-							fprintf(stderr,"Error: Expected '.' after end.");
-						}
-					}
-					else
-					{
-						fprintf(stderr,"Error: Expected 'end.'");
-					}
-				}
-				else
-				{
-					fprintf(stderr,"Error: Expected 'begin'.");
-				}
-			}
-			else
-			{
-				token_free(token);
-				fprintf(stderr,"Error: Program name should end with ';'.");
-			}
-			
-		}
-		else
-		{
-			token_free(token);
-			fprintf(stderr,"Error: Expected program name.\n");
-		}
-	}
-	else
+	if(token->type != token_program)
 	{
 		token_free(token);
 		fprintf(stderr,"Error: Expected 'program'.\n");
+		return;
 	}
+	token_free(token);
+	
+	token = token_get(global.file);
+	if(token->type != token_identifier)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected program name.\n");
+		return;
+	}
+	printf("Program name %s\n",token->data->data);
+	token_free(token);
+	
+	token = token_get(global.file);
+	if(token->type != token_semicolon)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Program name should end with ';'.");
+		return;
+	}
+	token_free(token);
+	
+	/* Global variables */
+	parser_vars();
+	
+	/* Functions */
+	parser_function();
+	
+	token = token_get(global.file);
+	if(token->type != token_begin)
+	{ /* Main body */
+		fprintf(stderr,"Error: Expected 'begin'.");
+		token_free(token);
+		return;
+	}
+	token_free(token);
+	
+	printf("Main body\n");
+	parser_main();
+	
+	token = token_get(global.file);
+	if(token->type != token_end)
+	{
+		fprintf(stderr,"Error: Expected 'end.'");
+		token_free(token);
+		return;
+	}
+	token_free(token);
+	
+	token = token_get(global.file);
+	if(token->type != token_dot)
+	{
+		fprintf(stderr,"Error: Expected '.' after 'end'.");
+		token_free(token);
+		return;
+	}
+
+	printf("Main body end\n");
 }
 
 
@@ -181,118 +178,110 @@ void parser_var()
 	}
 }
 
+
 /**
  * Parse function declaration
  */
 void parser_function()
 {
 	TToken * token = token_get(global.file);
-	if(token->type == token_function)
+	if(token->type != token_function)
 	{ /* Function keywords? */
 		token_free(token);
 		token = token_get(global.file);
-		if(token->type == token_identifier)
+		if(token->type != token_identifier)
 		{ /* Identifier */
-			printf("function %s:\n",token->data->data);
 			token_free(token);
-			token = token_get(global.file);
-			if(token->type == token_parenthesis_left)
-			{
-				token_free(token);
-				/* Function arguments */
-				parser_args();
-				
-				token = token_get(global.file);
-				if(token->type == token_parenthesis_right)
-				{
-					token_free(token);
-					token = token_get(global.file);
-					if(token->type == token_colon)
-					{
-						token_free(token);
-						token = token_get(global.file);
-						if(isVariableType(token->type))
-						{ /* Return type */
-							token_free(token);
-							token = token_get(global.file);
-							if(token->type == token_semicolon)
-							{
-								token_free(token);
+			fprintf(stderr,"Error: Expected function name.\n");
+			return;
+		}
+		printf("function %s:\n",token->data->data);
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(token->type != token_parenthesis_left)
+		{
+			fprintf(stderr,"Error: Expected '(' %d.\n",token->type);
+			token_free(token);
+			return;
+		}
+		token_free(token);
+		
+		/* Function arguments */
+		parser_args();
+		
+		token = token_get(global.file);
+		if(token->type != token_parenthesis_right)
+		{
+			fprintf(stderr,"Error: Expected ')' %d.\n",token->type);
+			token_free(token);
+			return;
+		}
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(token->type != token_colon)
+		{
+			token_free(token);
+			fprintf(stderr,"Error: Expected ':'.\n");
+			return;
+		}
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(!isVariableType(token->type))
+		{ /* Return type */
+			token_free(token);
+			fprintf(stderr,"Error: Expected function return type.\n");
+			return;
+		}
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(token->type != token_semicolon)
+		{
+			token_free(token);
+			fprintf(stderr,"Error: Function return type should be ended with ';'.\n");
+			return;
+		}
+		token_free(token);
 
-								/* Function variables */
-								parser_vars();
-								
-								token = token_get(global.file);
-								if(token->type == token_begin)
-								{ /* Function body */
-									token_free(token);
-									do
-									{
-										parser_body();
-										token = token_get(global.file);
-									} while(token->type != token_end);
-									
-									if(token->type == token_end)
-									{ /* Function code block end */
-										token_free(token);
-										token = token_get(global.file);
-										if(token->type == token_semicolon)
-										{
-											token_free(token);
-											parser_function();
-										}
-										else
-										{
-											token_free(token);
-											fprintf(stderr,"Error: Expected ';'.\n");
-										}
-									}
-									else
-									{
-										token_free(token);
-										fprintf(stderr,"Error: Function block should ended with 'end'.\n");
-									}
-								}
-								else
-								{
-									token_free(token);
-									fprintf(stderr,"Error: Function block should start with 'begin'.\n");
-								}
-							}
-							else
-							{
-								token_free(token);
-								fprintf(stderr,"Error: Function return type should be ended with ';'.\n");
-							}
-						}
-						else
-						{
-							token_free(token);
-							fprintf(stderr,"Error: Expected function return type.\n");
-						}
-					}
-					else
-					{
-						token_free(token);
-						fprintf(stderr,"Error: Expected ':'.\n");
-					}
-				}
-				else
-				{
-					fprintf(stderr,"Error: Expected ')' %d.\n",token->type);
-					token_free(token);
-				}
-			}
-			else
-			{
-				fprintf(stderr,"Error: Expected '(' %d.\n",token->type);
-				token_free(token);
-			}
+		/* Function variables */
+		parser_vars();
+		
+		token = token_get(global.file);
+		if(token->type != token_begin)
+		{ /* Function body */
+			token_free(token);
+			fprintf(stderr,"Error: Function block should start with 'begin'.\n");
+			return;
+		}
+		token_free(token);
+		
+		do
+		{
+			parser_body();
+			token = token_get(global.file);
+		} while(token->type != token_end);
+		
+		if(token->type != token_end)
+		{ /* Function code block end */
+			token_free(token);
+			fprintf(stderr,"Error: Function block should ended with 'end;'.\n");
+			return;
+		}
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(token->type == token_semicolon)
+		{
+			token_free(token);
+			parser_function();
 		}
 		else
 		{
 			token_free(token);
-			fprintf(stderr,"Error: Expected ':'.\n");
+			fprintf(stderr,"Error: Expected ';'.\n");
 		}
 	}
 	else
@@ -382,6 +371,7 @@ void parser_body()
 	token_return_token(token);
 }
 
+
 /**
  * Code block containing more code ended with 'end'
  */
@@ -398,6 +388,7 @@ void parser_main()
 	printf("Code block end\n");
 	token_return_token(token);
 }
+
 
 /**
  * Parse one command
@@ -484,6 +475,7 @@ void parser_code()
 	}
 }
 
+
 /**
  * Parse IF
  * 
@@ -536,6 +528,7 @@ void parser_if()
 	printf("endif\n");
 }
 
+
 /**
  * Parse goto statement
  */
@@ -561,6 +554,7 @@ void parser_goto()
 	}
 }
 
+
 /** 
  * Parse label - goto jump target
  */
@@ -584,6 +578,7 @@ void parser_label()
 		token_free(token);
 	}
 }
+
 
 /**
  * while <condition> do <block>
@@ -609,6 +604,7 @@ void parser_while()
 	}
 	printf("endwhile\n");
 }
+
 
 /**
  * Check, if is token variable type
