@@ -1,3 +1,9 @@
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		garbage.c
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>

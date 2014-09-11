@@ -1,3 +1,9 @@
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		parser.h
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #ifndef _PARSER_H_
 #define _PARSER_H_
 

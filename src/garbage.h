@@ -1,10 +1,16 @@
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		garbage.h
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #ifndef _GARBAGE_H_
 #define _GARBAGE_H_
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "list.h"
+
 /*
  *   __      __  _____    _____   _______    ____    _____  
  *   \ \    / / |_   _|  / ____| |__   __|  / __ \  |  __ \ 
@@ -16,6 +22,7 @@
  *            The Cleaner v1.0
  */
 
+
 /*
  * Structure representing one allocated pointer
  */
@@ -24,6 +31,7 @@ struct TAllocItem
 	void* ptr;
 	struct TAllocItem* next;
 };
+
 
 /*
  * Global variable accessable as "global" after including garbage.h
@@ -43,6 +51,7 @@ void global_init();
 void global_free();
 void* _malloc(unsigned long size);
 void* _realloc(void* ptr, unsigned long size);
+
 
 /**
  * Free allocated memory by _malloc
@@ -97,6 +106,5 @@ do {										\
 		_ptr = NULL;							\
 	}									\
 } while(0);
-
 
 #endif

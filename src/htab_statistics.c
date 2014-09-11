@@ -1,23 +1,18 @@
-/*
-* 	File:		htab_statistics.c
-*	Name:		Project 2 for IJC
-*	Author:		Stanislav Nechutny - xnechu01
-* 	Faculty:	Faculty of Information Technology, Brno University of Technology
-*
-* 	Compiled:	gcc version 4.8.2 20131212 (Red Hat 4.8.2-7) (GCC) 
-*
-*
-* 	Repository:	git@nechutny.net:vut.git
-*/
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		htab_statistics.c
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
 
-/*
+/**
  * Print hash table statistics on stdout
  *
- * @param	t		reference on hash table
+ * @param	t	reference on hash table
  */
 void htab_statistics(htab_t *t)
 {

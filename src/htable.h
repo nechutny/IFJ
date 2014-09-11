@@ -1,14 +1,9 @@
-/*
-* 	File:		htable.h
-*	Name:		Project 2 for IJC
-*	Author:		Stanislav Nechutny - xnechu01
-* 	Faculty:	Faculty of Information Technology, Brno University of Technology
-*
-* 	Compiled:	gcc version 4.8.2 20131212 (Red Hat 4.8.2-7) (GCC) 
-*
-*
-* 	Repository:	git@nechutny.net:vut.git
-*/
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		htable.h
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 
 #ifndef _HTABLE_H_
 #define _HTABLE_H_
@@ -30,25 +25,25 @@ typedef struct  htab {
 // Hashing function
 unsigned hash_function(const char *str, unsigned htab_size);
 
-// pro vytvoření a inicializaci tabulky
+// Create and inicialize hash table
 htab_t *htab_init(unsigned size);
 
-//  vyhledávání - viz dále
+// Searching in hash table
 htab_listitem *htab_lookup(htab_t *t, const char *key);
 
-// volání funkce pro každý prvek
+// Call function on each item
 void htab_foreach(htab_t *t,  void (*function)(char key[], unsigned value));
 
-// vyhledání a zrušení zadané položky
+// Find and destroy (item)!
 void htab_remove(htab_t *t, const char *key);
 
-// zrušení všech položek v tabulce
+// Remove all items from hash table
 void htab_clear(htab_t *t);
 
-// zrušení celé tabulky (volá clear)
+// Destroy whole hash table
 void htab_free(htab_t *t);
 
-//  tisk průměrné a min/max. délky seznamů v tabulce - vhodné pro ladění a testování
+//  Print statistics
 void htab_statistics(htab_t *t);
 
 #endif

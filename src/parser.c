@@ -1,3 +1,9 @@
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		parser.c
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include "parser.h"
@@ -8,10 +14,12 @@
 
 static int isVariableType(int type);
 
+
 void parser(FILE* file)
 {
 	parser_file();
 }
+
 
 /**
  * program programName; <vars> <functions> begin <main> end.
@@ -84,6 +92,7 @@ void parser_file()
 	}
 }
 
+
 /**
  * var <var>
  **/
@@ -100,8 +109,8 @@ void parser_vars()
 	{
 		token_return_token(token);
 	}
-	
 }
+
 
 /**
  * ID : TYPE <varv>; <var>
@@ -156,6 +165,7 @@ void parser_var()
 		token_return_token(token);
 	}
 }
+
 
 void parser_function()
 {
@@ -270,6 +280,7 @@ void parser_function()
 	}
 }
 
+
 void parser_args()
 {
 	TToken * token = token_get(global.file);
@@ -319,6 +330,7 @@ void parser_args()
 	}
 }
 
+
 void parser_body()
 {
 	printf("Function body\n");
@@ -342,6 +354,7 @@ void parser_body()
 	token_return_token(token);
 }
 
+
 void parser_main()
 {
 	printf("Code block\n");
@@ -355,6 +368,7 @@ void parser_main()
 	printf("Code block end\n");
 	token_return_token(token);
 }
+
 
 void parser_code()
 {
@@ -386,7 +400,6 @@ void parser_code()
 			fprintf(stderr,"Error: Unkown variable operation %d.\n",token->type);
 			token_free(token);
 		}
-		
 	}
 	else if(token->type == token_if)
 	{ // if
@@ -507,9 +520,8 @@ void parser_code()
 		fprintf(stderr,"Error: Unkown command %d.\n",token->type);
 		token_free(token);
 	}
-
-	
 }
+
 
 static int isVariableType(int type)
 {

@@ -1,24 +1,20 @@
-/*
-* 	File:		htab_lookup.c
-*	Name:		Project 2 for IJC
-*	Author:		Stanislav Nechutny - xnechu01
-* 	Faculty:	Faculty of Information Technology, Brno University of Technology
-*
-* 	Compiled:	gcc version 4.8.2 20131212 (Red Hat 4.8.2-7) (GCC) 
-*
-*
-* 	Repository:	git@nechutny.net:vut.git
-*/
+/**
+ * 	@project	IFJ 2014/2015
+ *	@file		htab_lookup.c
+ *
+ *	@author		Stanislav Nechutny - xnechu01
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "htable.h"
 #include "garbage.h"
 
-/*
+
+/**
  * Helpfull function for creating item in hash table
  *
- * @param	key		string used for key
+ * @param	key	string used for key
  * @return	pointer on structure or NULL if error
  */
 inline htab_listitem* htab_create(const char *key)
@@ -39,11 +35,12 @@ inline htab_listitem* htab_create(const char *key)
 	return item;
 }
 
-/*
+
+/**
  * Find or create new item in hash table
  *
- * @param	t		reference on hash table
- * @param	key		string used as index for item
+ * @param	t	reference on hash table
+ * @param	key	string used as index for item
  * @return	pointer on structure or NULL if error
  */
 htab_listitem* htab_lookup(htab_t *t, const char *key)
