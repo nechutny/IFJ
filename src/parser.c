@@ -214,7 +214,7 @@ void parser_function()
 			token_free(token);
 			return;
 		}
-		token_free(token);
+		token_return_token(token);
 		
 		/* Function arguments */
 		parser_args();
@@ -422,14 +422,9 @@ void parser_code()
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
 				printf("function call\n");
-				token_free(token);
-				token = token_get(global.file);
-				while(token->type != token_parenthesis_right && token->type != token_semicolon)
-				{
-					token_return_token(token);
-					precedence(global.file);
-					token = token_get(global.file);
-				}
+				token_return_token(token);
+				precedence(global.file);
+				
 			}
 			else
 			{
