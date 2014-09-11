@@ -17,7 +17,7 @@ begin
 		funkce2( );
 		desetine := desetine - 15;
 	end;
-	funkce3( cislo);
+	funkce1( 1234,5, cislo);
 end;
 function funkce3( arg1 : integer ) : integer;
 var var1 : integer = 10;
