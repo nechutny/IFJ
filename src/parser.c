@@ -133,7 +133,8 @@ void parser_var()
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
 		token_return_token(token);
-		do {
+		
+		do { /* ID [, ID] */
 			token = token_get(global.file);
 			if(token->type != token_identifier)
 			{
@@ -149,7 +150,7 @@ void parser_var()
 		if(token->type != token_colon)
 		{
 			token_free(token);
-			fprintf(stderr,"Error: Expected ':'.\n");
+			fprintf(stderr,"Error: Expected ':', or ','.\n");
 			return;
 		}
 		token_free(token);

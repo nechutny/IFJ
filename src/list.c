@@ -9,6 +9,11 @@ TList* list_init()
 {
 	TList *list;
 	list = _malloc(sizeof(TList*));
+	if(list == NULL)
+	{
+		fprintf(stderr,"Null pointer.\n");
+		exit(1);
+	}
 	list->first = NULL;
 	list->last = NULL;
 	list->act = NULL;
@@ -19,6 +24,11 @@ void list_insert(TList *list, void *data)
 {
 	TNode *tmp;
 	tmp = _malloc(sizeof(TNode));
+	if(tmp == NULL)
+	{
+		fprintf(stderr,"Null pointer.\n");
+		exit(1);
+	}
 
 	tmp->data = data;
 	tmp->n = NULL;
@@ -36,6 +46,11 @@ void list_insert_next(TList *list, void *data)
 {
 	TNode *tmp;
 	tmp = _malloc(sizeof(TNode));
+	if(tmp == NULL)
+	{
+		fprintf(stderr,"Null pointer.\n");
+		exit(1);
+	}
 
 	tmp->data = data;
 	tmp->p = list->act;
@@ -61,14 +76,21 @@ void list_insert_prev(TList *list, void *data)
 	{
 		TNode *tmp;
 		tmp = _malloc(sizeof(TNode));
+		if(tmp == NULL)
+		{
+			fprintf(stderr,"Null pointer.\n");
+			exit(1);
+		}
 
 		tmp->data = data;
 		tmp->n = list->act;
 
 		if(list->act != NULL)
 		{
-			if( list->act->p != NULL)	list->act->p->n = tmp;
-			else						list->first = tmp;
+			if( list->act->p != NULL)
+				list->act->p->n = tmp;
+			else
+				list->first = tmp;
 
 			tmp->p = list->act->p;
 			list->act->p = tmp;
