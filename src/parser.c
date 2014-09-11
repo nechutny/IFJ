@@ -760,7 +760,7 @@ void parser_switch()
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
-			fprintf(stderr, "Error: Expected ':' %d.",token->type);
+			fprintf(stderr, "Error: Expected ':' %d.\n",token->type);
 			token_free(token);
 			return;
 		}
