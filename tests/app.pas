@@ -20,7 +20,7 @@ end;
 function funkce3(arg1 : integer) : integer;
 begin
 	writeln(arg1);
-	if arg1 = 5 then begin
+	if arg1 := 5 then begin
 		foo := 5;
 		bbb();
 	end;
@@ -28,12 +28,12 @@ begin
 end;
 
 begin
-	cislo = 7;
-	cislo = funkce1(1.25);
-	if cislo == 2
+	cislo := 7;
+	cislo := funkce1(1.25);
+	if cislo = 2
 	then begin
-		cislo = 3;
-		destine = 1.25;
+		cislo := 3;
+		destine := 1.25;
 	end;
 
 	keypressed();
