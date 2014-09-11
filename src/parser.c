@@ -73,7 +73,7 @@ void parser_file()
 	token = token_get(global.file);
 	if(token->type != token_begin)
 	{ /* Main body */
-		fprintf(stderr,"Error: Expected 'begin'.");
+		fprintf(stderr,"Error: Expected 'begin' %d.",token->type);
 		token_free(token);
 		return;
 	}
@@ -185,7 +185,7 @@ void parser_var()
 void parser_function()
 {
 	TToken * token = token_get(global.file);
-	if(token->type != token_function)
+	if(token->type == token_function)
 	{ /* Function keywords? */
 		token_free(token);
 		token = token_get(global.file);
@@ -444,6 +444,7 @@ void parser_code()
 		case token_repeat:
 			/* repeat */
 			token_free(token);
+			parser_repeat();
 			break;
 			
 		case token_for:
@@ -525,7 +526,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
-	printf("endif\n");
+	printf("end if\n");
 }
 
 
@@ -602,7 +603,43 @@ void parser_while()
 		token_return_token(token);
 		parser_code();
 	}
-	printf("endwhile\n");
+	printf("end while\n");
+}
+
+
+/**
+ * repeat <block> until <condition>;
+ */
+void parser_repeat()
+{
+	printf("repeat\n");
+
+	TToken *token = token_get(global.file);
+	if(token->type == token_begin)
+	{ /* Code block */
+		token_free(token);
+		parser_main();
+		token = token_get(global.file);
+	}
+	else
+	{ /* Only one command */
+		token_return_token(token);
+		parser_code();
+	}
+
+	token = token_get(global.file);
+	if(token->type != token_until)
+	{
+		token_free(token);
+		fprintf(stderr,"Error: Expected 'until'.\n");
+		return;
+	}
+	
+	/* Condition */
+	precedence(global.file);
+	
+	
+	printf("end repeat\n");
 }
 
 

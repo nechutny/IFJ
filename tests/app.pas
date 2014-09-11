@@ -23,8 +23,12 @@ begin
 	if arg1 = 5 then begin
 		foo := 5;
 		bbb( );
+		repeat
+			foo := (abc +  5) * foo(a,foo(c));
+		until False;
 	end;
 	return 2;
+	funkce1( );
 end;
 
 begin
