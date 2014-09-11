@@ -2,6 +2,7 @@
 #define GEN_H
 
 #include "list.h"
+#include "expr.h"
 
 /* 3 addres instructions */
 typedef enum {
@@ -35,6 +36,6 @@ typedef struct TIns
 }TIns;
 
 
-TIns *gen_ins(char *rule, TList *list, void *adr1, void *adr2, void *adr3);
+TIns *gen_ins(TRule rule, TList *list, void *adr1, void *adr2, void *adr3);
 
 #endif

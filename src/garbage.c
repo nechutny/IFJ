@@ -52,6 +52,15 @@ void* _malloc(unsigned long size)
 	return global.allocated_last->ptr;
 }
 
+/**
+ * Function doing memory reallocation, removing old pointer and saving pointer
+ * for auto-free.
+ * Usage is same as realloc
+ *
+ *  @param	ptr	Pointer to current allocated memory
+ *  @param	size	Number of bytes to allocate
+ *  @return	pointer to memory, or NULL if fail
+ **/
 void* _realloc(void* ptr, unsigned long size)
 {
 	struct TAllocItem* tmp = global.allocated;
