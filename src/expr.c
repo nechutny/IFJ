@@ -103,6 +103,7 @@ operator_number recon_sign(TToken * token)
 
 		case token_semicolon:
 		case token_then:
+		case token_do:
 			return operator_dolar;
 
 		default:
