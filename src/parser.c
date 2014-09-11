@@ -26,6 +26,7 @@ void parser_file()
 		token = token_get(global.file);
 		if(token->type == token_identifier)
 		{
+			printf("Program name %s\n",token->data->data);
 			token_free(token);
 			token = token_get(global.file);
 			if(token->type == token_semicolon)
@@ -33,24 +34,53 @@ void parser_file()
 				token_free(token);
 				parser_vars();
 				parser_function();
+				token = token_get(global.file);
+				if(token->type == token_begin)
+				{
+					printf("Main body\n");
+					parser_main();
+					token_free(token);
+					token = token_get(global.file);
+					if(token->type == token_end)
+					{
+						token_free(token);
+						token = token_get(global.file);
+						if(token->type == token_dot)
+						{
+							printf("Main body end\n");
+						}
+						else
+						{
+							fprintf(stderr,"Error: Expected '.' after end.");
+						}
+					}
+					else
+					{
+						fprintf(stderr,"Error: Expected 'end.'");
+					}
+				}
+				else
+				{
+					fprintf(stderr,"Error: Expected 'begin'.");
+				}
 			}
 			else
 			{
 				token_free(token);
-				printf("Error: Program name should end with ';'.");
+				fprintf(stderr,"Error: Program name should end with ';'.");
 			}
 			
 		}
 		else
 		{
 			token_free(token);
-			printf("Error: Expected program name.\n");
+			fprintf(stderr,"Error: Expected program name.\n");
 		}
 	}
 	else
 	{
 		token_free(token);
-		printf("Error: Expected 'program'.\n");
+		fprintf(stderr,"Error: Expected 'program'.\n");
 	}
 }
 
@@ -82,6 +112,7 @@ void parser_var()
 	
 	if(token->type == token_identifier)
 	{
+		printf("Variable %s\n",token->data->data);
 		token_free(token);
 		token = token_get(global.file);
 		
@@ -111,13 +142,13 @@ void parser_var()
 			else
 			{
 				token_free(token);
-				printf("Error: Bad variable type.\n");
+				fprintf(stderr,"Error: Bad variable type.\n");
 			}
 		}
 		else
 		{
 			token_free(token);
-			printf("Error: Expected ':'.\n");
+			fprintf(stderr,"Error: Expected ':'.\n");
 		}
 	}
 	else
@@ -164,8 +195,12 @@ void parser_function()
 								if(token->type == token_begin)
 								{
 									token_free(token);
-									parser_body();
-									token = token_get(global.file);
+									do
+									{
+										parser_body();
+										token = token_get(global.file);
+									} while(token->type != token_end);
+									
 									if(token->type == token_end)
 									{
 										token_free(token);
@@ -178,55 +213,55 @@ void parser_function()
 										else
 										{
 											token_free(token);
-											printf("Error: Expected ';'.\n");
+											fprintf(stderr,"Error: Expected ';'.\n");
 										}
 									}
 									else
 									{
 										token_free(token);
-										printf("Error: Function block should ended with 'end'.\n");
+										fprintf(stderr,"Error: Function block should ended with 'end'.\n");
 									}
 								}
 								else
 								{
 									token_free(token);
-									printf("Error: Function block should start with 'begin'.\n");
+									fprintf(stderr,"Error: Function block should start with 'begin'.\n");
 								}
 							}
 							else
 							{
 								token_free(token);
-								printf("Error: Function return type should be ended with ';'.\n");
+								fprintf(stderr,"Error: Function return type should be ended with ';'.\n");
 							}
 						}
 						else
 						{
 							token_free(token);
-							printf("Error: Expected function return type.\n");
+							fprintf(stderr,"Error: Expected function return type.\n");
 						}
 					}
 					else
 					{
 						token_free(token);
-						printf("Error: Expected ':'.\n");
+						fprintf(stderr,"Error: Expected ':'.\n");
 					}
 				}
 				else
 				{
-					printf("Error: Expected ')' %d.\n",token->type);
+					fprintf(stderr,"Error: Expected ')' %d.\n",token->type);
 					token_free(token);
 				}
 			}
 			else
 			{
-				printf("Error: Expected '(' %d.\n",token->type);
+				fprintf(stderr,"Error: Expected '(' %d.\n",token->type);
 				token_free(token);
 			}
 		}
 		else
 		{
 			token_free(token);
-			printf("Error: Expected ':'.\n");
+			fprintf(stderr,"Error: Expected ':'.\n");
 		}
 	}
 	else
@@ -264,13 +299,13 @@ void parser_args()
 			else
 			{
 				token_free(token);
-				printf("Error: Expected function argument type.\n");
+				fprintf(stderr,"Error: Expected function argument type.\n");
 			}
 		}
 		else
 		{
 			token_free(token);
-			printf("Error: Expected identifier.\n");
+			fprintf(stderr,"Error: Expected identifier.\n");
 		}
 	}
 	else if(token->type == token_parenthesis_right)
@@ -279,18 +314,20 @@ void parser_args()
 	}
 	else
 	{
-		printf("Error: Expected identifier %d.\n",token->type);
+		fprintf(stderr,"Error: Expected identifier %d.\n",token->type);
 		token_free(token);
 	}
 }
 
 void parser_body()
 {
+	printf("Function body\n");
 	TToken * token = token_get(global.file);
 	while(token->type != token_end)
 	{
 		if(token->type == token_return)
 		{
+			printf("return\n");
 			token_free(token);
 			precedence(global.file);
 		}
@@ -301,11 +338,13 @@ void parser_body()
 		}
 		token = token_get(global.file);
 	}
+	printf("Function body end\n");
 	token_return_token(token);
 }
 
 void parser_main()
 {
+	printf("Code block\n");
 	TToken * token = token_get(global.file);
 	while(token->type != token_end && token->type != token_return)
 	{
@@ -313,22 +352,26 @@ void parser_main()
 		parser_code();
 		token = token_get(global.file);
 	}
+	printf("Code block end\n");
 	token_return_token(token);
 }
 
 void parser_code()
 {
+	printf("One command: ");
 	TToken * token = token_get(global.file);
 	if(token->type == token_identifier)
 	{
 		token_free(token);
 		token = token_get(global.file);
 		if(token->type == token_assign)
-		{ // asign
+		{ // assign
+			printf("assign\n");
 			precedence(global.file);
 		}
 		else if(token->type == token_parenthesis_left)
 		{ // function call
+			printf("function call\n");
 			token_free(token);
 			token = token_get(global.file);
 			while(token->type != token_parenthesis_right && token->type != token_semicolon)
@@ -340,28 +383,73 @@ void parser_code()
 		}
 		else
 		{
-			printf("Error: Unkown variable operation %d.\n",token->type);
+			fprintf(stderr,"Error: Unkown variable operation %d.\n",token->type);
 			token_free(token);
 		}
 		
 	}
 	else if(token->type == token_if)
 	{ // if
+		printf("If\n");
 		token_free(token);
 		precedence(global.file);
 		token = token_get(global.file);
-		printf("If %d\n",token->type);
+		if(token->type == token_begin)
+		{
+			token_free(token);
+			parser_main();
+			token = token_get(global.file);
+		}
+		else
+		{
+			token_return_token(token);
+			parser_code();
+		}
+		
+		token = token_get(global.file);
+		if(token->type == token_else)
+		{
+			printf("else\n");
+			token = token_get(global.file);
+			if(token->type == token_begin)
+			{
+				token_free(token);
+				parser_main();
+				token = token_get(global.file);
+			}
+			else
+			{
+				token_return_token(token);
+				parser_code();
+			}
+		}
+		else
+		{
+			token_return_token(token);
+		}
+		printf("endif\n");
 	}
 	else if(token->type == token_while)
 	{// while
+		printf("while\n");
 		token_free(token);
 		precedence(global.file);
 		token = token_get(global.file);
-		printf("While %d\n",token->type);
+		if(token->type == token_begin)
+		{
+			token_free(token);
+			parser_main();
+			token = token_get(global.file);
+		}
+		else
+		{
+			token_return_token(token);
+			parser_code();
+		}
+		printf("endwhile\n");
 	}
 	else if(token->type == token_repeat)
 	{ // repeat
-		
 		token_free(token);
 	}
 	else if(token->type == token_for)
@@ -378,13 +466,14 @@ void parser_code()
 			token = token_get(global.file);
 			if(token->type != token_semicolon)
 			{
-				printf("Error: Label name should end with ';'.");
+				fprintf(stderr,"Error: Label name should end with ';'.");
 			}
+			printf("label\n");
 			token_free(token);
 		}
 		else
 		{
-			printf("Error: Label has bad name.");
+			fprintf(stderr,"Error: Label has bad name.");
 			token_free(token);
 		}
 	}
@@ -398,19 +487,24 @@ void parser_code()
 			token = token_get(global.file);
 			if(token->type != token_semicolon)
 			{
-				printf("Error: Goto target should end with ';'.");
+				fprintf(stderr,"Error: Goto target should end with ';'.");
 			}
+			printf("goto\n");
 			token_free(token);
 		}
 		else
 		{
-			printf("Error: Goto target has bad value.");
+			fprintf(stderr,"Error: Goto target has bad value.");
 			token_free(token);
 		}
 	}
+	else if(token->type == token_semicolon)
+	{ // empty command
+		
+	}
 	else
 	{
-		printf("Error: Unkown command %d.\n",token->type);
+		fprintf(stderr,"Error: Unkown command %d.\n",token->type);
 		token_free(token);
 	}
 
