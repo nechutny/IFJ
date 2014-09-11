@@ -751,16 +751,17 @@ void parser_switch()
 		return;
 	}
 	token_free(token);
-
+	int foo = 0;
 	token = token_get(global.file);
 	while(token->type != token_end && token->type != token_else)
 	{ /* Cases */
-		printf("case\n");
-		precedence(global.file);
+		printf("case %d\n",token->type);
+		token_return_token(token);
+		foo = precedence(global.file);
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
-			fprintf(stderr, "Error: Expected ':' %d.\n",token->type);
+			fprintf(stderr, "Error: Expected ':' %d %d.\n",token->type,foo);
 			token_free(token);
 			return;
 		}
