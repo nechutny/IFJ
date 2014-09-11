@@ -18,7 +18,7 @@ build/%.c.o: src/%.c
 
 # Clean compiled files
 clean:
-	rm -rf build/* ifj IFJ.zip tests/*.out.run
+	rm -rf build/* ifj IFJ.zip tests/*.out.run doc/dokumentace.pdf doc/dokumentace.aux doc/dokumentace.log
 
 # Commit changes
 commit: clean
@@ -36,4 +36,7 @@ tests: ifj $(TESTFILES)
 
 tests/%.out: tests/%.pas
 	-$(shell ./ifj $< > $@.run; diff $@.run $@.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@.run; else echo "# ERROR ... $<"; fi)
-	
+
+# Documentation
+documentation: doc/dokumentace.tex
+	pdflatex  -output-directory=./doc/ doc/dokumentace.tex
