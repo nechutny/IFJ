@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include "garbage.h"
+#include "list.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -76,6 +77,8 @@ void global_init()
 	global.allocated = malloc(sizeof(struct TAllocItem));
 	global.allocated_last = global.allocated;
 	global.allocated->ptr = NULL;
+
+	global.ins_list = list_init();
 
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);

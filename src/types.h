@@ -3,6 +3,22 @@
 
 #include "string.h"
 
+typedef enum {
+	var_bool,
+	var_int,
+	var_double,
+	var_string
+}TVarType;
+
+typedef struct _TVar {
+	TVarType	type;
+	union {
+		int i;
+		double d;
+		TString *s;
+	}data;
+}TVar;
+
 /* types of tokes */
 typedef enum {
 	token_invalid,		//0
