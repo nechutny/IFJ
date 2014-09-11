@@ -195,14 +195,14 @@ int check_rule(TStack * stack, TRule rule)
 	    }
 	    else
 	    {
-	    printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+	    fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
 	    return 1;
 	    }
 
 	}
 	else
 	{
-	printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+	fprintf(stderr,"ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
 	return 1;
 	}
 }
@@ -228,7 +228,7 @@ int precedence(FILE *filename)
 	//printf("dolar: %d\n",operator_dolar );
 	if (token->type == token_semicolon)
 	{
-		printf("ERROR: Wrong syntax\n");
+		fprintf(stderr,"ERROR: Wrong syntax\n");
 		return 1;
 	}
 
@@ -251,10 +251,18 @@ int precedence(FILE *filename)
 			}
 
 		}
+		//if (token->type == token_colon)
+		//	fprintf(stderr, "there\n" );
 		//fprintf(stderr, "asdasda\n");
 		//fprintf(stderr,"stack_top: %d\n", (int)stack_top(stack));
 		//fprintf(stderr,"token_type: %d\n", token->type);
 		//fprintf(stderr,"stack_count: %d\n", stack_count(stack));
+
+		if (((stack_count(stack)) == 2) && ((int)stack_top(stack) == operator_non_term) && (token->type == token_colon) )
+		{
+			break;
+		}
+		
 		switch(get_sign(token,stack)){
 			case sign_equal:
 				stack_push(stack,(void *)recon_sign(token));
@@ -291,7 +299,7 @@ int precedence(FILE *filename)
 	       				gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
 					}
 					else{
-						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+						fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
 					}
 				}
 				//This condition handle rule E -> (E)
@@ -314,19 +322,19 @@ int precedence(FILE *filename)
 							}
 							else
 							{
-								printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+								fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
 								return 1;
 							}
 						}
 						else
 						{
-							printf("ERROR: Excpects: ( but it gets: %d \n",(int)stack_top(stack));
+							fprintf(stderr,"ERROR: Excpects: ( but it gets: %d \n",(int)stack_top(stack));
 							return 1;
 						}
 					}
 					else
 					{
-						printf("ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+						fprintf(stderr,"ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
 						return 1;
 					}
 				}
@@ -456,19 +464,19 @@ int precedence(FILE *filename)
 							break;
 
 	          			default:
-	          				printf("ERROR:: Excpects: operator but it gets: %d \n",(int)stack_top(stack));
+	          				fprintf(stderr,"ERROR:: Excpects: operator but it gets: %d \n",(int)stack_top(stack));
 	          				return 1;
 					}
 				}
 				else
 				{
-					printf("ERROR Wrong syntax\n");
+					fprintf(stderr,"ERROR Wrong syntax\n");
 					return 1;
 				}
 				break;
 
 			case sign_fault:
-				printf("ERROR: Got error sign from precedence table\n");
+				fprintf(stderr,"ERROR: Got error sign from precedence table\n");
 				return 1;
 		}
 		if ((token->type == token_semicolon) && (stack_count(stack) == 2) && ((int)stack_top(stack) == operator_non_term))
@@ -481,6 +489,7 @@ int precedence(FILE *filename)
 	}while( !((stack_count(stack) == 1) && ((operator_number)stack_top(stack) == operator_dolar )) );
 
 	printf("Precedence syntax analysis OK! \n");
+	//fprintf(stderr, " token_type END: %d\n",token->type );
 	if (token->type == token_colon)
 	{
 		token_return_token(token);
