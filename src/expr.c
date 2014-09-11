@@ -109,6 +109,8 @@ operator_number recon_sign(TToken * token)
 		case token_then:
 		case token_do:
 		case token_colon:
+		case token_of:
+		case token_to:
 			return operator_dolar;
 
 		default:
@@ -258,10 +260,6 @@ int precedence(FILE *filename)
 		//fprintf(stderr,"token_type: %d\n", token->type);
 		//fprintf(stderr,"stack_count: %d\n", stack_count(stack));
 
-		if (((stack_count(stack)) == 2) && ((int)stack_top(stack) == operator_non_term) && (token->type == token_colon) )
-		{
-			break;
-		}
 		
 		switch(get_sign(token,stack)){
 			case sign_equal:
@@ -306,6 +304,7 @@ int precedence(FILE *filename)
 				else if((int)stack_top(stack) == operator_right_parenthesis)
 				{
 					stack_pop(stack);
+					//fprintf(stderr, " stack %d\n",(int)stack_top(stack) );
 					if ((int)stack_top(stack) == operator_non_term)
 					{
 						stack_pop(stack);
@@ -332,9 +331,25 @@ int precedence(FILE *filename)
 							return 1;
 						}
 					}
+					else if ((int)stack_top(stack) == operator_left_parenthesis)
+					{
+						stack_pop(stack);
+						if((int)stack_top(stack) == sign_less)
+						{
+							stack_pop(stack);
+							stack_push(stack,(void *)operator_non_term);
+							printf("Precedence syntax used rule 2: E -> (E)\n");
+       						gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
+						}
+						else
+						{
+							fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+							return 1;
+						}
+					}
 					else
 					{
-						fprintf(stderr,"ERROR: Excpects: E but it gets: %d \n",(int)stack_top(stack));
+						fprintf(stderr,"ERROR: Excpects: E or ( but it gets: %d \n",(int)stack_top(stack));
 						return 1;
 					}
 				}
@@ -479,20 +494,24 @@ int precedence(FILE *filename)
 				fprintf(stderr,"ERROR: Got error sign from precedence table\n");
 				return 1;
 		}
-		if ((token->type == token_semicolon) && (stack_count(stack) == 2) && ((int)stack_top(stack) == operator_non_term))
-			stack_pop(stack);
+		/*if ( (stack_count(stack) == 2) && ((int)stack_top(stack) == operator_non_term) && ((token->type == token_colon ) || (token->type == token_do) ||\
+	 //(token->type == token_then) || (token->type == token_of)))
+			//stack_pop(stack);*/
 
 		//printf("------stack_top: %d\n", (int)stack_top(stack));
 		//printf("------token_type: %d\n", token->type);
 		//printf("------stack_count: %d\n", stack_count(stack));
 
-	}while( !((stack_count(stack) == 1) && ((operator_number)stack_top(stack) == operator_dolar )) );
+	}while( !((stack_count(stack) == 2) && ((int)stack_top(stack) == operator_non_term ) && ((recon_sign(token)) == operator_dolar )) );
 
 	printf("Precedence syntax analysis OK! \n");
 	//fprintf(stderr, " token_type END: %d\n",token->type );
-	if (token->type == token_colon)
+	if ((token->type == token_colon ) || (token->type == token_do) ||\
+	 (token->type == token_then) || (token->type == token_of) || (token->type == token_to))
 	{
+		//fprintf(stderr, "Vracim %d\n",token->type );
 		token_return_token(token);
+		//fprintf(stderr,"asdasd\n");
 	}
 	else
 	{
