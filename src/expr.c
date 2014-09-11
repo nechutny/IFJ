@@ -160,7 +160,7 @@ precedence_number get_sign(TToken * token, TStack * stack)
 }
 
 
-int check_rule(TStack * stack, char * rule)
+int check_rule(TStack * stack, TRule rule)
 {
 	stack_pop(stack);
 	//printf("stack_top--: %d\n", (int)stack_top(stack));
@@ -172,7 +172,7 @@ int check_rule(TStack * stack, char * rule)
 	    {
 	        stack_pop(stack);
 	      	stack_push(stack,(void *)operator_non_term);
-	       	printf("Precedence syntax used rule %s\n",rule);
+	       	printf("Precedence syntax used rule %d\n",rule);
 	       	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
 	       	return 0;
 	    }
@@ -252,7 +252,7 @@ int precedence(FILE *filename)
 						stack_pop(stack);
 						stack_push(stack,(void *)operator_non_term);
 						printf("Precedence syntax used rule 1: E -> ID\n");
-	       				gen_ins("1: E -> ID", global.ins_list, NULL, NULL, NULL);
+	       				gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
 					}
 					else{
 						printf("ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
@@ -274,7 +274,7 @@ int precedence(FILE *filename)
 								stack_pop(stack);
 								stack_push(stack,(void *)operator_non_term);
 								printf("Precedence syntax used rule 2: E -> (E)\n");
-	       						gen_ins("2: E -> (E)", global.ins_list, NULL, NULL, NULL);
+	       						gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
 							}
 							else
 							{
@@ -301,112 +301,112 @@ int precedence(FILE *filename)
 					stack_pop(stack);
 					switch((int)stack_top(stack)){
 						case operator_not:
-							if ((check_rule(stack,"3: E -> E not E")) == 1 )
+							if ((check_rule(stack,rule_3)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 			  			case operator_mul:
-			  				if ((check_rule(stack,"4: E -> E * E")) == 1 )
+			  				if ((check_rule(stack,rule_4)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_div:
-	          				if ((check_rule(stack,"5: E -> E / E")) == 1 )
+	          				if ((check_rule(stack,rule_5)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_sign_div:
-	          				if ((check_rule(stack,"6: E -> E div E")) == 1 )
+	          				if ((check_rule(stack,rule_6)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	         			case operator_mod:
-	         				if ((check_rule(stack,"7: E -> E mod E")) == 1 )
+	         				if ((check_rule(stack,rule_7)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_and:
-	          				if ((check_rule(stack,"8: E -> E and E")) == 1 )
+	          				if ((check_rule(stack,rule_8)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_plus:
-	          				if ((check_rule(stack,"9: E -> E + E")) == 1 )
+	          				if ((check_rule(stack,rule_9)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_minus:
-	          				if ((check_rule(stack,"10: E -> E - E")) == 1 )
+	          				if ((check_rule(stack,rule_10)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	             		case operator_or:
-	             			if ((check_rule(stack,"11: E -> E or E")) == 1 )
+	             			if ((check_rule(stack,rule_11)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_equal:
-	          				if ((check_rule(stack,"12: E -> E = E")) == 1 )
+	          				if ((check_rule(stack,rule_12)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_diff:
-	          				if ((check_rule(stack,"13: E -> E <> E")) == 1 )
+	          				if ((check_rule(stack,rule_13)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_less:
-	          				if ((check_rule(stack,"14: E -> E < E")) == 1 )
+	          				if ((check_rule(stack,rule_14)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_less_equal:
-	          				if ((check_rule(stack,"15: E -> E <= E")) == 1 )
+	          				if ((check_rule(stack,rule_15)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	                    case operator_greater:
-	                    	if ((check_rule(stack,"16: E -> E > E")) == 1 )
+	                    	if ((check_rule(stack,rule_16)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	                    case operator_greater_equal:
-	                    	if ((check_rule(stack,"17: E -> E >= E")) == 1 )
+	                    	if ((check_rule(stack,rule_17)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_in:
-	          				if ((check_rule(stack,"18: E -> E in E")) == 1 )
+	          				if ((check_rule(stack,rule_18)) == 1 )
 							{
 								return 1;
 							}
