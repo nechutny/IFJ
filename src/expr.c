@@ -233,28 +233,27 @@ int precedence(FILE *filename)
 
 	do
 	{
-		/*if (token->type == token_identifier){
+		// condition to erase function name to work with table
+		if (token->type == token_identifier)
+		{
 			TToken * pom;
 			pom = token_init();
 			pom = token_get(filename);
-
 			if (pom->type == token_parenthesis_left)
 			{
 				token_return_token(pom);
-				printf("func call\n");
-				if ((precedence(filename)) == 1 )
-				{
-					return 1;
-				}
+				token_free(token);
+				token = token_get(filename);
 			}
 			else{
 				token_return_token(pom);
 			}
-		}*/
 
-		//printf("stack_top: %d\n", (int)stack_top(stack));
-		//printf("token_type: %d\n", token->type);
-		//printf("stack_count: %d\n", stack_count(stack));
+		}
+		//fprintf(stderr, "asdasda\n");
+		//fprintf(stderr,"stack_top: %d\n", (int)stack_top(stack));
+		//fprintf(stderr,"token_type: %d\n", token->type);
+		//fprintf(stderr,"stack_count: %d\n", stack_count(stack));
 		switch(get_sign(token,stack)){
 			case sign_equal:
 				stack_push(stack,(void *)recon_sign(token));
