@@ -44,7 +44,80 @@ void token_free( TToken * token ) {
 
 //set correct type of token (is it keyword or indentifier?)
 void set_identifier(TToken *token){
- 	char * keywords[]={"var","in","do","repeat","until","label","goto","case",
+ 	if (strcmp("var",token->data->data)==0)
+ 		token->type = token_var;
+ 	else if (strcmp("in",token->data->data)==0)
+ 		token->type = token_in;
+ 	else if (strcmp("do",token->data->data)==0)
+ 		token->type = token_do;
+ 	else if (strcmp("repeat",token->data->data)==0)
+ 		token->type = token_repeat;
+ 	else if (strcmp("until",token->data->data)==0)
+ 		token->type = token_until;
+ 	else if (strcmp("label",token->data->data)==0)
+ 		token->type = token_label;
+ 	else if (strcmp("goto",token->data->data)==0)
+ 		token->type = token_goto;
+ 	else if (strcmp("case",token->data->data)==0)
+ 		token->type = token_case;
+ 	else if (strcmp("of",token->data->data)==0)
+ 		token->type = token_of;
+ 	else if (strcmp("to",token->data->data)==0)
+ 		token->type = token_to;
+ 	else if (strcmp("program",token->data->data)==0)
+ 		token->type = token_program;
+ 	else if (strcmp("ID",token->data->data)==0)
+ 		token->type = token_id;
+ 	else if (strcmp("mod",token->data->data)==0)
+ 		token->type = token_mod;
+ 	else if (strcmp("div",token->data->data)==0)
+ 		token->type = token_div;
+ 	else if (strcmp("not",token->data->data)==0)
+ 		token->type = token_not;
+ 	else if (strcmp("and",token->data->data)==0)
+ 		token->type = token_and;
+ 	else if (strcmp("or",token->data->data)==0)
+ 		token->type = token_or;
+ 	else if (strcmp("begin",token->data->data)==0)
+ 		token->type = token_begin;
+ 	else if (strcmp("end",token->data->data)==0)
+ 		token->type = token_end;
+ 	else if (strcmp("while",token->data->data)==0)
+ 		token->type = token_while;
+ 	else if (strcmp("for",token->data->data)==0)
+ 		token->type = token_for;
+ 	else if (strcmp("end",token->data->data)==0)
+ 		token->type = token_end;
+ 	else if (strcmp("if",token->data->data)==0)
+ 		token->type = token_if;
+ 	else if (strcmp("then",token->data->data)==0)
+ 		token->type = token_then;
+ 	else if (strcmp("else",token->data->data)==0)
+ 		token->type = token_else;
+ 	else if (strcmp("procedure",token->data->data)==0)
+ 		token->type = token_procedure;
+ 	else if (strcmp("function",token->data->data)==0)
+ 		token->type = token_function;
+ 	else if (strcmp("return",token->data->data)==0)
+ 		token->type = token_return;
+ 	else if (strcmp("true",token->data->data)==0)
+ 		token->type = token_true;
+ 	else if (strcmp("false",token->data->data)==0)
+ 		token->type = token_false;
+ 	else if (strcmp("null",token->data->data)==0)
+ 		token->type = token_null;
+ 	else if (strcmp("integer",token->data->data)==0)
+ 		token->type = token_integer;
+ 	else if (strcmp("real",token->data->data)==0)
+ 		token->type = token_real;
+ 	else if (strcmp("char",token->data->data)==0)
+ 		token->type = token_char;
+ 	else if (strcmp("boolean",token->data->data)==0)
+ 		token->type = token_boolean;
+ 	else
+ 		token->type = token_identifier;
+
+ 	/*char * keywords[]={"var","in","do","repeat","until","label","goto","case",
  						"of","to","program","ID","mod","div","not","and","or",
  						"begin","end","while","for","if","then","else",
  						"porcedure","function","return","true","false","null",
@@ -70,7 +143,7 @@ void set_identifier(TToken *token){
  		{
  			token->type = tokens[i];
  		}
- 	}
+ 	}*/
 }
 
 //return next token from file
