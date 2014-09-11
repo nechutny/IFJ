@@ -424,13 +424,6 @@ void parser_code()
 				printf("function call\n");
 				token_return_token(token);
 				precedence(global.file);
-				token = token_get(global.file);
-				if(token->type != token_parenthesis_right)
-				{
-					fprintf(stderr,"Error: Expected ')' %d.\n",token->type);
-					token_free(token);
-					return;
-				}
 			}
 			else
 			{
