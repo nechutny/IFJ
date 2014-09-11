@@ -482,9 +482,15 @@ int precedence(FILE *filename)
 
 	printf("Precedence syntax analysis OK! \n");
 	if (token->type == token_colon)
+	{
 		token_return_token(token);
+	}
+	else
+	{
+		token_free(token);
+	}
 
-	token_free(token);
+	//token_free(token);
 	
 	return 0;
 
