@@ -132,44 +132,52 @@ void parser_var()
 	
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
-		printf("Variable %s\n",token->data->data);
-		token_free(token);
-		token = token_get(global.file);
-		
-		if(token->type == token_colon)
+		token_return_token(token);
+		do {
+			token = token_get(global.file);
+			if(token->type != token_identifier)
+			{
+				token_free(token);
+				fprintf(stderr,"Error: Expected variable name.\n");
+			}
+			printf("Variable %s\n",token->data->data);
+			token_free(token);
+
+			token = token_get(global.file);
+		} while(token->type == token_comma);
+
+		if(token->type != token_colon)
 		{
+			token_free(token);
+			fprintf(stderr,"Error: Expected ':'.\n");
+			return;
+		}
+		token_free(token);
+		
+		token = token_get(global.file);
+		if(isVariableType(token->type) )
+		{ /* var type */
 			token_free(token);
 			token = token_get(global.file);
 
-			if(isVariableType(token->type) )
-			{ /* var type */
+			if(token->type == token_equal)
+			{ /* Inicialize value */
 				token_free(token);
-				token = token_get(global.file);
-
-				if(token->type == token_equal)
-				{ /* Inicialize value */
-					token_free(token);
-					precedence(global.file);
-					
-				}
-				else if(token->type == token_semicolon)
-				{ /* Unicialized */
-					token_free(token);
-				}
-
-				/* Check for more variables */
-				parser_var();
+				precedence(global.file);
+				
 			}
-			else
-			{
+			else if(token->type == token_semicolon)
+			{ /* Unicialized */
 				token_free(token);
-				fprintf(stderr,"Error: Bad variable type.\n");
 			}
+
+			/* Check for more variables */
+			parser_var();
 		}
 		else
 		{
 			token_free(token);
-			fprintf(stderr,"Error: Expected ':'.\n");
+			fprintf(stderr,"Error: Bad variable type.\n");
 		}
 	}
 	else
