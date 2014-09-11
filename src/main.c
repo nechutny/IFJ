@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 	if (global.file==NULL)
 		return 0;
 		
-	parser(global.file);
+	parser();
 	
 	/*precedence(global.file);
 	while(global.ins_list->act != NULL){

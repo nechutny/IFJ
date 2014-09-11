@@ -14,20 +14,28 @@
 
 static int isVariableType(int type);
 
-
-void parser(FILE* file)
+/**
+ * Main function for starting parser.
+ * Depend on global variable 'global' with opened file.
+ */
+void parser()
 {
 	parser_file();
 }
 
 
 /**
- * program programName; <vars> <functions> begin <main> end.
+ * program programName;
+ * <vars>
+ * <functions>
+ * begin
+ * 	<main>
+ * end.
  **/
 void parser_file()
 {
 	TToken * token = token_get(global.file);
-	
+	/* Program name */
 	if(token->type == token_program)
 	{
 		token_free(token);
@@ -40,11 +48,16 @@ void parser_file()
 			if(token->type == token_semicolon)
 			{
 				token_free(token);
+				
+				/* Global variables */
 				parser_vars();
+				
+				/* Functions */
 				parser_function();
+				
 				token = token_get(global.file);
 				if(token->type == token_begin)
-				{
+				{ /* Main body */
 					printf("Main body\n");
 					parser_main();
 					token_free(token);
@@ -101,7 +114,7 @@ void parser_vars()
 	TToken * token = token_get(global.file);
 	
 	if(token->type == token_var)
-	{
+	{ /* Found variable delcaration(s) */
 		token_free(token);
 		parser_var();
 	}
@@ -113,14 +126,15 @@ void parser_vars()
 
 
 /**
- * ID : TYPE <varv>; <var>
+ * ID [, ID] : TYPE <varv>;
+ * <var>
  **/
 void parser_var()
 {
 	TToken * token = token_get(global.file);
 	
 	if(token->type == token_identifier)
-	{
+	{ /* Variable identifier */
 		printf("Variable %s\n",token->data->data);
 		token_free(token);
 		token = token_get(global.file);
@@ -131,21 +145,22 @@ void parser_var()
 			token = token_get(global.file);
 
 			if(isVariableType(token->type) )
-			{
+			{ /* var type */
 				token_free(token);
 				token = token_get(global.file);
 
 				if(token->type == token_equal)
-				{
+				{ /* Inicialize value */
 					token_free(token);
 					precedence(global.file);
 					
 				}
 				else if(token->type == token_semicolon)
-				{
+				{ /* Unicialized */
 					token_free(token);
 				}
 
+				/* Check for more variables */
 				parser_var();
 			}
 			else
@@ -161,27 +176,30 @@ void parser_var()
 		}
 	}
 	else
-	{
+	{ /* No variable definition, so return token and exit */
 		token_return_token(token);
 	}
 }
 
-
+/**
+ * Parse function declaration
+ */
 void parser_function()
 {
 	TToken * token = token_get(global.file);
 	if(token->type == token_function)
-	{
+	{ /* Function keywords? */
 		token_free(token);
 		token = token_get(global.file);
 		if(token->type == token_identifier)
-		{
+		{ /* Identifier */
 			printf("function %s:\n",token->data->data);
 			token_free(token);
 			token = token_get(global.file);
 			if(token->type == token_parenthesis_left)
 			{
 				token_free(token);
+				/* Function arguments */
 				parser_args();
 				
 				token = token_get(global.file);
@@ -194,16 +212,19 @@ void parser_function()
 						token_free(token);
 						token = token_get(global.file);
 						if(isVariableType(token->type))
-						{
+						{ /* Return type */
 							token_free(token);
 							token = token_get(global.file);
 							if(token->type == token_semicolon)
 							{
 								token_free(token);
+
+								/* Function variables */
 								parser_vars();
+								
 								token = token_get(global.file);
 								if(token->type == token_begin)
-								{
+								{ /* Function body */
 									token_free(token);
 									do
 									{
@@ -212,7 +233,7 @@ void parser_function()
 									} while(token->type != token_end);
 									
 									if(token->type == token_end)
-									{
+									{ /* Function code block end */
 										token_free(token);
 										token = token_get(global.file);
 										if(token->type == token_semicolon)
@@ -281,12 +302,16 @@ void parser_function()
 }
 
 
+/**
+ * Parse function arguments
+ * ID : type [, args]
+ */
 void parser_args()
 {
 	TToken * token = token_get(global.file);
 
 	if(token->type == token_identifier)
-	{
+	{ /* ID */
 		token_free(token);
 		token = token_get(global.file);
 		if(token->type == token_colon)
@@ -294,16 +319,16 @@ void parser_args()
 			token_free(token);
 			token = token_get(global.file);
 			if(isVariableType(token->type))
-			{
+			{ /* Datetype */
 				token_free(token);
 				token = token_get(global.file);
 				if(token->type == token_comma)
-				{
+				{ /* Comma, so check for more arguments? */
 					token_free(token);
 					parser_args();
 				}
 				else
-				{
+				{ /* No more arguments */
 					token_return_token(token);
 				}
 			}
@@ -320,7 +345,7 @@ void parser_args()
 		}
 	}
 	else if(token->type == token_parenthesis_right)
-	{
+	{ /* Got ')' so function haven't any argument */
 		token_return_token(token);
 	}
 	else
@@ -331,14 +356,17 @@ void parser_args()
 }
 
 
+/**
+ * Parse function body containing code
+ */
 void parser_body()
 {
 	printf("Function body\n");
 	TToken * token = token_get(global.file);
 	while(token->type != token_end)
-	{
+	{ /* Parse content until we get end; */
 		if(token->type == token_return)
-		{
+		{ /* 'return' expresion is added to parse_main because of functions */
 			printf("return\n");
 			token_free(token);
 			precedence(global.file);
@@ -354,7 +382,9 @@ void parser_body()
 	token_return_token(token);
 }
 
-
+/**
+ * Code block containing more code ended with 'end'
+ */
 void parser_main()
 {
 	printf("Code block\n");
@@ -369,160 +399,223 @@ void parser_main()
 	token_return_token(token);
 }
 
-
+/**
+ * Parse one command
+ */
 void parser_code()
 {
 	printf("One command: ");
+	
 	TToken * token = token_get(global.file);
-	if(token->type == token_identifier)
+	
+	switch(token->type)
 	{
-		token_free(token);
-		token = token_get(global.file);
-		if(token->type == token_assign)
-		{ // assign
-			printf("assign\n");
-			precedence(global.file);
-		}
-		else if(token->type == token_parenthesis_left)
-		{ // function call
-			printf("function call\n");
+		case token_identifier:
+			/* assign or function call */
 			token_free(token);
 			token = token_get(global.file);
-			while(token->type != token_parenthesis_right && token->type != token_semicolon)
-			{
-				token_return_token(token);
+			if(token->type == token_assign)
+			{ /* assign */
+				printf("assign\n");
 				precedence(global.file);
-				token = token_get(global.file);
 			}
-		}
-		else
-		{
-			fprintf(stderr,"Error: Unkown variable operation %d.\n",token->type);
-			token_free(token);
-		}
-	}
-	else if(token->type == token_if)
-	{ // if
-		printf("If\n");
-		token_free(token);
-		precedence(global.file);
-		token = token_get(global.file);
-		if(token->type == token_begin)
-		{
-			token_free(token);
-			parser_main();
-			token = token_get(global.file);
-		}
-		else
-		{
-			token_return_token(token);
-			parser_code();
-		}
-		
-		token = token_get(global.file);
-		if(token->type == token_else)
-		{
-			printf("else\n");
-			token = token_get(global.file);
-			if(token->type == token_begin)
-			{
+			else if(token->type == token_parenthesis_left)
+			{ /* function call */
+				printf("function call\n");
 				token_free(token);
-				parser_main();
 				token = token_get(global.file);
+				while(token->type != token_parenthesis_right && token->type != token_semicolon)
+				{
+					token_return_token(token);
+					precedence(global.file);
+					token = token_get(global.file);
+				}
 			}
 			else
 			{
-				token_return_token(token);
-				parser_code();
+				fprintf(stderr,"Error: Unkown variable operation %d.\n",token->type);
+				token_free(token);
 			}
-		}
-		else
-		{
-			token_return_token(token);
-		}
-		printf("endif\n");
+			break;
+			
+		case token_if:
+			/* if */
+			token_free(token);
+			parser_if();
+			break;
+			
+		case token_while:
+			/* while */
+			token_free(token);
+			parser_while();
+			break;
+			
+		case token_repeat:
+			/* repeat */
+			token_free(token);
+			break;
+			
+		case token_for:
+			/* for */
+			token_free(token);
+			break;
+			
+		case token_label:
+			/* label */
+			token_free(token);
+			parser_label();
+			break;
+			
+		case token_goto:
+			/* goto */
+			token_free(token);
+			parser_goto();
+			break;
+			
+		case token_semicolon:
+			/* empty command */
+			break;
+			
+		default:
+			/* Unkown command */
+			fprintf(stderr,"Error: Unkown command %d.\n",token->type);
+			token_free(token);
+			break;
 	}
-	else if(token->type == token_while)
-	{// while
-		printf("while\n");
+}
+
+/**
+ * Parse IF
+ * 
+ * if <expr> then <block> <else>
+ *
+ * <block> can be one command or more in begin end
+ * else is optionable: else <block>
+ */
+void parser_if()
+{
+	printf("If\n");
+	
+	/* Expresion */
+	precedence(global.file);
+	
+	TToken * token = token_get(global.file);
+	if(token->type == token_begin)
+	{ /* Code block */
 		token_free(token);
-		precedence(global.file);
+		parser_main();
+		token = token_get(global.file);
+	}
+	else
+	{ /* Only one command without begin/end */
+		token_return_token(token);
+		parser_code();
+	}
+	
+	token = token_get(global.file);
+	if(token->type == token_else)
+	{ /* Else? */
+		printf("else\n");
 		token = token_get(global.file);
 		if(token->type == token_begin)
-		{
+		{ /* else block */
 			token_free(token);
 			parser_main();
 			token = token_get(global.file);
 		}
 		else
-		{
+		{ /* only one command */
 			token_return_token(token);
 			parser_code();
 		}
-		printf("endwhile\n");
-	}
-	else if(token->type == token_repeat)
-	{ // repeat
-		token_free(token);
-	}
-	else if(token->type == token_for)
-	{ // for
-		token_free(token);
-	}
-	else if(token->type == token_label)
-	{ // label
-		token_free(token);
-		token = token_get(global.file);
-		if(token->type == token_identifier)
-		{
-			token_free(token);
-			token = token_get(global.file);
-			if(token->type != token_semicolon)
-			{
-				fprintf(stderr,"Error: Label name should end with ';'.");
-			}
-			printf("label\n");
-			token_free(token);
-		}
-		else
-		{
-			fprintf(stderr,"Error: Label has bad name.");
-			token_free(token);
-		}
-	}
-	else if(token->type == token_goto)
-	{ // goto
-		token_free(token);
-		token = token_get(global.file);
-		if(token->type == token_identifier)
-		{
-			token_free(token);
-			token = token_get(global.file);
-			if(token->type != token_semicolon)
-			{
-				fprintf(stderr,"Error: Goto target should end with ';'.");
-			}
-			printf("goto\n");
-			token_free(token);
-		}
-		else
-		{
-			fprintf(stderr,"Error: Goto target has bad value.");
-			token_free(token);
-		}
-	}
-	else if(token->type == token_semicolon)
-	{ // empty command
-		
 	}
 	else
 	{
-		fprintf(stderr,"Error: Unkown command %d.\n",token->type);
+		token_return_token(token);
+	}
+	printf("endif\n");
+}
+
+/**
+ * Parse goto statement
+ */
+void parser_goto()
+{
+	precedence(global.file);
+	TToken *token = token_get(global.file);
+	if(token->type == token_identifier)
+	{ /* Identifier ? */
+		token_free(token);
+		token = token_get(global.file);
+		if(token->type != token_semicolon)
+		{ /* End with ';' ? */
+			fprintf(stderr,"Error: Goto target should end with ';'.");
+		}
+		printf("goto\n");
+		token_free(token);
+	}
+	else
+	{
+		fprintf(stderr,"Error: Goto target has bad value.");
 		token_free(token);
 	}
 }
 
+/** 
+ * Parse label - goto jump target
+ */
+void parser_label()
+{
+	TToken *token = token_get(global.file);
+	if(token->type == token_identifier)
+	{
+		token_free(token);
+		token = token_get(global.file);
+		if(token->type != token_semicolon)
+		{
+			fprintf(stderr,"Error: Label name should end with ';'.");
+		}
+		printf("label\n");
+		token_free(token);
+	}
+	else
+	{
+		fprintf(stderr,"Error: Label has bad name.");
+		token_free(token);
+	}
+}
 
+/**
+ * while <condition> do <block>
+ */
+void parser_while()
+{
+	printf("while\n");
+	
+	/* Condition */
+	precedence(global.file);
+	
+	TToken *token = token_get(global.file);
+	if(token->type == token_begin)
+	{ /* Code block */
+		token_free(token);
+		parser_main();
+		token = token_get(global.file);
+	}
+	else
+	{ /* Only one command */
+		token_return_token(token);
+		parser_code();
+	}
+	printf("endwhile\n");
+}
+
+/**
+ * Check, if is token variable type
+ *
+ * @param	type	enum of type
+ * @return	true if is variable type, false if not
+ */
 static int isVariableType(int type)
 {
 	return (	type == token_real	||
