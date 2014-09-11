@@ -481,6 +481,8 @@ int precedence(FILE *filename)
 	}while( !((stack_count(stack) == 1) && ((operator_number)stack_top(stack) == operator_dolar )) );
 
 	printf("Precedence syntax analysis OK! \n");
+	if (token->type == token_colon)
+		token_return_token(token);
 
 	token_free(token);
 	
