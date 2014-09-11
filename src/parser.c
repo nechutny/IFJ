@@ -473,7 +473,11 @@ void parser_code()
 			token_free(token);
 			parser_goto();
 			break;
-			
+		case token_case:
+			/* switch */
+			token_free(token);
+			parser_switch();
+			break;
 		case token_semicolon:
 			/* empty command */
 			break;
@@ -718,6 +722,91 @@ void parser_for()
 	printf("end for\n");
 }
 
+/**
+ * Switch statement
+ * 
+ * case ID of <cases> <else> end;
+ *
+ * <cases>	... <expr> : <block>
+ * <else>	... else <block> 
+ */
+void parser_switch()
+{
+	printf("switch\n");
+
+	TToken *token = token_get(global.file);
+	if(token->type != token_identifier)
+	{ /* Variable name for case */
+		fprintf(stderr, "Error: Expected variable.");
+		token_free(token);
+		return;
+	}
+	token_free(token);
+
+	token = token_get(global.file);
+	if(token->type != token_of)
+	{
+		fprintf(stderr, "Error: Expected 'of'.");
+		token_free(token);
+		return;
+	}
+	token_free(token);
+
+	token = token_get(global.file);
+	while(token->type != token_end && token->type != token_else)
+	{ /* Cases */
+		printf("case\n");
+		precedence(global.file);
+		token = token_get(global.file);
+		if(token->type != token_colon)
+		{
+			fprintf(stderr, "Error: Expected ':' %d.",token->type);
+			token_free(token);
+			return;
+		}
+		token_free(token);
+
+		token = token_get(global.file);
+		if(token->type == token_begin)
+		{ /* Code block */
+			token_free(token);
+			parser_main();
+			token = token_get(global.file);
+		}
+		else
+		{ /* Only one command without begin/end */
+			token_return_token(token);
+			parser_code();
+		}
+
+		token = token_get(global.file);
+	}
+
+	if(token->type == token_else)
+	{
+		printf("else\n");
+		token = token_get(global.file);
+		if(token->type == token_begin)
+		{ /* else block */
+			token_free(token);
+			parser_main();
+			token = token_get(global.file);
+		}
+		else
+		{ /* only one command */
+			token_return_token(token);
+			parser_code();
+		}
+		token_free(token);
+		token = token_get(global.file);
+	}
+	if(token->type != token_end)
+	{
+		fprintf(stderr, "Error: Expected 'end;'.");
+		token_free(token);
+		return;
+	}
+}
 
 /**
  * Check, if is token variable type

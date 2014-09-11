@@ -41,4 +41,14 @@ begin
 		cislo := 3;
 		destine := 1.25;
 	end;
+
+	case cislo of
+		1 : funkce2();
+		4 : begin
+			cislo2 := 15;
+			funkce2();
+		end;
+		else
+			funkce2();
+	end;
 end.
