@@ -240,7 +240,7 @@ int check_rule(TStack * stack, TRule rule)
 * @param filename is file to translate
 * @return number of failiure or correct
 **/
-int precedence(FILE *filename,bool Func_call)
+int precedence(FILE *filename,parse_context Func_call)
 {
 	TToken * token;
 	token = token_init();
@@ -250,7 +250,7 @@ int precedence(FILE *filename,bool Func_call)
 	stack = stack_init();
 	stack_push(stack , (void *)operator_dolar);
 	
-	if (Func_call)
+	if (Func_call == context_args)
 	{
 		stack_push(stack , (void *)sign_less);
 		stack_push(stack , (void *)operator_func);
@@ -339,8 +339,24 @@ int precedence(FILE *filename,bool Func_call)
 									printf("Precedence syntax used rule 2: E -> (E)\n");
 	       							gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
 								}
+								else if ((int)stack_top(stack) == operator_func)
+								{
+									stack_pop(stack);
+									if ((int)stack_top(stack) == sign_less)
+									{
+										stack_pop(stack);
+										stack_push(stack,(void *)operator_non_term);
+										printf("Precedence syntax used rule 21: E -> func(E)\n");
+									}
+									else
+									{
+										fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
+										return 1;
+									}
+								}
 								else
 								{
+
 									fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
 									return 1;
 								}
@@ -373,9 +389,11 @@ int precedence(FILE *filename,bool Func_call)
 									}
 								}
 								stack_pop(stack);
+								//printf("asdasd\n");
 								if ((int)stack_top(stack) == operator_func)
 								{
 									stack_pop(stack);
+									//printf("asdaaaaaaaaaaaaaa\n");
 									if ((int)stack_top(stack) == sign_less)
 									{
 										stack_pop(stack);
