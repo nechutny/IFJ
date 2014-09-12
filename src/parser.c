@@ -164,7 +164,11 @@ void parser_var()
 			if(token->type == token_equal)
 			{ /* Inicialize value */
 				token_free(token);
-				precedence(global.file, context_assign);
+				if(precedence(global.file, context_assign))
+				{
+					fprintf(stderr,"Error: Expresion error.\n");
+					return;
+				}
 				
 			}
 			else if(token->type == token_semicolon)
@@ -409,13 +413,21 @@ void parser_code()
 			if(token->type == token_assign)
 			{ /* assign */
 				printf("assign\n");
-				precedence(global.file, context_assign);
+				if(precedence(global.file, context_assign))
+				{
+					fprintf(stderr,"Error: Expresion error.\n");
+					return;
+				}
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
 				printf("function call\n");
 				token_return_token(token);
-				precedence(global.file, context_args);
+				if(precedence(global.file, context_args))
+				{
+					fprintf(stderr,"Error: Expresion error.\n");
+					return;
+				}
 			}
 			else
 			{
@@ -471,7 +483,11 @@ void parser_code()
 			/* return */
 			printf("return \n");
 			token_free(token);
-			precedence(global.file, context_assign);
+			if(precedence(global.file, context_assign))
+			{
+				fprintf(stderr,"Error: Expresion error.\n");
+				return;
+			}
 			break;
 			
 		case token_semicolon:
@@ -500,7 +516,11 @@ void parser_if()
 	printf("If\n");
 	
 	/* Expresion */
-	precedence(global.file, context_if);
+	if(precedence(global.file, context_if))
+	{
+		fprintf(stderr,"Error: Expresion error.\n");
+		return;
+	}
 	
 	TToken * token = token_get(global.file);
 	if(token->type != token_then)
@@ -607,7 +627,11 @@ void parser_while()
 	printf("while\n");
 	
 	/* Condition */
-	precedence(global.file, context_while);
+	if(precedence(global.file, context_while))
+	{
+		fprintf(stderr,"Error: Expresion error.\n");
+		return;
+	}
 
 	TToken *token = token_get(global.file);
 
@@ -631,6 +655,7 @@ void parser_while()
 		token_return_token(token);
 		parser_code();
 	}
+	
 	printf("end while\n");
 }
 
@@ -664,8 +689,11 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	precedence(global.file, context_repeat);
-	
+	if(precedence(global.file, context_repeat))
+	{
+		fprintf(stderr,"Error: Expresion error.\n");
+		return;
+	}
 	
 	printf("end repeat\n");
 }
@@ -697,7 +725,11 @@ void parser_for()
 	token_free(token);
 
 	/* Inicial. value */
-	precedence(global.file, context_for_init);
+	if(precedence(global.file, context_for_init))
+	{
+		fprintf(stderr,"Error: Expresion error.\n");
+		return;
+	}
 
 	token = token_get(global.file);
 	if(token->type != token_to)
@@ -709,7 +741,11 @@ void parser_for()
 	token_free(token);
 
 	/* Target value */
-	precedence(global.file, context_for_to);
+	if(precedence(global.file, context_for_to))
+	{
+		fprintf(stderr,"Error: Expresion error.\n");
+		return;
+	}
 
 	token = token_get(global.file);
 	if(token->type != token_do)
@@ -771,7 +807,11 @@ void parser_switch()
 	{ /* Cases */
 		printf("case\n");
 		token_return_token(token);
-		precedence(global.file, context_case);
+		if(precedence(global.file, context_case))
+		{
+			fprintf(stderr,"Error: Expresion error.\n");
+			return;
+		}
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
