@@ -106,6 +106,7 @@ operator_number recon_sign(TToken * token)
 
 		case token_int:
 		case token_double:
+		case token_string:
 			return operator_ID;
 
 		case token_identifier:
@@ -346,7 +347,7 @@ int precedence(FILE *filename,parse_context Func_call)
 									{
 										stack_pop(stack);
 										stack_push(stack,(void *)operator_non_term);
-										printf("Precedence syntax used rule 21: E -> func(E)\n");
+										printf("Precedence syntax used rule 20: E -> func(E)\n");
 									}
 									else
 									{
@@ -398,7 +399,7 @@ int precedence(FILE *filename,parse_context Func_call)
 									{
 										stack_pop(stack);
 										stack_push(stack,(void *)operator_non_term);
-										printf("Precedence syntax used rule 20: E -> func(E,E..) with %d parametrs\n",number_param);
+										printf("Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs\n",number_param);
 										/*while(stack_count(stack)){
 											printf("stack %d\n",(int)stack_top(stack) );
 											stack_pop(stack);
@@ -439,7 +440,7 @@ int precedence(FILE *filename,parse_context Func_call)
 								{
 									stack_pop(stack);
 									stack_push(stack,(void *)operator_non_term);
-									printf("Precedence syntax used rule 21: E -> func() \n");
+									printf("Precedence syntax used rule 19: E -> func() \n");
 
 								}
 								else
