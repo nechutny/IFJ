@@ -154,6 +154,7 @@ TToken *token_get(FILE * file) {
 	if((token = token_init()) == NULL){		//alokace noveho tokenu
 		return NULL;
 	}
+	token_last = token;
 	TState state = state_init;
 	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
 	string_clear(token->data);

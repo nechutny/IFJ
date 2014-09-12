@@ -11,6 +11,7 @@
 #include "types.h"
 #include "garbage.h"
 #include "expr.h"
+#include "error.h"
 
 static int isVariableType(int type);
 
@@ -39,18 +40,14 @@ void parser_file()
 	/* Program name */
 	if(token->type != token_program)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected 'program'.\n");
-		return;
+		throw_error(error_program);
 	}
 	token_free(token);
 	
 	token = token_get(global.file);
 	if(token->type != token_identifier)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected program name.\n");
-		return;
+		throw_error(error_identifier);
 	}
 	printf("Program name %s\n",token->data->data);
 	token_free(token);
@@ -58,9 +55,7 @@ void parser_file()
 	token = token_get(global.file);
 	if(token->type != token_semicolon)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Program name should end with ';'.");
-		return;
+		throw_error(error_semicolon);
 	}
 	token_free(token);
 	
@@ -73,9 +68,7 @@ void parser_file()
 	token = token_get(global.file);
 	if(token->type != token_begin)
 	{ /* Main body */
-		fprintf(stderr,"Error: Expected 'begin' %d.",token->type);
-		token_free(token);
-		return;
+		throw_error(error_begin);
 	}
 	token_free(token);
 	
@@ -85,18 +78,14 @@ void parser_file()
 	token = token_get(global.file);
 	if(token->type != token_end)
 	{
-		fprintf(stderr,"Error: Expected 'end.'");
-		token_free(token);
-		return;
+		throw_error(error_end);
 	}
 	token_free(token);
 	
 	token = token_get(global.file);
 	if(token->type != token_dot)
 	{
-		fprintf(stderr,"Error: Expected '.' after 'end'.");
-		token_free(token);
-		return;
+		throw_error(error_dot);
 	}
 
 	printf("Main body end\n");
@@ -138,8 +127,7 @@ void parser_var()
 			token = token_get(global.file);
 			if(token->type != token_identifier)
 			{
-				token_free(token);
-				fprintf(stderr,"Error: Expected variable name.\n");
+				throw_error(error_identifier);
 			}
 			printf("Variable %s\n",token->data->data);
 			token_free(token);
@@ -149,9 +137,7 @@ void parser_var()
 
 		if(token->type != token_colon)
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Expected ':', or ','.\n");
-			return;
+			throw_error(error_colon);
 		}
 		token_free(token);
 		
@@ -166,8 +152,7 @@ void parser_var()
 				token_free(token);
 				if(precedence(global.file, context_assign))
 				{
-					fprintf(stderr,"Error: Expresion error.\n");
-					return;
+					throw_error(error_expresion);
 				}
 				
 			}
@@ -181,8 +166,7 @@ void parser_var()
 		}
 		else
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Bad variable type.\n");
+			throw_error(error_type);
 		}
 	}
 	else
@@ -204,9 +188,7 @@ void parser_function()
 		token = token_get(global.file);
 		if(token->type != token_identifier)
 		{ /* Identifier */
-			token_free(token);
-			fprintf(stderr,"Error: Expected function name.\n");
-			return;
+			throw_error(error_identifier);
 		}
 		printf("function %s:\n",token->data->data);
 		token_free(token);
@@ -214,9 +196,7 @@ void parser_function()
 		token = token_get(global.file);
 		if(token->type != token_parenthesis_left)
 		{
-			fprintf(stderr,"Error: Expected '(' %d.\n",token->type);
-			token_free(token);
-			return;
+			throw_error(error_parenthesis_left);
 		}
 		token_free(token);
 		
@@ -226,36 +206,28 @@ void parser_function()
 		token = token_get(global.file);
 		if(token->type != token_parenthesis_right)
 		{
-			fprintf(stderr,"Error: Expected ')' %d.\n",token->type);
-			token_free(token);
-			return;
+			throw_error(error_parenthesis_right);
 		}
 		token_free(token);
 		
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Expected ':'.\n");
-			return;
+			throw_error(error_colon);
 		}
 		token_free(token);
 		
 		token = token_get(global.file);
 		if(!isVariableType(token->type))
 		{ /* Return type */
-			token_free(token);
-			fprintf(stderr,"Error: Expected function return type.\n");
-			return;
+			throw_error(error_type);
 		}
 		token_free(token);
 		
 		token = token_get(global.file);
 		if(token->type != token_semicolon)
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Function return type should be ended with ';'.\n");
-			return;
+			throw_error(error_semicolon);
 		}
 		token_free(token);
 
@@ -265,9 +237,7 @@ void parser_function()
 		token = token_get(global.file);
 		if(token->type != token_begin)
 		{ /* Function body */
-			token_free(token);
-			fprintf(stderr,"Error: Function block should start with 'begin'.\n");
-			return;
+			throw_error(error_begin);
 		}
 		token_free(token);
 		
@@ -279,9 +249,7 @@ void parser_function()
 		
 		if(token->type != token_end)
 		{ /* Function code block end */
-			token_free(token);
-			fprintf(stderr,"Error: Function block should ended with 'end;'.\n");
-			return;
+			throw_error(error_end);
 		}
 		token_free(token);
 		
@@ -293,8 +261,7 @@ void parser_function()
 		}
 		else
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Expected ';'.\n");
+			throw_error(error_semicolon);
 		}
 	}
 	else
@@ -336,14 +303,12 @@ void parser_args()
 			}
 			else
 			{
-				token_free(token);
-				fprintf(stderr,"Error: Expected function argument type.\n");
+				throw_error(error_type);
 			}
 		}
 		else
 		{
-			token_free(token);
-			fprintf(stderr,"Error: Expected identifier.\n");
+			throw_error(error_identifier);
 		}
 	}
 	else if(token->type == token_parenthesis_right)
@@ -352,8 +317,7 @@ void parser_args()
 	}
 	else
 	{
-		fprintf(stderr,"Error: Expected identifier %d.\n",token->type);
-		token_free(token);
+		throw_error(error_identifier);
 	}
 }
 
@@ -415,8 +379,7 @@ void parser_code()
 				printf("assign\n");
 				if(precedence(global.file, context_assign))
 				{
-					fprintf(stderr,"Error: Expresion error.\n");
-					return;
+					throw_error(error_expresion);
 				}
 			}
 			else if(token->type == token_parenthesis_left)
@@ -425,15 +388,12 @@ void parser_code()
 				token_return_token(token);
 				if(precedence(global.file, context_args))
 				{
-					fprintf(stderr,"Error: Expresion error.\n");
-					return;
+					throw_error(error_expresion);
 				}
 			}
 			else
 			{
-				fprintf(stderr,"Error: Unkown variable operation %d.\n",token->type);
-				token_free(token);
-				return;
+				throw_error(error_unkown);
 			}
 			break;
 			
@@ -485,8 +445,7 @@ void parser_code()
 			token_free(token);
 			if(precedence(global.file, context_assign))
 			{
-				fprintf(stderr,"Error: Expresion error.\n");
-				return;
+				throw_error(error_expresion);
 			}
 			break;
 			
@@ -496,8 +455,7 @@ void parser_code()
 			
 		default:
 			/* Unkown command */
-			fprintf(stderr,"Error: Unkown command %d.\n",token->type);
-			token_free(token);
+			throw_error(error_unkown);
 			break;
 	}
 }
@@ -518,16 +476,13 @@ void parser_if()
 	/* Expresion */
 	if(precedence(global.file, context_if))
 	{
-		fprintf(stderr,"Error: Expresion error.\n");
-		return;
+		throw_error(error_expresion);
 	}
 	
 	TToken * token = token_get(global.file);
 	if(token->type != token_then)
 	{ /* then? */
-		token_free(token);
-		fprintf(stderr,"Error: Expected 'then'.");
-		return;
+		throw_error(error_then);
 	}
 	token_free(token);
 
@@ -581,15 +536,14 @@ void parser_goto()
 		token = token_get(global.file);
 		if(token->type != token_semicolon)
 		{ /* End with ';' ? */
-			fprintf(stderr,"Error: Goto target should end with ';'.");
+			throw_error(error_semicolon);
 		}
 		printf("goto\n");
 		token_free(token);
 	}
 	else
 	{
-		fprintf(stderr,"Error: Goto target has bad value.");
-		token_free(token);
+		throw_error(error_identifier);
 	}
 }
 
@@ -606,15 +560,14 @@ void parser_label()
 		token = token_get(global.file);
 		if(token->type != token_semicolon)
 		{
-			fprintf(stderr,"Error: Label name should end with ';'.");
+			throw_error(error_semicolon);
 		}
 		printf("label\n");
 		token_free(token);
 	}
 	else
 	{
-		fprintf(stderr,"Error: Label has bad name.");
-		token_free(token);
+		throw_error(error_identifier);
 	}
 }
 
@@ -629,17 +582,14 @@ void parser_while()
 	/* Condition */
 	if(precedence(global.file, context_while))
 	{
-		fprintf(stderr,"Error: Expresion error.\n");
-		return;
+		throw_error(error_expresion);
 	}
 
 	TToken *token = token_get(global.file);
 
 	if(token->type != token_do)
 	{
-		fprintf(stderr,"Error: Expected 'do'.");
-		token_free(token);
-		return;
+		throw_error(error_do);
 	}
 	token_free(token);
 	
@@ -683,16 +633,13 @@ void parser_repeat()
 	token = token_get(global.file);
 	if(token->type != token_until)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected 'until'.\n");
-		return;
+		throw_error(error_until);
 	}
 	
 	/* Condition */
 	if(precedence(global.file, context_repeat))
 	{
-		fprintf(stderr,"Error: Expresion error.\n");
-		return;
+		throw_error(error_expresion);
 	}
 	
 	printf("end repeat\n");
@@ -709,50 +656,40 @@ void parser_for()
 	TToken *token = token_get(global.file);
 	if(token->type != token_identifier)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected identifier.\n");
-		return;
+		throw_error(error_identifier);
 	}
 	token_free(token);
 
 	token = token_get(global.file);
 	if(token->type != token_assign)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected ':='.\n");
-		return;
+		throw_error(error_assign);
 	}
 	token_free(token);
 
 	/* Inicial. value */
 	if(precedence(global.file, context_for_init))
 	{
-		fprintf(stderr,"Error: Expresion error.\n");
-		return;
+		throw_error(error_expresion);
 	}
 
 	token = token_get(global.file);
 	if(token->type != token_to)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected 'to'.\n");
-		return;
+		throw_error(error_to);
 	}
 	token_free(token);
 
 	/* Target value */
 	if(precedence(global.file, context_for_to))
 	{
-		fprintf(stderr,"Error: Expresion error.\n");
-		return;
+		throw_error(error_expresion);
 	}
 
 	token = token_get(global.file);
 	if(token->type != token_do)
 	{
-		token_free(token);
-		fprintf(stderr,"Error: Expected 'do'.\n");
-		return;
+		throw_error(error_do);
 	}
 	token_free(token);
 
@@ -787,18 +724,14 @@ void parser_switch()
 	TToken *token = token_get(global.file);
 	if(token->type != token_identifier)
 	{ /* Variable name for case */
-		fprintf(stderr, "Error: Expected variable.");
-		token_free(token);
-		return;
+		throw_error(error_identifier);
 	}
 	token_free(token);
 
 	token = token_get(global.file);
 	if(token->type != token_of)
 	{
-		fprintf(stderr, "Error: Expected 'of'.");
-		token_free(token);
-		return;
+		throw_error(error_of);
 	}
 	token_free(token);
 
@@ -809,15 +742,12 @@ void parser_switch()
 		token_return_token(token);
 		if(precedence(global.file, context_case))
 		{
-			fprintf(stderr,"Error: Expresion error.\n");
-			return;
+			throw_error(error_expresion);
 		}
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
-			fprintf(stderr, "Error: Expected ':' %d.\n",token->type);
-			token_free(token);
-			return;
+			throw_error(error_colon);
 		}
 		token_free(token);
 
@@ -857,9 +787,7 @@ void parser_switch()
 	token = token_get(global.file);
 	if(token->type != token_end)
 	{
-		fprintf(stderr, "Error: Expected 'end;'.");
-		token_free(token);
-		return;
+		throw_error(error_end);
 	}
 }
 
