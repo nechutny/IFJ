@@ -44,7 +44,7 @@ void token_free( TToken * token ) {
 
 //set correct type of token (is it keyword or indentifier?)
 void set_identifier(TToken *token){
- 	if (strcmp("var",token->data->data)==0)
+ 	/*if (strcmp("var",token->data->data)==0)
  		token->type = token_var;
  	else if (strcmp("in",token->data->data)==0)
  		token->type = token_in;
@@ -115,9 +115,9 @@ void set_identifier(TToken *token){
  	else if (strcmp("boolean",token->data->data)==0)
  		token->type = token_boolean;
  	else
- 		token->type = token_identifier;
+ 		token->type = token_identifier;*/
 
- 	/*char * keywords[]={"var","in","do","repeat","until","label","goto","case",
+ 	char * keywords[]={"var","in","do","repeat","until","label","goto","case",
  						"of","to","program","ID","mod","div","not","and","or",
  						"begin","end","while","for","if","then","else",
  						"porcedure","function","return","true","false","null",
@@ -131,19 +131,14 @@ void set_identifier(TToken *token){
  						token_false,token_null,token_integer,token_real,
  						token_char,token_boolean};
 
- 	if (sizeof(keywords)!=sizeof(tokens))
- 	{
- 		printf("ruzne pole");
- 	}
-
  	token->type = token_identifier;
- 	for (int i = 0; i <= sizeof(keywords)-1; i++)
+ 	for (int i = 0; i <= 33; i++)
  	{
  		if (strcmp(keywords[i],token->data->data)==0)
  		{
  			token->type = tokens[i];
  		}
- 	}*/
+ 	}
 }
 
 //return next token from file
@@ -164,10 +159,6 @@ TToken *token_get(FILE * file) {
 	string_clear(token->data);
 	char c;
 	char sign='+';
-	/*token->type = token_block_begin;
-	string_add_chr(token->data, 'a');
-	string_add_chr(token->data, 'c');
-	return token;*/
 	while (1)
 	{
 		c = fgetc(file);
@@ -353,8 +344,6 @@ TToken *token_get(FILE * file) {
 						token->type=token_double;
 						return token;
 					}
-					//token->type=token_invalid;
-					//return token;
 				}
 				break;
 			case state__double_e:
@@ -489,7 +478,7 @@ TToken *token_get(FILE * file) {
 				string_add_chr(token->data, c);
 				break;
 			default:
-				printf("chuck\n");
+				printf("Chuck Norris\n");
 				break; //you shouldnt get there
 		}
 	}
