@@ -24,17 +24,23 @@ typedef enum {operator_not,
 	          operator_left_parenthesis,
 	          operator_right_parenthesis,
 	          operator_ID,
+	          operator_func,
 	          operator_comma,
 	          operator_dolar,
 	          operator_non_term
 }operator_number;
 
 typedef enum{
-			sign_equal = 22,
+			sign_equal = 23,
 	        sign_less,
 	        sign_greater,
 	        sign_fault
 }precedence_number;
+
+typedef enum{
+	false,
+	true
+} bool;
 
 typedef enum
 {
