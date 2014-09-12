@@ -85,6 +85,10 @@ void throw_error(errors code)
 			fprintf(stderr,"Expected 'of'");
 			break;
 
+		case error_eof:
+			fprintf(stderr,"Content after 'end.'");
+			break;
+
 		default:
 			fprintf(stderr, "Unkown error");
 			break;

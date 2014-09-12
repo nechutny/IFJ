@@ -89,6 +89,12 @@ void parser_file()
 	}
 
 	printf("Main body end\n");
+
+	token = token_get(global.file);
+	if(token->type != token_eof)
+	{
+		throw_error(error_eof);
+	}
 }
 
 
