@@ -38,9 +38,15 @@ typedef enum{
 }precedence_number;
 
 typedef enum{
-	false,
-	true
-} bool;
+	context_if,
+	context_while,
+	context_for_init,
+	context_for_to,
+	context_repeat,
+	context_args,
+	context_case,
+	context_assign,
+} parse_context;
 
 typedef enum
 {
