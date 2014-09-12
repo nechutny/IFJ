@@ -830,11 +830,13 @@ void parser_switch()
  * @param	type	enum of type
  * @return	true if is variable type, false if not
  */
-static int isVariableType(int type)
+static inline int isVariableType(int type)
 {
-	return (	type == token_real	||
-			type == token_integer	||
-			type == token_char	||
-			type == token_string	||
-			type == token_boolean	);
+	return (	type == token_real		||
+			type == token_integer		||
+			type == token_char		||
+			type == token_string		||
+			type == token_char		||
+			type == token_string_var	||
+			type == token_boolean		);
 }
