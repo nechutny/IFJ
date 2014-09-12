@@ -22,7 +22,7 @@ typedef struct _TVar {
 /* types of tokes */
 typedef enum {
 	token_invalid,			// 0
-	token_string,			// 1
+	token_string,			// 1 
 	token_comma,			// 2
 	token_var,			// 3
 	token_assign,			// 4
@@ -87,18 +87,20 @@ typedef enum {
 	token_integer,			// 54
 	token_boolean,			// 55
 	token_char,			// 56
+	token_string_var,		// 57 type of variable
+	token_array,		// 58
 
 // integrated functions not working yet (it depands on task from teachers)
-	token_f_boolval,		// 57
-	token_f_doubleval,		// 58
-	token_f_intval,			// 59
-	token_f_strval,			// 60
-	token_f_get_string,		// 61
-	token_f_put_string,		// 62
-	token_f_strlen,			// 63
-	token_f_get_substring,		// 64
-	token_f_find_string,		// 65
-	token_f_sort_string		// 66
+	token_f_boolval,		// 59
+	token_f_doubleval,		// 60
+	token_f_intval,			// 61
+	token_f_strval,			// 62
+	token_f_get_string,		// 63
+	token_f_put_string,		// 64
+	token_f_strlen,			// 65
+	token_f_get_substring,		// 65
+	token_f_find_string,		// 66
+	token_f_sort_string		// 67
 } TToken_type;
 
 typedef struct _TToken {
