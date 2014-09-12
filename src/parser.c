@@ -164,7 +164,7 @@ void parser_var()
 			if(token->type == token_equal)
 			{ /* Inicialize value */
 				token_free(token);
-				precedence(global.file);
+				precedence(global.file,false);
 				
 			}
 			else if(token->type == token_semicolon)
@@ -409,13 +409,13 @@ void parser_code()
 			if(token->type == token_assign)
 			{ /* assign */
 				printf("assign\n");
-				precedence(global.file);
+				precedence(global.file,false);
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
 				printf("function call\n");
 				token_return_token(token);
-				precedence(global.file);
+				precedence(global.file,true);
 			}
 			else
 			{
@@ -471,7 +471,7 @@ void parser_code()
 			/* return */
 			printf("return \n");
 			token_free(token);
-			precedence(global.file);
+			precedence(global.file,false);
 			break;
 			
 		case token_semicolon:
@@ -500,7 +500,7 @@ void parser_if()
 	printf("If\n");
 	
 	/* Expresion */
-	precedence(global.file);
+	precedence(global.file,false);
 	
 	TToken * token = token_get(global.file);
 	if(token->type != token_then)
@@ -554,7 +554,7 @@ void parser_if()
  */
 void parser_goto()
 {
-	precedence(global.file);
+	precedence(global.file,false);
 	TToken *token = token_get(global.file);
 	if(token->type == token_identifier)
 	{ /* Identifier ? */
@@ -608,7 +608,7 @@ void parser_while()
 	printf("while\n");
 	
 	/* Condition */
-	precedence(global.file);
+	precedence(global.file,false);
 
 	TToken *token = token_get(global.file);
 
@@ -665,7 +665,7 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	precedence(global.file);
+	precedence(global.file,false);
 	
 	
 	printf("end repeat\n");
@@ -698,7 +698,7 @@ void parser_for()
 	token_free(token);
 
 	/* Inicial. value */
-	precedence(global.file);
+	precedence(global.file,false);
 
 	token = token_get(global.file);
 	if(token->type != token_to)
@@ -710,7 +710,7 @@ void parser_for()
 	token_free(token);
 
 	/* Target value */
-	precedence(global.file);
+	precedence(global.file,false);
 
 	token = token_get(global.file);
 	if(token->type != token_do)
@@ -772,7 +772,7 @@ void parser_switch()
 	{ /* Cases */
 		printf("case %d\n",token->type);
 		token_return_token(token);
-		precedence(global.file);
+		precedence(global.file,false);
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
