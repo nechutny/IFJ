@@ -363,17 +363,9 @@ void parser_body()
 	TToken * token = token_get(global.file);
 	while(token->type != token_end)
 	{ /* Parse content until we get end; */
-		if(token->type == token_return)
-		{ /* 'return' expresion is added to parse_main because of functions */
-			printf("return\n");
-			token_free(token);
-			precedence(global.file);
-		}
-		else
-		{
-			token_return_token(token);
-			parser_main();
-		}
+		token_return_token(token);
+		parser_main();
+		
 		token = token_get(global.file);
 	}
 	printf("Function body end\n");
@@ -388,7 +380,7 @@ void parser_main()
 {
 	printf("Code block\n");
 	TToken * token = token_get(global.file);
-	while(token->type != token_end && token->type != token_return)
+	while(token->type != token_end)
 	{
 		token_return_token(token);
 		parser_code();
@@ -468,11 +460,20 @@ void parser_code()
 			token_free(token);
 			parser_goto();
 			break;
+			
 		case token_case:
 			/* switch */
 			token_free(token);
 			parser_switch();
 			break;
+			
+		case token_return:
+			/* return */
+			printf("return \n");
+			token_free(token);
+			precedence(global.file);
+			break;
+			
 		case token_semicolon:
 			/* empty command */
 			break;
@@ -502,6 +503,15 @@ void parser_if()
 	precedence(global.file);
 	
 	TToken * token = token_get(global.file);
+	if(token->type != token_then)
+	{ /* then? */
+		token_free(token);
+		fprintf(stderr,"Error: Expected 'then'.");
+		return;
+	}
+	token_free(token);
+
+	token = token_get(global.file);
 	if(token->type == token_begin)
 	{ /* Code block */
 		token_free(token);
@@ -535,7 +545,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
-	printf("end if\n");
+	printf("end if %d\n",token->type);
 }
 
 
@@ -599,8 +609,18 @@ void parser_while()
 	
 	/* Condition */
 	precedence(global.file);
-	
+
 	TToken *token = token_get(global.file);
+
+	if(token->type != token_do)
+	{
+		fprintf(stderr,"Error: Expected 'do'.");
+		token_free(token);
+		return;
+	}
+	token_free(token);
+	
+	token = token_get(global.file);
 	if(token->type == token_begin)
 	{ /* Code block */
 		token_free(token);
@@ -746,17 +766,17 @@ void parser_switch()
 		return;
 	}
 	token_free(token);
-	int foo = 0;
+
 	token = token_get(global.file);
 	while(token->type != token_end && token->type != token_else)
 	{ /* Cases */
 		printf("case %d\n",token->type);
 		token_return_token(token);
-		foo = precedence(global.file);
+		precedence(global.file);
 		token = token_get(global.file);
 		if(token->type != token_colon)
 		{
-			fprintf(stderr, "Error: Expected ':' %d %d.\n",token->type,foo);
+			fprintf(stderr, "Error: Expected ':' %d.\n",token->type);
 			token_free(token);
 			return;
 		}
@@ -767,6 +787,8 @@ void parser_switch()
 		{ /* Code block */
 			token_free(token);
 			parser_main();
+			token = token_get(global.file);
+			token_free(token);
 			token = token_get(global.file);
 		}
 		else
@@ -785,17 +807,15 @@ void parser_switch()
 		if(token->type == token_begin)
 		{ /* else block */
 			token_free(token);
-			parser_main();
-			token = token_get(global.file);
+			parser_body();
 		}
 		else
 		{ /* only one command */
 			token_return_token(token);
 			parser_code();
 		}
-		token_free(token);
-		token = token_get(global.file);
 	}
+	token = token_get(global.file);
 	if(token->type != token_end)
 	{
 		fprintf(stderr, "Error: Expected 'end;'.");
@@ -815,5 +835,6 @@ static int isVariableType(int type)
 	return (	type == token_real	||
 			type == token_integer	||
 			type == token_char	||
+			type == token_string	||
 			type == token_boolean	);
 }
