@@ -388,7 +388,7 @@ void parser_code()
 			{ /* assign */
 				if(token->type == token_bracket_left)
 				{ /* Array index? */
-					token_free(token);
+					token_return_token(token);
 					
 					if(precedence(global.file, context_index))
 					{
