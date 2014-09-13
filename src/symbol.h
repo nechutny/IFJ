@@ -19,15 +19,16 @@ typedef enum {
 } variableType;
 
 typedef struct TsymbolVariable {
-	struct Tstring* name;
-	variableType type;
-	union {
+	struct Tstring* name;		// Variable name
+	variableType type;		// Variable type
+	union {				// Variable value
 		double value_double;
 		long value_number;
 		char value_string[256];
 		int value_boolean;
 		char value_char[1];
-	} value; 
+	} value;
+	int inicialized;		// Is inicialized
 } symbolVariable;
 
 typedef struct TsymbolFunction {
