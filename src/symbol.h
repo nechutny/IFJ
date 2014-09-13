@@ -30,4 +30,10 @@ typedef struct TsymbolVariable {
 	} value; 
 } symbolVariable;
 
+typedef struct TsymbolFunction {
+	struct Tstring* name;
+	variableType returnType;
+	variableType *args;
+} symbolFunction;
+
 #endif

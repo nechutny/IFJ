@@ -8,10 +8,21 @@
 #ifndef _HTABLE_H_
 #define _HTABLE_H_
 
+#include "symbol.h"
+
+typedef enum {
+	type_function,
+	type_variable
+} item_type;
+
 // List item
 typedef struct  htab_listitem_s {
   struct htab_listitem_s *next;
-  unsigned data;
+  union {
+	  symbolVariable *variable;
+	  symbolFunction *function;
+  } ptr;
+  item_type type;
   char key[];
 } htab_listitem;
 
@@ -31,8 +42,11 @@ htab_t *htab_init(unsigned size);
 // Searching in hash table
 htab_listitem *htab_lookup(htab_t *t, const char *key);
 
+// Create new item in hash table and return pointer
+htab_listitem* htab_create(const char *key);
+
 // Call function on each item
-void htab_foreach(htab_t *t,  void (*function)(char key[], unsigned value));
+void htab_foreach(htab_t *t, void (*function)(char key[], item_type type, void* ptr));
 
 // Find and destroy (item)!
 void htab_remove(htab_t *t, const char *key);

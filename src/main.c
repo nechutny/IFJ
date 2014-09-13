@@ -10,7 +10,6 @@ int main(int argc, char* argv[])
 {
 	global_init();
 	
-	TToken * token;
 	global.file=fopen(argv[1],"r");
 	if (global.file==NULL)
 		return 0;

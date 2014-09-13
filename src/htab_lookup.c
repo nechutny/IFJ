@@ -17,7 +17,7 @@
  * @param	key	string used for key
  * @return	pointer on structure or NULL if error
  */
-inline htab_listitem* htab_create(const char *key)
+htab_listitem* htab_create(const char *key)
 {
 	htab_listitem* item;
 	// allocate memory for structure size + size of key (length + 1 byte for null-terminating)
@@ -29,7 +29,6 @@ inline htab_listitem* htab_create(const char *key)
 
 	// Set values
 	memcpy(item->key,key,strlen(key)+1);
-	item->data = 0;
 	item->next = NULL;
 
 	return item;
@@ -41,7 +40,7 @@ inline htab_listitem* htab_create(const char *key)
  *
  * @param	t	reference on hash table
  * @param	key	string used as index for item
- * @return	pointer on structure or NULL if error
+ * @return	pointer on structure or NULL if don't exist
  */
 htab_listitem* htab_lookup(htab_t *t, const char *key)
 {
@@ -52,11 +51,7 @@ htab_listitem* htab_lookup(htab_t *t, const char *key)
 
 	if(item == NULL)
 	{ // Pointer is null (item not found), so create new item
-		item = t->list[index] = htab_create(key);
-		if(item == NULL)
-		{
-			return NULL;
-		}
+		return NULL;
 	}
 	else
 	{ // Possible result
@@ -72,7 +67,6 @@ htab_listitem* htab_lookup(htab_t *t, const char *key)
 				item_ptr = item;
 				item = item->next;
 			}
-			
 		}
 
 		if(item_ptr != NULL && item != item_ptr)
