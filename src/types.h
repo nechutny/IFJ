@@ -90,17 +90,21 @@ typedef enum {
 	token_string_var,		// 57 type of variable
 	token_array,		// 58
 
+	// [ ]
+	token_bracket_left,		//59
+	token_bracket_right,	//60
+
 // integrated functions not working yet (it depands on task from teachers)
-	token_f_boolval,		// 59
-	token_f_doubleval,		// 60
-	token_f_intval,			// 61
-	token_f_strval,			// 62
-	token_f_get_string,		// 63
-	token_f_put_string,		// 64
-	token_f_strlen,			// 65
-	token_f_get_substring,		// 65
-	token_f_find_string,		// 66
-	token_f_sort_string		// 67
+	token_f_boolval,		
+	token_f_doubleval,	
+	token_f_intval,			
+	token_f_strval,			
+	token_f_get_string,		
+	token_f_put_string,		
+	token_f_strlen,			
+	token_f_get_substring,		
+	token_f_find_string,		
+	token_f_sort_string		
 } TToken_type;
 
 typedef struct _TToken {

@@ -201,6 +201,12 @@ TToken *token_get(FILE * file) {
 					case '(':
 						state = state_parenthesis_left;
 						break;
+					case '[':
+						token->type = token_bracket_left;
+						return token;
+					case ']':
+						token->type = token_bracket_right;
+						return token;
 					case ':':
 						state = state_colon;
 						break;
@@ -266,10 +272,10 @@ TToken *token_get(FILE * file) {
 					string_add_chr(token->data, c);
 					state = state__double_e;
 				}
-				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
-						c == '/' || c == '-' || c == '=' || c == ')' || 
-						c == ';' || c == '>' || c == '<' ||
-					 	isspace(c))	// '(' shouldnt be there)
+				else if (c == EOF || c == '+' || c == ',' || c == '*' ||
+						c == '/' || c == '-' || c == '=' || c == ')' ||
+						c == ';' || c == '>' || c == '<' || c == '[' ||
+						c == ']' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_int;
@@ -311,8 +317,8 @@ TToken *token_get(FILE * file) {
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
-						c == ';' || c == '>' || c == '<' ||
-					 	isspace(c))	// '(' shouldnt be there)
+						c == ';' || c == '>' || c == '<' || c == '[' ||
+						c == ']' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
@@ -365,8 +371,8 @@ TToken *token_get(FILE * file) {
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
-						c == ';' || c == '>' || c == '<' ||
-					 	isspace(c))	// '(' shouldnt be there)
+						c == ';' || c == '>' || c == '<' || c == '[' ||
+						c == ']' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
