@@ -47,6 +47,7 @@ typedef enum{
 	context_args,
 	context_case,
 	context_assign,
+	context_index
 } parse_context;
 
 typedef enum

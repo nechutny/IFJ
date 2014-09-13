@@ -88,15 +88,15 @@ typedef enum {
 	token_boolean,			// 55
 	token_char,			// 56
 	token_string_var,		// 57 type of variable
-	token_array,		// 58
+	token_array,			// 58
 
 	// [ ]
-	token_bracket_left,		//59
-	token_bracket_right,	//60
+	token_bracket_left,		// 59
+	token_bracket_right,		// 60
 
 // integrated functions not working yet (it depands on task from teachers)
 	token_f_boolval,		
-	token_f_doubleval,	
+	token_f_doubleval,		
 	token_f_intval,			
 	token_f_strval,			
 	token_f_get_string,		

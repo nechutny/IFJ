@@ -380,8 +380,31 @@ void parser_code()
 			/* assign or function call */
 			token_free(token);
 			token = token_get(global.file);
-			if(token->type == token_assign)
+			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
+				if(token->type == token_bracket_left)
+				{ /* Array index? */
+					token_free(token);
+					
+					if(precedence(global.file, context_index))
+					{
+						throw_error(error_expresion);
+					}
+					
+					token = token_get(global.file);
+					if(token->type != token_bracket_right)
+					{ /* then? */
+						throw_error(error_bracket_right);
+					}
+					token_free(token);
+
+					token = token_get(global.file);
+					if(token->type != token_assign)
+					{
+						throw_error(error_assign);
+					}
+					token_free(token);
+				}
 				printf("assign\n");
 				if(precedence(global.file, context_assign))
 				{

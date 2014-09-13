@@ -27,6 +27,7 @@ typedef enum{
 	error_assign,
 	error_of,
 	error_eof,
+	error_bracket_right,
 	error_unkown
 } errors;
 

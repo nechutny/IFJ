@@ -89,6 +89,10 @@ void throw_error(errors code)
 			fprintf(stderr,"Content after 'end.'");
 			break;
 
+		case error_bracket_right:
+			fprintf(stderr,"Expected ']'");
+			break;
+
 		default:
 			fprintf(stderr, "Unkown error");
 			break;

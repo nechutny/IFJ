@@ -1,6 +1,8 @@
 program fooo;
 var	cislo, cislo2 : integer = 5;
 	desetine : real = 12.5;
+	text : string;
+	znak : char;
 	
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
@@ -12,6 +14,7 @@ begin
 end;
 function funkce2() : integer;
 begin
+	text[0] = 'A';
 	writeln( -7-4 );
 	while False do begin
 		funkce2( );
