@@ -142,8 +142,9 @@ void set_identifier(TToken *token){
 }
 
 //return next token from file
-TToken *token_get(FILE * file) {
+TToken *token_get() {
 	TToken *token;
+	FILE * file = global.file;
 	if(token_buffer != NULL)
 	{
 		token = token_buffer;
