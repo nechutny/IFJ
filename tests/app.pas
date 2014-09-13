@@ -14,7 +14,7 @@ begin
 end;
 function funkce2() : integer;
 begin
-	text[0] = 'A';
+	text[1] = 'A';
 	writeln( -7-4 );
 	while False do begin
 		funkce2( );
@@ -48,7 +48,7 @@ begin
 	end;
 	text := 'foo fooo bar';
 
-	cislo := text[0];
+	cislo := text[1];
 
 	case cislo of
 		1 : funkce2( );
