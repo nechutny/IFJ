@@ -245,7 +245,7 @@ int precedence(FILE *filename,parse_context Func_call)
 {
 	TToken * token;
 	token = token_init();
-	token = token_get(filename);
+	token = token_get();
 
 	TStack *stack;
 	stack = stack_init();
@@ -280,7 +280,7 @@ int precedence(FILE *filename,parse_context Func_call)
 			case sign_equal:
 				stack_push(stack,(void *)recon_sign(token));
 				token_free(token);
-				token = token_get(filename);
+				token = token_get();
 				break;
 
 			case sign_less:
@@ -297,7 +297,7 @@ int precedence(FILE *filename,parse_context Func_call)
 				}
 
 				token_free(token);
-				token = token_get(filename);
+				token = token_get();
 				break;	
 
 			case sign_greater:
