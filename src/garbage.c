@@ -45,7 +45,7 @@ void sig_handler(int signo)
  *  @param	size	Number of bytes to allocate
  *  @return	pointer to memory, or NULL if fail
  **/
-void* _malloc(unsigned long size)
+inline void* _malloc(unsigned long size)
 {
 	if(global.allocated->ptr != NULL || global.allocated != global.allocated_last)
 	{
@@ -67,7 +67,7 @@ void* _malloc(unsigned long size)
  *  @param	size	Number of bytes to allocate
  *  @return	pointer to memory, or NULL if fail
  **/
-void* _realloc(void* ptr, unsigned long size)
+inline void* _realloc(void* ptr, unsigned long size)
 {
 	struct TAllocItem* tmp = global.allocated;
 	while(tmp != NULL)
