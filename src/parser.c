@@ -136,6 +136,10 @@ void parser_var()
 				throw_error(error_identifier);
 			}
 			printf("Variable %s\n",token->data->data);
+
+			htab_listitem* var = htab_create(global.global_symbol, token->data->data);
+			symbol_variable_init(var, token->data->data);
+			
 			token_free(token);
 
 			token = token_get();
@@ -830,8 +834,6 @@ static inline int isVariableType(int type)
 {
 	return (	type == token_real		||
 			type == token_integer		||
-			type == token_char		||
-			type == token_string		||
 			type == token_char		||
 			type == token_string_var	||
 			type == token_boolean		);

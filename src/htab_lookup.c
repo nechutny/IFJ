@@ -17,19 +17,71 @@
  * @param	key	string used for key
  * @return	pointer on structure or NULL if error
  */
-htab_listitem* htab_create(const char *key)
+htab_listitem* htab_create(htab_t *t, const char *key)
 {
-	htab_listitem* item;
-	// allocate memory for structure size + size of key (length + 1 byte for null-terminating)
-	item = _malloc(sizeof(htab_listitem) + sizeof(char)*(strlen(key)+1));
-	if(item == NULL)
-	{ // Check malloc
-		return NULL;
-	}
+	// Get index and pointer
+	unsigned index = hash_function(key, t->htab_size);
+	htab_listitem* item_ptr = NULL;
+	htab_listitem* item = t->list[index];
+	htab_listitem* nitem;
 
-	// Set values
-	memcpy(item->key,key,strlen(key)+1);
-	item->next = NULL;
+	if(item == NULL)
+	{ // Pointer is null (item not found), so create new item
+
+		// allocate memory for structure size + size of key (length + 1 byte for null-terminating)
+		nitem = _malloc(sizeof(htab_listitem) + sizeof(char)*(strlen(key)+1));
+		if(nitem == NULL)
+		{ // Check malloc
+			return NULL;
+		}
+
+		// Set values
+		memcpy(nitem->key,key,strlen(key)+1);
+		nitem->next = NULL;
+
+		item = t->list[index] = nitem;
+		if(item == NULL)
+		{
+			return NULL;
+		}
+	}
+	else
+	{ // Possible result
+		while(item != NULL)
+		{ // Loop on table and find if item exists
+			if(strcmp(item->key,key) == 0)
+			{ // Found
+				item_ptr = item;
+				break;
+			}
+			else
+			{ // Next 
+				item_ptr = item;
+				item = item->next;
+			}
+			
+		}
+
+		if(item_ptr != NULL && item != item_ptr)
+		{ // Not found, so create
+			// allocate memory for structure size + size of key (length + 1 byte for null-terminating)
+			nitem = _malloc(sizeof(htab_listitem) + sizeof(char)*(strlen(key)+1));
+			if(nitem == NULL)
+			{ // Check malloc
+				return NULL;
+			}
+
+			// Set values
+			memcpy(nitem->key,key,strlen(key)+1);
+			nitem->next = NULL;
+			item = nitem;
+			if(item == NULL)
+			{
+				return NULL;
+			}
+			item_ptr->next = item; // link in list
+		}
+	}
 
 	return item;
 }
@@ -50,7 +102,7 @@ htab_listitem* htab_lookup(htab_t *t, const char *key)
 	htab_listitem* item = t->list[index];
 
 	if(item == NULL)
-	{ // Pointer is null (item not found), so create new item
+	{ // Pointer is null (item not found)
 		return NULL;
 	}
 	else
@@ -70,13 +122,8 @@ htab_listitem* htab_lookup(htab_t *t, const char *key)
 		}
 
 		if(item_ptr != NULL && item != item_ptr)
-		{ // Not found, so create
-			item = htab_create(key); // create
-			if(item == NULL)
-			{
-				return NULL;
-			}
-			item_ptr->next = item; // link in list
+		{ // Not found
+			return NULL;
 		}
 	}
 

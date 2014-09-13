@@ -95,11 +95,23 @@ void global_init()
 
 	global.ins_list = list_init();
 
+	// 42 is answer for anything!
+	global.global_symbol = htab_init(42);
+	
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
 	atexit(global_free);
 }
 
+void printData(char key[], item_type type, void* ptr)
+{
+	if(type == type_variable)
+	{
+		ptr = (symbolVariable*)ptr;
+	}
+	
+	printf("Name:\t%s,\tVar=0/Func=1: %d\n",key, type); 
+}
 
 /**
  * Loop on linked list of allocated memory and free
@@ -108,6 +120,9 @@ void global_free()
 {
 	struct TAllocItem* tmp;
 	struct TAllocItem* ptr;
+
+	printf("\n\n Global symbols:\n");
+	htab_foreach(global.global_symbol, printData);
 
 	ptr = global.allocated;
 
@@ -122,7 +137,9 @@ void global_free()
 		ptr = ptr->next;
 		free(tmp);
 	}
+	
 
 	fclose(global.file);
 	
+	//htab_free(global.global_symbol);
 }

@@ -8,6 +8,7 @@
 #define _SYMBOL_H_
 
 #include "string.h"
+#include "htable.h"
 
 typedef enum {
 	variable_integer,
@@ -19,7 +20,7 @@ typedef enum {
 } variableType;
 
 typedef struct TsymbolVariable {
-	struct Tstring* name;		// Variable name
+	TString* name;			// Variable name
 	variableType type;		// Variable type
 	union {				// Variable value
 		double value_double;
@@ -32,9 +33,11 @@ typedef struct TsymbolVariable {
 } symbolVariable;
 
 typedef struct TsymbolFunction {
-	struct Tstring* name;
+	struct TString* name;
 	variableType returnType;
 	variableType *args;
 } symbolFunction;
+
+void symbol_variable_init(htab_listitem* var, char* name);
 
 #endif

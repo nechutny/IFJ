@@ -1,8 +1,6 @@
 #ifndef STRING_H
 #define STRING_H
 
-#include "string.h"
-
 typedef struct _string {
 	char * data;
 	int allocated;

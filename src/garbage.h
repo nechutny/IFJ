@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
+#include "htable.h"
+#include "symbol.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -43,6 +45,9 @@ struct TGlobal
 
 	FILE* file;
 	TList* ins_list;
+
+	htab_t* global_symbol;
+	
 };
 extern struct TGlobal global;
 
