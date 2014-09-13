@@ -394,13 +394,6 @@ void parser_code()
 					{
 						throw_error(error_expresion);
 					}
-					
-					token = token_get();
-					if(token->type != token_bracket_right)
-					{ /* then? */
-						throw_error(error_bracket_right);
-					}
-					token_free(token);
 
 					token = token_get();
 					if(token->type != token_assign)
