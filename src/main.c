@@ -5,11 +5,12 @@
 #include "garbage.h"
 #include "parser.h"
 #include "generator.h"
+#include "uStack.h"
 
 int main(int argc, char* argv[])
 {
 	global_init();
-	
+
 	global.file=fopen(argv[1],"r");
 	if (global.file==NULL)
 		return 0;
