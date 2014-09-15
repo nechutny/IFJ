@@ -4,6 +4,9 @@
  *
  *	@author		Stanislav Nechutny - xnechu01
  */
+#ifndef _USTACK_H_
+#define _USTACK_H_
+
 #include "garbage.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,7 +58,7 @@ do {											\
  * @param	stack	pointer to stack for pop
  * @return	Value from stack
  */
-#define uStack_pop(type, stack)						\
+#define uStack_pop(type, stack)								\
 	(stack->count--, ((type *)stack->data)[stack->count])
 
 /**
@@ -77,3 +80,6 @@ do {											\
 	_free(stack->data);								\
 	_free(stack);									\
 } while(0);
+
+
+#endif
