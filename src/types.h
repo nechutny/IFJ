@@ -7,7 +7,8 @@ typedef enum {
 	var_bool,
 	var_int,
 	var_double,
-	var_string
+	var_string,
+	var_ndef
 }TVarType;
 
 typedef struct _TVar {
@@ -111,5 +112,7 @@ typedef struct _TToken {
 	TToken_type type;
 	TString * data;
 } TToken;
+
+TVar *var_from_token(TToken *token);
 
 #endif
