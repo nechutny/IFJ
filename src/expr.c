@@ -1,6 +1,7 @@
 #include "expr.h"
 #include "garbage.h"
 #include "generator.h"
+#include "types.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -217,8 +218,10 @@ precedence_number get_sign(TToken * token, TStack * stack, parse_context context
 *@param stack is stack of term and non-term operators
 *@param rule is rule which is now expected
 **/
-int check_rule(TStack * stack, TRule rule)
+int check_rule(TStack * stack, TRule rule, TStack *var_stack)
 {
+	TVar *tmp;
+	TVar *new_var;
 	stack_pop(stack);
 	//printf("stack_top--: %d\n", (int)stack_top(stack));
 	if ((int)stack_top(stack) == operator_non_term)
@@ -230,7 +233,7 @@ int check_rule(TStack * stack, TRule rule)
 			//stack_pop(stack);
 	      	stack_push(stack,(void *)operator_non_term);
 	       	printf("Precedence syntax used rule %d\n",rule);
-	       	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
+	    // 	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
 	       	return 0;
 		}
 	    else if ((int)stack_top(stack) == sign_less)
@@ -238,7 +241,12 @@ int check_rule(TStack * stack, TRule rule)
 	        stack_pop(stack);
 	      	stack_push(stack,(void *)operator_non_term);
 	       	printf("Precedence syntax used rule %d\n",rule);
-	       	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
+	       	tmp = stack_top(var_stack);
+	       	stack_pop(var_stack);
+	       	new_var = create_var();
+	       	gen_ins(rule, global.ins_list, stack_top(var_stack), tmp, new_var);
+	       	stack_pop(var_stack);
+	       	stack_push(var_stack, new_var);
 	       	return 0;
 	    }
 	    else
@@ -266,6 +274,9 @@ int precedence(FILE *filename,parse_context Func_call)
 	TToken * token;
 	token = token_init();
 	token = token_get();
+
+	TStack *var_stack;
+	var_stack = stack_init();
 
 	TStack *stack;
 	stack = stack_init();
@@ -308,6 +319,10 @@ int precedence(FILE *filename,parse_context Func_call)
 		switch(get_sign(token,stack,Func_call)){
 			case sign_equal:
 				stack_push(stack,(void *)recon_sign(token,Func_call));
+				
+				if(token->type == token_int || token->type == token_double)
+					stack_push(var_stack,var_from_token(token));
+
 				token_free(token);
 				token = token_get();
 				break;
@@ -325,6 +340,9 @@ int precedence(FILE *filename,parse_context Func_call)
 					stack_push(stack,(void *)recon_sign(token,Func_call));
 				}
 
+				if(token->type == token_int || token->type == token_double)
+					stack_push(var_stack,var_from_token(token));
+
 				token_free(token);
 				token = token_get();
 				break;	
@@ -338,7 +356,7 @@ int precedence(FILE *filename,parse_context Func_call)
 						stack_pop(stack);
 						stack_push(stack,(void *)operator_non_term);
 						printf("Precedence syntax used rule 1: E -> ID\n");
-	       				gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
+	       				//gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
 					}
 					else{
 						fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",(int)stack_top(stack));
@@ -367,7 +385,7 @@ int precedence(FILE *filename,parse_context Func_call)
 									stack_pop(stack);
 									stack_push(stack,(void *)operator_non_term);
 									printf("Precedence syntax used rule 2: E -> (E)\n");
-	       							gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
+	       						//	gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
 								}
 								else if ((int)stack_top(stack) == operator_func)
 								{
@@ -510,112 +528,112 @@ int precedence(FILE *filename,parse_context Func_call)
 					stack_pop(stack);
 					switch((int)stack_top(stack)){
 						case operator_not:
-							if ((check_rule(stack,rule_3)) == 1 )
+							if ((check_rule(stack, rule_3, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 			  			case operator_mul:
-			  				if ((check_rule(stack,rule_4)) == 1 )
+			  				if ((check_rule(stack,rule_4, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_div:
-	          				if ((check_rule(stack,rule_5)) == 1 )
+	          				if ((check_rule(stack,rule_5, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_sign_div:
-	          				if ((check_rule(stack,rule_6)) == 1 )
+	          				if ((check_rule(stack,rule_6, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	         			case operator_mod:
-	         				if ((check_rule(stack,rule_7)) == 1 )
+	         				if ((check_rule(stack,rule_7, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_and:
-	          				if ((check_rule(stack,rule_8)) == 1 )
+	          				if ((check_rule(stack,rule_8, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_plus:
-	          				if ((check_rule(stack,rule_9)) == 1 )
+	          				if ((check_rule(stack,rule_9, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_minus:
-	          				if ((check_rule(stack,rule_10)) == 1 )
+	          				if ((check_rule(stack,rule_10, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	             		case operator_or:
-	             			if ((check_rule(stack,rule_11)) == 1 )
+	             			if ((check_rule(stack,rule_11, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_equal:
-	          				if ((check_rule(stack,rule_12)) == 1 )
+	          				if ((check_rule(stack,rule_12, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_diff:
-	          				if ((check_rule(stack,rule_13)) == 1 )
+	          				if ((check_rule(stack,rule_13, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_less:
-	          				if ((check_rule(stack,rule_14)) == 1 )
+	          				if ((check_rule(stack,rule_14, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_less_equal:
-	          				if ((check_rule(stack,rule_15)) == 1 )
+	          				if ((check_rule(stack,rule_15, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	                    case operator_greater:
-	                    	if ((check_rule(stack,rule_16)) == 1 )
+	                    	if ((check_rule(stack,rule_16, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	                    case operator_greater_equal:
-	                    	if ((check_rule(stack,rule_17)) == 1 )
+	                    	if ((check_rule(stack,rule_17, var_stack)) == 1 )
 							{
 								return 1;
 							}
 							break;
 
 	          			case operator_in:
-	          				if ((check_rule(stack,rule_18)) == 1 )
+	          				if ((check_rule(stack,rule_18, var_stack)) == 1 )
 							{
 								return 1;
 							}
