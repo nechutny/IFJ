@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "generator.h"
 #include "uStack.h"
+#include "interpret.h"
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +17,12 @@ int main(int argc, char* argv[])
 		return 0;
 		
 	parser();
-	
+
+
+	interpret();
+
+	printf("vysledek %d\n", ((TVar *)((TIns *)global.ins_list->last->data)->adr3)->data.i);
+
 	/*precedence(global.file);
 	while(global.ins_list->act != NULL){
 		printf("ins: %d list first: %d list act: %d list last: %d\n", ((TIns*)global.ins_list->act->data)->type, 

@@ -1,0 +1,323 @@
+
+\documentclass[12pt,a4paper,titlepage,final]{article}
+
+% cestina a fonty
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+% balicky pro odkazy
+\usepackage[bookmarksopen,colorlinks,plainpages=false,urlcolor=blue,unicode]{hyperref}
+\usepackage{url}
+% obrazky
+\usepackage[dvipdf]{graphicx}
+% velikost stranky
+\usepackage[top=3.5cm, left=2.5cm, text={17cm, 24cm}, ignorefoot]{geometry}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% titulní strana
+
+\def\author{Vlk Onřej, xvlkon00, vedoucí týmu, 20\% \\
+Lukeš Petr, xlukes06, 20\% \\
+Filípek Martin, xfilip32, 20\% \\
+Kulda Jiří, xkulda00, 20\% \\
+Jásenský Michal, xjasen00, 20\% \\}
+\def\projname{Implementace interpretu imperativního jazyka IFJ13}
+
+\input{title.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% obsah
+\pagestyle{plain}
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% textova zprava
+\newpage
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Úvod} \label{uvod}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Tato dokumentace popisuje návrh a implementaci interpretu imperativního jazyka IFJ13. Seznámí Vás s našimi postupy implementace interpretu i s problémy, které nás v průběhu práce provázely. Dozvíte se také informace o naší týmové spolupráci a dělbě práce. Následující dokument je pro přehlednost rozdělen na několik kapitol a podkapitol.
+
+%=============================================================================
+\section{Práce v týmu}
+
+Projekt je založen na společné spolupráci více lidí a jelikož to byl první projekt tohoto typu, se kterým jsme se 
+na fakultě setkali, tak nám chvíli trvalo, než jsme si na to zvykli. Prvním velkým rozhodnutím bylo vybrat našeho vedoucího, který se bude o vše starat. Naše volba padla na Ondřeje Vlka, protože již s prací v týmu má zkušenosti.
+
+Prvně jsme se scházeli jednou týdně. Dělení bylo podle toho, kdo chtěl danou část dělat nebo pokud měl již svou část hotovou, tak si vybral něco dalšího. Nebylo však jednoduché vymyslet, jak si co nejefektivněji předávat již vypracované kódy, aby jsme mohli hledat případné chyby a kontrolovat kolik je již splněno. Nakonec jsme si založili \textit{git}, který byl pro nás ideální. Sice \\s ním měl jediné zkušenosti Ondřej, ale rychle všechny naučil jak s ním pracovat.
+
+Schůzky jednou týdně však nebyli ideální a shodli jsme se, že nejlepší volbou bude si sednout všichni společně k jednomu stolu. Šla nám rychleji dělba práce a hlavně komunikace mezi sebou. Nejvíce se to projevilo, když se psali části, které spolu více souvisí a mohli se tak lépe nacházet případné chyby a následně je opravit.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Lexikální analyzátor} \label{lexika}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Lexikální analyzátor je implementován konečným automatem, který načítá zdrojový kód ze souboru a
+vytváří z něj tokeny. 
+
+V našem případě získá vstupní soubor z globální struktury \textit{TData GOD},  
+do níž při svém běhu ukládá aktuální číslo řádku. Je volán syntaktickým analyzátorem, 
+kterému vrací strukturu \textit{TToken} obsahující typ tokenu a v některých případech i data.
+
+Nejdříve se volá funkce \textit{get\_first}, která zjistí, jestli jde o správný soubor obsahující 
+úvodní značku \textit{$<$?php}. Pokud je vše v pořádku, je volána samotná funkce \textit{token\_get}, 
+která vytvoří token.  
+
+Načítání znaků ze souboru zajišťuje funkce \textit{fgetc()} a na základě načteného lexému se rozhoduje,
+jaký typ tokenu bude vrácen. V některých případech je potřeba načtený znak zpět vrátit do souboru k tomu 
+nám posloužila funkce \textit{ungetc()}.
+
+Zjednodušený obrázek naší implementace naleznete na poslední straně(\ref{konecny automat}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Syntaktický analyzátor} \label{syntaktika}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Syntaktický analyzátor tvoří jádro celého překladače. Volá lexikální analyzátor a zpracovává navrácené tokeny. 
+Z těchto tokenů podle gramatických pravidel vytváří vnitřní kód.
+
+Pro správný chod syntaktické analýzy bylo zapotřebí vytvořit gramatická pravidla. Jejich formulování rozpoutalo
+v týmu rozsáhlou výměnu názorů. Tento problém byl nakonec vyřešen a shodli jsme se, že samotná implementace nebyla
+tak náročná jako formulování gramatických pravidel. Stanovili jsme tato  gramatická pravidla:\\
+
+\footnotesize
+\begin{tabular}{|c|c|l|}
+ \hline
+ 1. & $<main\_body>$ & EOF \\
+ \hline
+ 2. & $<main\_body>$ & $<flow>$$<main\_body>$ \\
+ \hline
+ 3. & $<main\_body>$ &  FUNCTION FNAME($<params>$)\{$<flow>$\}$<main\_body>$ \\
+ \hline
+ 4. & $<flow>$ &  $\epsilon$ \\
+ \hline
+ 5. & $<flow>$ &  VAR = $<assign>$;$<flow>$ \\
+ \hline
+ 6. & $<flow>$ &  IF($<expr>$)\{$<flow>$\}ELSE\{$<flow>$\} \\
+ \hline
+ 7. & $<flow>$ &  WHILE($<expr>$)\{$<flow>$\}$<flow>$ \\
+ \hline
+ 8. & $<flow>$ &  RETURN$<expr>$;$<flow>$ \\
+ \hline
+ 9. & $<flow>$ &  FNAME($<params>$);$<flow>$ \\
+ \hline
+ 10. & $<flow>$ & \{$<flow>$\}$<flow>$ \\
+ \hline
+ 11. & $<expr>$ & viz. precedenční syntaktická analýza \\
+ \hline
+ 12. & $<params>$ &  $\epsilon$ \\
+ \hline
+ 13. & $<params>$ &  VAR $<param>$ \\
+ \hline
+ 14. & $<params>$ &  CONST $<param>$ \\
+ \hline
+ 15. & $<param>$ &  $\epsilon$ \\
+ \hline
+ 16. & $<param>$ &  , $<paramx>$$<params>$ \\
+ \hline
+ 17. & $<assign>$ &  $<expr>$ \\
+ \hline
+ 18. & $<assign>$ &  FNAME ($<params>$) \\
+ \hline
+ 19. & $<paramx>$ & VAR \\
+ \hline
+ 20. & $<paramx>$ &  CONST \\
+ \hline
+\end{tabular}
+\\\\\\
+\normalsize
+Rozhodli jsme se, že naši syntaktickou nalýzu budeme řešit pomocí prediktativní analýzi místo rekurzivního sestupu. 
+Tato implementace se nám zdála jednoduší a umožnila nám rychle přijít na chyby v pravidlech. Pro prediktativní analýzu 
+jsem vytvořili tuto LL tabulku: \\
+
+\scriptsize
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+	\hline
+		& function & fname & var & if & while & return & \{ & \} & ( & ) & ; & , & eof & const & invalid \\
+	\hline
+	$<main\_body>$ & 3 & 2 & 2 & 2 & 2 & 2 & 0 & 2 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+	\hline
+	$<flow>$ & 4 & 9 & 5 & 6 & 7 & 8 & 10 & 4 & 0 & 4 & 4 & 0 & 4 & 0 & 0 \\
+	\hline
+	$<params>$ & 0 & 0 & 13 & 0 & 0 & 0 & 0 & 0 & 0 & 12 & 0 & 0 & 0 & 14 & 0 \\
+	\hline
+	$<param>$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 15 & 0 & 16 & 0 & 0 & 0 \\
+	\hline
+	$<assign>$ & 0 & 18 & 17 & 0 & 0 & 0 & 0 & 0 & 17 & 0 & 0 & 0 & 0 & 17 & 17 \\
+	\hline
+	$<expr>$ & \multicolumn{15}{l|}{přešeno přes precedenční syntaktickou analýzu} \\
+	\hline
+	$<paramx>$ & 0 & 0 & 19 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 20 & 0 \\
+	\hline
+\end{tabular}
+\\\\\\
+\normalsize
+\textbf{Terminály:}\\
+FUNCTION, FNAME, VAR, IF, WHILE, RETURN, ELSE, {}, (), ;, =, , , EOF, CONST,\\
+INVALID\\\\
+\textbf{Nonterminály:}\\
+$<main\_body>$, $<flow>$, $<params>$, $<param>$, $<assign>$, $<expr>$, $<paramx>$\\
+
+
+Pro pravidlo $<expr>$ jsme si vytvořili precedenční tabulku, která nám provádí syntaktický překlad výrazů. 
+Tato tabulka byla vytvořená pomocí pravidel jazyka IFJ13.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Vestavěné funkce} \label{vestavene}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%=============================================================================
+\subsection{Obecně} 
+
+Tyto funkce mají poskytovat základná funkce, které jsou přímo implementovány v interpetu a jsou využitelné
+v jazyce IFJ13. Nejdříve bych Vás chtěl trochu seznámit s problematikou naší implementace těchto funkcí. 
+
+Bylo nám zadáno, aby všechny tyto funkce byly schopné, přetypovat předaný parametr na správný datový typ. 
+A v tomto okamžiku jsme narazili na velký problém. Měli jsme za to, že používání voidových funkcí bude nejlepší 
+volbou, ale jak se ukázalo, tak nebylo. Nakonec se nám však vše podařilo vyřešit.
+
+Popis těchto funkcí najdete v další podsekcích. Podle našeho vybraného zadání jsme měli využít Merge sort, 
+Knuth-Morris-Prattův algoritmus a binární vyhledávací strom. Binární vyhledávací strom sice není vestavěná 
+funkce, ale je obsažen v \textit{ial.c} stejně jako Merge sort a Knuth-Morris-Prattův algoritmus, proto jsme 
+se rozhodli jej zařadit do této sekce. Těmto funkcím se věnujeme jednotlivě.
+
+%=============================================================================
+\subsection{Ostatní vestavěné funkce}
+
+Vzhledem k velké podobnosti implementace následujících funkcí jsou zahrnuty v jedné podkapitole.
+
+V případě funkcí boolval, doubleval, intval a strval se jedná o přetypování libovolného datového typu
+na požadovaný typ. 
+
+Funkce get string, put string, strlen a get substring zpracovávají řetězce požadovaným způsobem.
+
+Parametry jsou funkcím předány ve struktuře typu \textit{TList}, kde jsou uspořádány do lineárního seznamu. 
+Mimo tuto strukturu je ještě předávána struktura typu \textit{TVar}, do které je uložen výsledek daných funkcí. 
+Funkce vracejí hodnotu typu integer, kde 0 detekuje úspěch a cokoliv jiného detekuje chybu. 
+
+Vzhledem k struktuře předávaných parametrů bylo nutné použít přetypování na vhodné typy, což bylo náročné na 
+udržení pozornosti při programování. Do struktury \textit{TVar} lze uložit pouze hodnoty typu integer, 
+double a odkaz na strukturu typu \textit{TString}. Z toho vyplývá, že bylo zapotřebí vymyslet jak zde uložit 
+hodnotu typu bool a NULL.
+Hodnota bool je ve struktuře \textit{TVar} uložena jako hodnota integer, kde 0 reprezentuje false a 1 true. 
+NULL je prezentován NULLovým odkazem na strukturu \textit{TString}.
+
+%=============================================================================
+\subsection{Řazení řetězce}
+
+Tato funkce je realizována algoritmem nazývaným Merge sort. Jde o řadící algoritmus, který využívá rekurzivního 
+dělení pole na poloviny. 
+
+V naší implementaci očekává struktury \textit{TList} a \textit{TVar}. Ze struktury \textit{TList} získá vstupní řetězec, 
+který uloží do nově vytvořené struktury \textit{TString}. Z této struktury poté získá délku řetězce. Algoritmus začíná od dvou 
+prvních znaků levé poloviny a seřadí je, pokračuje dokud nenarazí na rozdělení polovin. 
+Poté provede to stejné s pravou polovinou. Při vynořování z rekurzivního volání spojí poloviny do sebe.	
+Seřazený řetězec vrátí ve struktuře \textit{TVar}.
+
+Mezi výhody použí Merge sortu patří logaritmická časová složitost \begin{math}O(n*log(n))\end{math}. 
+Jeho nevýhodou je nutnost alokace pomocného pole o stejné velikosti, jako je velikost řazeného pole. 
+
+%=============================================================================
+\subsection{Vyhledávání řetězce v podřetězci}
+
+Tuto funkci jsme měli realizovat pomocí Knuth-Morris-Prattova algoritmu. Tento algoritmus vyhledává v řetězci 
+první výskyt podřetězce. Při úspěšném nalezení podřetězce v řetězci vrátí index do řetězce, na němž začíná hledaný 
+podřetězec. 
+
+Algoritmus je založen na konečném automatu. Vytvoří tzv. vektor \textit{fail}, který udává o kolik znaků se máme posunout při neúspěšném porovnání a poté zkusit opět porovnat. Toto posouvání o více pozic urychluje vyhledávání, protože nedochází k opětovnému porovnání již porovnaných částí. 
+
+V naší implementaci algoritmus očekává dva paremetry, jeden typu \textit{TList}, ze kterého získá vyhledávaný podřetězec, řetězec v němž se má vyhledávat a jejich délku. Druhý parametr je struktura \textit{TVar} a do níž 
+se vrátí hodnota typu integer, kde -1 detekuje neúspěch a pokud byl podřetězec nalezen, vrátí pozice znaku na 
+které byl podřetězec nalezen.
+
+%=============================================================================
+\subsection{Tabulka symbolů}
+
+Je tvořena pomocí binárního vyhledávacího stromu. Jeho výhodou je, že jsou v něm prvky setříděny tak, že klíče všech uzlů levého podstromu 
+jsou menší než klíč uzlu a klíče pravého pravého podstromu jsou větší než klíč uzlu. To usnadňuje vyhledávání a nalezení prvku je rychlejší. 
+Jeho nevýhodou je, že musíme prvky udržovat setříděné, to znamená, že pokud chceme vložit nový prvek, musí být vložen přesně tam, kam podle 
+své velikosti patří.
+
+V binárním stromu máme uloženy proměnné a názvy funkcí. Naše implementace je zapsána nerekurzivně. Jediný problém se kterým jsme se setkali, 
+bylo využití fuknce \textit{search} ve fuknci \textit{insert}. Problém byl v tom, že jsme takto potřebovali vrátit buď nalezený prvek nebo 
+poslední prvek podstromu, za který se má vložit nový prvek. To jsme vyřešili proměnnou \textit{find} typu intiger. Pokud voláme \textit{search} 
+z funkce \textit{insert}, je hodnota nastavena na 0 a pokud byl prvek nalezen, vrátí se nám 1 což detekuje, že se nemá prvek vytvořit. Pokud voláme 
+\textit{search} samostatně, je hodnota nastavena na 1 a vrací se buď nalezený prvek nebo NULL.
+
+\newpage
+%=============================================================================
+\subsection{Interpret}
+
+Jeho úkolem je vykonávání kódu. Zvolili jsem interpret pracující s tříadresným kódem, který generuje generátor jenž je volán syntaktickou analýzou. Vygenerované instrukce jsou uloženy v listu.
+
+Na základě typu instrukce z listu instrukcí se rozhoduje, co se má provést. Máme celkem 15 typů instrukcí. Matematické funkce jsou řešeny pomocí fuknce \textit{do\_math}. Tato funkce správně přetypuje výslednou proměnnou a detekuje sématické chyby jako je dělení nulou a chybu typové konpatibility ve výrazu. 
+
+Instrukce popisuje následující tabulka:\\\\
+\scriptsize
+\begin{tabular}{|p{2.15cm}|l|l|l|p{3cm}|}
+	\hline 
+	 {\bf Typ instrukce} & {\bf Adresa 1} & {\bf Adresa 2} & {\bf Adresa 3} & {\bf Popis}\\
+	 \hline \hline
+	 ins\_indef & NULL & NULL & NULL & nedefinovaná instrukce \\
+	 \hline
+	 ins\_nop & NULL & NULL & NULL & prázdná instrukce \\
+	 \hline
+	 ins\_add, ins\_sub, ins\_mul, ins\_div & operand 1 & operand 2 & výsledek & matematické operace \\
+	 \hline 
+	 ins\_cmp & operand 1 & operand 2 & výsledek porovnání & porovnávání \\
+	 \hline
+	 ins\_jmp & místo skoku & adresa podmínky nebo NULL & NULL & skoková instrukce \\
+	 \hline
+	 ins\_njmp & místo skoku & adresa podmínky & NULL & negace jumpu \\
+	 \hline
+	 ins\_call & struktura funkce & list parametrů & NULL & volání funkce \\
+	 \hline
+	 ins\_incall & token\_type & list parametrů & místo návratové hodnoty & volání vestavěné funkce \\
+	 \hline
+	 ins\_ret & návratová hodnota & NULL & místo návratové hodnoty & return \\
+	 \hline
+	 ins\_cont & řetězec 1 & řetězec 2 & výsledný řetězec & instrukce konkatenace \\
+	 \hline
+	 ins\_bool & druh podmínky & výsledek porovnání & boolovská hodnota & převod porovnání na boolovskou hodnotu \\
+	 \hline
+	 ins\_neg\_bool & druh podmínky & výsledek porovnání & boolovská hodnota & převod porovnání na boolovskou hodnotu \\
+	 \hline 
+\end{tabular}
+\normalsize
+
+
+\section{Závěr} \label{zaver}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Projekt byl hodně obsáhlý a náročný. Přínosem tohoto projektu bylo to, že jsme se naučili pracovat v kolektivu, což se hodí pro praxi programátora. Zjistili jsme, že používání void ukazatelů nebyla dobrá volba, protože je těžké udržet pozornost při přetypovávání na správný datový typ. Bohužel se nám nepodařilo úplně splnit tento projekt. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{thebibliography}{2}
+\bibitem{studijni}
+Studijní materiály do předmětu IFJ a IAL
+\bibitem{wiki}
+Wikipedia
+
+\end{thebibliography}
+
+\newpage
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=17.5cm]{img/graph.eps}
+  \caption{Inplementace konečného automatu}
+  \label{konecny automat}
+\end{figure}
+
+
+\end{document}

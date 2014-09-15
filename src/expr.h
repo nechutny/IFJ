@@ -28,7 +28,8 @@ typedef enum {
 	operator_func,
 	operator_comma,
 	operator_dolar,
-	operator_non_term
+	operator_non_term,
+	operator_array
 } operator_number;
 
 typedef enum{
@@ -77,6 +78,6 @@ typedef enum
 int precedence();
 precedence_number get_stack();
 precedence_number enum_sign();
-int check_rule();
+int check_rule(TStack * stack, TRule rule, TStack *var_stack);
 
 #endif
