@@ -55,6 +55,15 @@ do {											\
 
 
 /**
+ * Remove data from top of stack
+ * 
+ * @param stack pointer to stack for remove data
+ **/	
+#define uStack_remove(stack)                                \
+	(stack->count-- )
+
+
+/**
  * Pop data from stack
  *
  * @param	type	data type of poped value. Must be same for all
@@ -64,6 +73,7 @@ do {											\
  */
 #define uStack_pop(type, stack)								\
 	(stack->count--, ((type *)stack->data)[stack->count])
+	
 
 
 /**
@@ -75,7 +85,7 @@ do {											\
  * @return	Value from stack
  */
 #define uStack_top(type, stack)								\
-	(type *)stack->data)[stack->count]
+	((type *)stack->data)[stack->count]
 	
 
 /**
@@ -85,7 +95,7 @@ do {											\
  * @return	Number of items in stack
  */
 #define uStack_count(stack)								\
-	stack->count;
+	(stack->count)
 
 
 /**
