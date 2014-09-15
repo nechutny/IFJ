@@ -12,11 +12,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 typedef struct {
 	unsigned int allocated;
 	unsigned int count;
 	void **data;
 } uStack_t;
+
 
 /**
  * Prepare variable for stack
@@ -25,6 +27,7 @@ typedef struct {
  */
 #define uStack_init(name)	\
 	uStack_t* name = _malloc(sizeof(uStack_t));
+
 
 /**
  * Push data to stack
@@ -50,6 +53,7 @@ do {											\
 	stack->count++;									\
 } while(0);
 
+
 /**
  * Pop data from stack
  *
@@ -61,6 +65,7 @@ do {											\
 #define uStack_pop(type, stack)								\
 	(stack->count--, ((type *)stack->data)[stack->count])
 
+
 /**
  * Return number of pushed values in stack
  *
@@ -69,6 +74,7 @@ do {											\
  */
 #define uStack_count(stack)								\
 	stack->count;
+
 
 /**
  * Free all allocated memory for stack and data
