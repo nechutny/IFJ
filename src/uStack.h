@@ -67,6 +67,18 @@ do {											\
 
 
 /**
+ * Return data from top of stack
+ *
+ * @param	type	data type of poped value. Must be same for all
+ * 			poped values to stack. eg. double, long
+ * @param	stack	pointer to stack for pop
+ * @return	Value from stack
+ */
+#define uStack_top(type, stack)								\
+	(type *)stack->data)[stack->count]
+	
+
+/**
  * Return number of pushed values in stack
  *
  * @param	stack	pointer to stack
