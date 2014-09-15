@@ -50,9 +50,9 @@ do {											\
 /**
  * Pop data from stack
  *
- * @param	type	data type of pushed value. Must be same for all
- * 			pushed values to stack. eg. double, long
- * @param	stack	pointer to stack for push
+ * @param	type	data type of poped value. Must be same for all
+ * 			poped values to stack. eg. double, long
+ * @param	stack	pointer to stack for pop
  * @return	Value from stack
  */
 #define uStack_pop(type, stack)						\
