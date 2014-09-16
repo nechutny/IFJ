@@ -58,9 +58,10 @@ do {											\
  * Remove data from top of stack
  * 
  * @param stack pointer to stack for remove data
+ * @return new number of items in stack
  **/	
-#define uStack_remove(stack)                                \
-	(stack->count-- )
+#define uStack_remove(stack)								\
+	--(stack->count)
 
 
 /**
@@ -73,7 +74,6 @@ do {											\
  */
 #define uStack_pop(type, stack)								\
 	(stack->count--, ((type *)stack->data)[stack->count])
-	
 
 
 /**
@@ -86,7 +86,7 @@ do {											\
  */
 #define uStack_top(type, stack)								\
 	((type *)stack->data)[stack->count]
-	
+
 
 /**
  * Return number of pushed values in stack
