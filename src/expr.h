@@ -4,6 +4,7 @@
 #include "stack.h"
 #include "types.h"
 #include "lex.h"
+#include "uStack.h"
 
 typedef enum {
 	operator_not,
@@ -78,6 +79,6 @@ typedef enum
 int precedence();
 precedence_number get_stack();
 precedence_number enum_sign();
-int check_rule(TStack * stack, TRule rule, TStack *var_stack);
+int check_rule(uStack_t * stack, TRule rule, TStack *var_stack);
 
 #endif

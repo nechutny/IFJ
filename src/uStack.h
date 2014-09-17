@@ -57,8 +57,8 @@ do {											\
 /**
  * Remove data from top of stack
  * 
- * @param stack pointer to stack for remove data
- * @return new number of items in stack
+ * @param	stack	pointer to stack for remove data
+ * @return	new number of items in stack
  **/	
 #define uStack_remove(stack)								\
 	--(stack->count)
