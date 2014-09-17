@@ -8,7 +8,7 @@
 
 
 void interpret(){
-	double a,b;
+	double a = 0 ,b = 0;
 
 	while(global.ins_list->act != NULL)
 	{
