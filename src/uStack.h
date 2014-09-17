@@ -78,6 +78,19 @@ do {											\
 
 
 /**
+ * Get item from stack by offset
+ *
+ * @param	type	data type of poped value. Must be same for all
+ * 			poped values to stack. eg. double, long
+ * @param	stack	pointer to stack for data
+ * @param	offset	integer with offset for data (from 0 to n-1)
+ * @return	Value from stack 
+ */
+#define uStack_offset(type, stack,offset)						\
+	((type *)stack->data)[offset]
+
+
+/**
  * Return data from top of stack
  *
  * @param	type	data type of poped value. Must be same for all

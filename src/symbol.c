@@ -85,15 +85,25 @@ void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type)
 	variable->type = symbol_type(token_type);
 }
 
-symbolVariable *create_const(TToken *token){
+
+/**
+ * Create symbolVariable for constant value
+ *
+ * @param	token	pointer to token with value
+ * @return	Pointer to new symbolVariable structure
+ */
+symbolVariable* create_const(TToken *token)
+{
 	if(token == NULL)
 	{
 		fprintf(stderr,"create_const got NULL\n");
 		return NULL;
 	}
-	symbolVariable *var = _malloc(sizeof(symbolVariable));
+	
+	symbolVariable* var = _malloc(sizeof(symbolVariable));
 	var->name = NULL;
 	var->inicialized = 0;
+	
 	switch(token->type)
 	{
 		case token_int:
@@ -101,15 +111,20 @@ symbolVariable *create_const(TToken *token){
 			var->value.value_number = atoi(token->data->data);
 			var->inicialized = 1;
 			return var;
+			break;
+			
 		case token_double:
 			var->type = var_double;
 			var->value.value_double = atof(token->data->data);
 			var->inicialized = 1;
 			return var;
+			break;
+			
 		default:
 			return var;
 	}
 }
+
 
 /**
  * Set correct function return type based on token type
