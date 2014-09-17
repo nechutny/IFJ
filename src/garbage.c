@@ -110,6 +110,7 @@ void global_init()
 void printDataFunction(struct TsymbolFunction* data)
 {
 	printf("\t return type: %d\n",data->returnType);
+	printf("\t start at: %ld\n",data->startOffset);
 	printf("\t arguments: %d\n",data->args_count);
 	for(int i = 0; i < data->args_count; i++)
 	{

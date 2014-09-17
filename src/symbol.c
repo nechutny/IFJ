@@ -144,7 +144,7 @@ void symbol_function_type_set(symbolFunction* variable, TToken_type token_type)
  * @param	var	hash table item reference
  * @param	name	function name
  */
-void symbol_function_init(htab_listitem* var, char* name)
+void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 {
 	var->type = type_function;
 
@@ -152,6 +152,7 @@ void symbol_function_init(htab_listitem* var, char* name)
 	
 	var->ptr.function->args_count = 0;
 	var->ptr.function->args = NULL;
+	var->ptr.function->startOffset = offset;
 	var->ptr.function->name = string_new();
 	string_add(var->ptr.function->name, name);
 }

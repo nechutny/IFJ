@@ -219,6 +219,7 @@ void parser_function()
 {
 	TToken * token = token_get();
 	htab_listitem* var;
+	unsigned long offset = ftell(global.file);
 	
 	if(token->type == token_function)
 	{ /* Function keywords? */
@@ -231,7 +232,7 @@ void parser_function()
 		printf("function %s:\n",token->data->data);
 		/* Add variable to global symbol table */
 		var = htab_create(global.global_symbol, token->data->data);
-		symbol_function_init(var, token->data->data);
+		symbol_function_init(var, token->data->data, offset);
 		token_free(token);
 		
 		token = token_get();
@@ -448,14 +449,12 @@ void parser_code()
 				{ /* Not global variable */
 					if(uStack_count(global.local_symbols) == 0)
 					{ /* Don't look for local variable */
-						printf("1");
 						throw_error(error_var_not_exists);
 					}
 					
 					hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token2->data->data);
 					if(hitem == NULL)
 					{ /* local variable not found */
-						printf("2");
 						throw_error(error_var_not_exists);
 					}
 				}
