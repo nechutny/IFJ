@@ -86,6 +86,11 @@ void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type)
 }
 
 symbolVariable *create_const(TToken *token){
+	if(token == NULL)
+	{
+		fprintf(stderr,"create_const got NULL\n");
+		return NULL;
+	}
 	symbolVariable *var = _malloc(sizeof(symbolVariable));
 	var->name = NULL;
 	var->inicialized = 0;
