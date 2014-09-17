@@ -93,6 +93,14 @@ void throw_error(errors code)
 			fprintf(stderr,"Expected ']'");
 			break;
 
+		case error_function_not_exists:
+			fprintf(stderr,"Called function not exists");
+			break;
+
+		case error_function_is_var:
+			fprintf(stderr,"Called function name is variable");
+			break;
+
 		default:
 			fprintf(stderr, "Unkown error");
 			break;

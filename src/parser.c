@@ -406,6 +406,7 @@ void parser_main()
  */
 void parser_code()
 {
+	htab_listitem* hitem;
 	printf("One command: ");
 	
 	TToken * token = token_get();
@@ -414,6 +415,7 @@ void parser_code()
 	{
 		case token_identifier:
 			/* assign or function call */
+			hitem = htab_lookup(global.global_symbol,token->data->data);
 			token_free(token);
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
@@ -443,6 +445,14 @@ void parser_code()
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
 				printf("function call\n");
+				if(hitem == NULL)
+				{
+					throw_error(error_function_not_exists);
+				}
+				else if(hitem->type != type_function)
+				{
+					throw_error(error_function_is_var);
+				}
 				token_return_token(token);
 				if(precedence(global.file, context_args))
 				{
