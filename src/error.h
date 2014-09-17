@@ -30,6 +30,7 @@ typedef enum{
 	error_bracket_right,
 	error_function_not_exists,
 	error_function_is_var,
+	error_var_not_exists,
 	error_unkown
 } errors;
 

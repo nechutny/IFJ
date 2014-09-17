@@ -101,6 +101,10 @@ void throw_error(errors code)
 			fprintf(stderr,"Called function name is variable");
 			break;
 
+		case error_var_not_exists:
+			fprintf(stderr,"Used variable not exists");
+			break;
+
 		default:
 			fprintf(stderr, "Unkown error");
 			break;

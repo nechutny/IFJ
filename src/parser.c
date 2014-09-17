@@ -154,7 +154,7 @@ void parser_var()
 			}
 			else
 			{ /* Add variable to local symbol table in stack */
-				var = htab_create(uStack_pop(htab_t*,global.local_symbols), token->data->data);
+				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data->data);
 				symbol_variable_init(var, token->data->data);
 				uStack_push(htab_listitem*, varStack, var);
 			}
@@ -179,6 +179,7 @@ void parser_var()
 			{
 				var = uStack_pop(htab_listitem*, varStack);
 				symbol_variable_type_set(var->ptr.variable, token->type);
+				printf("seting type %d\n",token->type);
 			}
 			token_free(token);
 			token = token_get();
@@ -274,11 +275,11 @@ void parser_function()
 		token_free(token);
 
 		htab_t* table = htab_init(42);
-		uStack_push(htab_t*,global.local_symbols,table);
+		uStack_push(htab_t*, global.local_symbols, table);
 
 		/* Function variables */
 		parser_vars();
-		
+
 		token = token_get();
 		if(token->type != token_begin)
 		{ /* Function body */
@@ -294,6 +295,7 @@ void parser_function()
 
 		printf("\n\n Local symbols:\n");
 		htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
+		
 		uStack_remove(global.local_symbols);
 		
 		if(token->type != token_end)
@@ -422,20 +424,37 @@ void parser_code()
 	printf("One command: ");
 	
 	TToken * token = token_get();
+	TToken* token2;
 	
 	switch(token->type)
 	{
 		case token_identifier:
 			/* assign or function call */
 			hitem = htab_lookup(global.global_symbol,token->data->data);
-			token_free(token);
+			token2 = token;
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
-				//if(hitem == NULL || hitem->type != type_variable)
-				//{ /* Only global variables */
-				//	throw_error(error_type);
-				//}
+				if(hitem == NULL)
+				{ /* Not global variable */
+					if(uStack_count(global.local_symbols) == 0)
+					{ /* Don't look for local variable */
+						printf("1");
+						throw_error(error_var_not_exists);
+					}
+					
+					hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token2->data->data);
+					if(hitem == NULL)
+					{ /* local variable not found */
+						printf("2");
+						throw_error(error_var_not_exists);
+					}
+				}
+				else if(hitem->type != type_variable)
+				{
+					throw_error(error_var_not_exists);
+				}
+				
 				if(token->type == token_bracket_left)
 				{ /* Array index? */
 					token_return_token(token);
@@ -462,7 +481,9 @@ void parser_code()
 					}
 				}
 				else
+				{
 					throw_error(error_type);
+				}
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */

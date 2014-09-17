@@ -17,7 +17,7 @@
  * @param	function	pointer on function
  */
 void htab_foreach(htab_t *t, void (*function)(char key[], item_type type, htab_listitem* item))
-{
+{	
 	htab_listitem* item = NULL;
 
 	for(unsigned i = 0; i < t->htab_size; i++)
