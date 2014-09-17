@@ -45,7 +45,7 @@ variableType symbol_type(TToken_type token_type)
 			return variable_integer;
 			break;
 
-		case token_double:
+		case token_real:
 			return variable_double;
 			break;
 
