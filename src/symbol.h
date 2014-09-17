@@ -51,6 +51,8 @@ typedef struct TsymbolFunction {
 void symbol_variable_init(htab_listitem* var, char* name);
 void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type);
 
+symbolVariable *create_const(TToken *token);
+
 void symbol_function_init(htab_listitem* var, char* name);
 void symbol_function_type_set(symbolFunction* variable, TToken_type token_type);
 void symbol_function_arg_add(symbolFunction* variable, char* name, TToken_type token_type);
