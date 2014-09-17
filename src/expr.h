@@ -2,6 +2,7 @@
 #define EXPR_H
 
 #include "stack.h"
+#include "uStack.h"
 #include "types.h"
 #include "lex.h"
 #include "uStack.h"
@@ -79,6 +80,7 @@ typedef enum
 int precedence();
 precedence_number get_stack();
 precedence_number enum_sign();
+precedence_number get_sign();
 int check_rule(uStack_t * stack, TRule rule, TStack *var_stack);
 
 #endif
