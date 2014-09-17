@@ -27,6 +27,7 @@ void symbol_variable_init(htab_listitem* var, char* name)
 	var->ptr.variable = _malloc(sizeof(symbolVariable));
 
 	var->ptr.variable->name = string_new();
+	var->ptr.variable->inicialized = 0;
 	string_add(var->ptr.variable->name, name);
 }
 
