@@ -7,7 +7,6 @@
 #ifndef _USTACK_H_
 #define _USTACK_H_
 
-#include "garbage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +17,8 @@ typedef struct {
 	unsigned long allocated;
 	void **data;
 } uStack_t;
+
+#include "garbage.h"
 
 
 /**
