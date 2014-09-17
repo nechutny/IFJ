@@ -240,6 +240,9 @@ void parser_function()
 			throw_error(error_parenthesis_left);
 		}
 		token_free(token);
+
+		htab_t* table = htab_init(42);
+		uStack_push(htab_t*, global.local_symbols, table);
 		
 		/* Function arguments */
 		parser_args(var->ptr.function);
@@ -273,8 +276,7 @@ void parser_function()
 		}
 		token_free(token);
 
-		htab_t* table = htab_init(42);
-		uStack_push(htab_t*, global.local_symbols, table);
+		
 
 		/* Function variables */
 		parser_vars();
@@ -329,6 +331,7 @@ void parser_function()
  */
 void parser_args(symbolFunction* func)
 {
+	htab_listitem* var;
 	TToken * token2;
 	TToken * token = token_get();
 
@@ -343,6 +346,11 @@ void parser_args(symbolFunction* func)
 			if(isVariableType(token2->type))
 			{ /* Datetype */
 				symbol_function_arg_add(func, token->data->data, token2->type);
+				
+				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data->data);
+				symbol_variable_init(var, token->data->data);
+				symbol_variable_type_set(var->ptr.variable, token2->type);
+				
 				token_free(token);
 				token_free(token2);
 				token = token_get();
