@@ -14,6 +14,12 @@
 #include "error.h"
 
 
+/**
+ * Set correct value to hash table for variable
+ *
+ * @param	var	hash table item reference
+ * @param	name	Variable name
+ */
 void symbol_variable_init(htab_listitem* var, char* name)
 {
 	var->type = type_variable;
@@ -24,6 +30,13 @@ void symbol_variable_init(htab_listitem* var, char* name)
 	string_add(var->ptr.variable->name, name);
 }
 
+
+/**
+ * Translate token_type to variableType
+ *
+ * @param	token_type	type of token
+ * @return	variable type
+ */
 variableType symbol_type(TToken_type token_type)
 {
 	switch(token_type)
@@ -60,18 +73,37 @@ variableType symbol_type(TToken_type token_type)
 	return token_integer;
 }
 
+
+/**
+ * Set correct variable type based on token type
+ *
+ * @param	variable	Pointer to variable structure
+ * @param	token_type	Token type
+ */
 void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type)
 {
 	variable->type = symbol_type(token_type);
 }
 
 
+/**
+ * Set correct function return type based on token type
+ *
+ * @param	variable	Pointer to fucntion structure
+ * @param	token_type	Token type
+ */
 void symbol_function_type_set(symbolFunction* variable, TToken_type token_type)
 {
 	variable->returnType = symbol_type(token_type);
 }
 
 
+/**
+ * Set correct value to hash table for function
+ *
+ * @param	var	hash table item reference
+ * @param	name	function name
+ */
 void symbol_function_init(htab_listitem* var, char* name)
 {
 	var->type = type_function;
@@ -84,6 +116,14 @@ void symbol_function_init(htab_listitem* var, char* name)
 	string_add(var->ptr.function->name, name);
 }
 
+
+/**
+ * Add one more argument to function structure
+ *
+ * @param	func		pointer to fucntion structure
+ * @param	name		variable name
+ * @param	token_type	variable type
+ */
 void symbol_function_arg_add(symbolFunction* func, char* name, TToken_type token_type)
 {
 	(func->args_count)++;

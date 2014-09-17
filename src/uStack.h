@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+/* !!! count must be first element and UL for inicializing in uStack_init !!! */
 typedef struct {
 	unsigned long count;
 	unsigned long allocated;
