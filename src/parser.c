@@ -420,6 +420,10 @@ void parser_code()
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
+				//if(hitem == NULL || hitem->type != type_variable)
+				//{ /* Only global variables */
+				//	throw_error(error_type);
+				//}
 				if(token->type == token_bracket_left)
 				{ /* Array index? */
 					token_return_token(token);
@@ -437,12 +441,6 @@ void parser_code()
 					token_free(token);
 				}
 				printf("assign\n");
-
-				if(hitem->type != type_variable)
-				{
-					fprintf(stderr, "not var \n");
-					throw_error(error_type);
-				}
 
 				if(precedence(global.file, context_assign, hitem->ptr.variable))
 				{
