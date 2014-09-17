@@ -179,7 +179,6 @@ void parser_var()
 			{
 				var = uStack_pop(htab_listitem*, varStack);
 				symbol_variable_type_set(var->ptr.variable, token->type);
-				printf("seting type %d\n",token->type);
 			}
 			token_free(token);
 			token = token_get();
@@ -280,6 +279,9 @@ void parser_function()
 		/* Function variables */
 		parser_vars();
 
+		printf("\n\n Local symbols:\n");
+		htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
+
 		token = token_get();
 		if(token->type != token_begin)
 		{ /* Function body */
@@ -293,8 +295,7 @@ void parser_function()
 			token = token_get();
 		} while(token->type != token_end);
 
-		printf("\n\n Local symbols:\n");
-		htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
+		
 		
 		uStack_remove(global.local_symbols);
 		
@@ -631,7 +632,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
-	printf("end if %d\n",token->type);
+	printf("end if\n");
 }
 
 
