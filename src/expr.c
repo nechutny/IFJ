@@ -684,9 +684,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		token_free(token);
 	}
 
-	((TIns *)global.ins_list->act->data)->adr3 = result;
-	_free(((TIns *)global.ins_list->act->data)->adr3);
-
+	if(result != NULL){
+		((TIns *)global.ins_list->act->data)->adr3 = result;
+		_free(((TIns *)global.ins_list->act->data)->adr3);
+	}
 	//token_free(token);
 	
 	return 0;

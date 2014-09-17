@@ -5,6 +5,7 @@
 #include "uStack.h"
 #include "types.h"
 #include "lex.h"
+#include "symbol.h"
 #include "uStack.h"
 
 typedef enum {
@@ -79,7 +80,7 @@ typedef enum
 	rule_19
 } TRule;
 
-int precedence();
+int precedence(FILE *filename,parse_context Func_call, symbolVariable *result);
 precedence_number get_stack();
 precedence_number enum_sign();
 precedence_number get_sign();

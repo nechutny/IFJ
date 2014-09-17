@@ -186,7 +186,7 @@ void parser_var()
 			if(token->type == token_equal)
 			{ /* Inicialize value */
 				token_free(token);
-				if(precedence(global.file, context_assign))
+				if(precedence(global.file, context_assign, NULL))
 				{
 					throw_error(error_expresion);
 				}
@@ -440,7 +440,7 @@ void parser_code()
 				{ /* Array index? */
 					token_return_token(token);
 					
-					if(precedence(global.file, context_index))
+					if(precedence(global.file, context_index, NULL))
 					{
 						throw_error(error_expresion);
 					}
@@ -454,10 +454,15 @@ void parser_code()
 				}
 				printf("assign\n");
 
-				if(precedence(global.file, context_assign, hitem->ptr.variable))
+				if(hitem != NULL)
 				{
-					throw_error(error_expresion);
+					if(precedence(global.file, context_assign, hitem->ptr.variable))
+					{
+						throw_error(error_expresion);
+					}
 				}
+				else
+					throw_error(error_type);
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
@@ -471,7 +476,7 @@ void parser_code()
 					throw_error(error_function_is_var);
 				}
 				token_return_token(token);
-				if(precedence(global.file, context_args))
+				if(precedence(global.file, context_args, NULL))
 				{
 					throw_error(error_expresion);
 				}
@@ -528,7 +533,7 @@ void parser_code()
 			/* return */
 			printf("return \n");
 			token_free(token);
-			if(precedence(global.file, context_assign))
+			if(precedence(global.file, context_assign, NULL))
 			{
 				throw_error(error_expresion);
 			}
@@ -559,7 +564,7 @@ void parser_if()
 	printf("If\n");
 	
 	/* Expresion */
-	if(precedence(global.file, context_if))
+	if(precedence(global.file, context_if, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -665,7 +670,7 @@ void parser_while()
 	printf("while\n");
 	
 	/* Condition */
-	if(precedence(global.file, context_while))
+	if(precedence(global.file, context_while, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -722,7 +727,7 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	if(precedence(global.file, context_repeat))
+	if(precedence(global.file, context_repeat, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -753,7 +758,7 @@ void parser_for()
 	token_free(token);
 
 	/* Inicial. value */
-	if(precedence(global.file, context_for_init))
+	if(precedence(global.file, context_for_init, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -766,7 +771,7 @@ void parser_for()
 	token_free(token);
 
 	/* Target value */
-	if(precedence(global.file, context_for_to))
+	if(precedence(global.file, context_for_to, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -825,7 +830,7 @@ void parser_switch()
 	{ /* Cases */
 		printf("case\n");
 		token_return_token(token);
-		if(precedence(global.file, context_case))
+		if(precedence(global.file, context_case, NULL))
 		{
 			throw_error(error_expresion);
 		}
