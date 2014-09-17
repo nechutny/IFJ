@@ -8,6 +8,7 @@
 #define _SYMBOL_H_
 
 #include "string.h"
+#include "types.h"
 
 
 typedef enum {
@@ -18,6 +19,11 @@ typedef enum {
 	variable_char,
 	variable_array
 } variableType;
+
+typedef struct {
+	variableType type;
+	TString* name;
+} functionArgs;
 
 typedef struct TsymbolVariable {
 	TString* name;			// Variable name
@@ -33,13 +39,20 @@ typedef struct TsymbolVariable {
 } symbolVariable;
 
 typedef struct TsymbolFunction {
-	struct TString* name;
+	TString* name;
 	variableType returnType;
-	variableType *args;
+	unsigned int args_count;
+	functionArgs *args;
 } symbolFunction;
+
 
 #include "htable.h"
 
 void symbol_variable_init(htab_listitem* var, char* name);
+void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type);
+
+void symbol_function_init(htab_listitem* var, char* name);
+void symbol_function_type_set(symbolFunction* variable, TToken_type token_type);
+void symbol_function_arg_add(symbolFunction* variable, char* name, TToken_type token_type);
 
 #endif

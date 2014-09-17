@@ -48,7 +48,7 @@ htab_listitem *htab_lookup(htab_t *t, const char *key);
 htab_listitem* htab_create(htab_t *t, const char *key);
 
 // Call function on each item
-void htab_foreach(htab_t *t, void (*function)(char key[], item_type type, void* ptr));
+void htab_foreach(htab_t *t, void (*function)(char key[], item_type type, htab_listitem* item));
 
 // Find and destroy (item)!
 void htab_remove(htab_t *t, const char *key);

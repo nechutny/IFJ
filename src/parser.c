@@ -12,6 +12,9 @@
 #include "garbage.h"
 #include "expr.h"
 #include "error.h"
+#include "uStack.h"
+
+parse_context local_context;
 
 static int isVariableType(int type);
 
@@ -60,9 +63,11 @@ void parser_file()
 	token_free(token);
 	
 	/* Global variables */
+	local_context = context_global;
 	parser_vars();
 	
 	/* Functions */
+	local_context = context_function;
 	parser_function();
 	
 	token = token_get();
@@ -124,6 +129,9 @@ void parser_vars()
 void parser_var()
 {
 	TToken * token = token_get();
+	htab_listitem* var;
+
+	uStack_init(varStack);
 	
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
@@ -137,8 +145,12 @@ void parser_var()
 			}
 			printf("Variable %s\n",token->data->data);
 
-			htab_listitem* var = htab_create(global.global_symbol, token->data->data);
-			symbol_variable_init(var, token->data->data);
+			if(local_context == context_global)
+			{ /* Add variable to global symbol table */
+				var = htab_create(global.global_symbol, token->data->data);
+				symbol_variable_init(var, token->data->data);
+				uStack_push(htab_listitem*, varStack, var);
+			}
 			
 			token_free(token);
 
@@ -154,6 +166,15 @@ void parser_var()
 		token = token_get();
 		if(isVariableType(token->type) )
 		{ /* var type */
+			
+			if(local_context == context_global)
+			{ /* Set variable type to global symbol table */
+				while(uStack_count(varStack) > 0)
+				{
+					var = uStack_pop(htab_listitem*, varStack);
+					symbol_variable_type_set(var->ptr.variable, token->type);
+				}
+			}
 			token_free(token);
 			token = token_get();
 
@@ -192,6 +213,8 @@ void parser_var()
 void parser_function()
 {
 	TToken * token = token_get();
+	htab_listitem* var;
+	
 	if(token->type == token_function)
 	{ /* Function keywords? */
 		token_free(token);
@@ -201,6 +224,9 @@ void parser_function()
 			throw_error(error_identifier);
 		}
 		printf("function %s:\n",token->data->data);
+		/* Add variable to global symbol table */
+		var = htab_create(global.global_symbol, token->data->data);
+		symbol_function_init(var, token->data->data);
 		token_free(token);
 		
 		token = token_get();
@@ -211,7 +237,7 @@ void parser_function()
 		token_free(token);
 		
 		/* Function arguments */
-		parser_args();
+		parser_args(var->ptr.function);
 		
 		token = token_get();
 		if(token->type != token_parenthesis_right)
@@ -232,6 +258,7 @@ void parser_function()
 		{ /* Return type */
 			throw_error(error_type);
 		}
+		symbol_function_type_set(var->ptr.function, token->type);
 		token_free(token);
 		
 		token = token_get();
@@ -285,26 +312,29 @@ void parser_function()
  * Parse function arguments
  * ID : type [, args]
  */
-void parser_args()
+void parser_args(symbolFunction* func)
 {
+	TToken * token2;
 	TToken * token = token_get();
 
 	if(token->type == token_identifier)
 	{ /* ID */
-		token_free(token);
-		token = token_get();
-		if(token->type == token_colon)
+		//token_free(token);
+		token2 = token_get();
+		if(token2->type == token_colon)
 		{
-			token_free(token);
-			token = token_get();
-			if(isVariableType(token->type))
+			token_free(token2);
+			token2 = token_get();
+			if(isVariableType(token2->type))
 			{ /* Datetype */
+				symbol_function_arg_add(func, token->data->data, token2->type);
 				token_free(token);
+				token_free(token2);
 				token = token_get();
 				if(token->type == token_comma)
 				{ /* Comma, so check for more arguments? */
 					token_free(token);
-					parser_args();
+					parser_args(func);
 				}
 				else
 				{ /* No more arguments */
@@ -323,6 +353,8 @@ void parser_args()
 	}
 	else if(token->type == token_parenthesis_right)
 	{ /* Got ')' so function haven't any argument */
+		func->args_count = 0;
+		func->args = NULL;
 		token_return_token(token);
 	}
 	else

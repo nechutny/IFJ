@@ -103,14 +103,34 @@ void global_init()
 	atexit(global_free);
 }
 
-void printData(char key[], item_type type, void* ptr)
+void printDataFunction(struct TsymbolFunction* data)
 {
-	if(type == type_variable)
+	printf("\t return type: %d\n",data->returnType);
+	printf("\t arguments: %d\n",data->args_count);
+	for(int i = 0; i < data->args_count; i++)
 	{
-		ptr = (symbolVariable*)ptr;
+		printf("\t\targ type: %d, name: %s\n",data->args[i].type, data->args[i].name->data);
 	}
-	
-	printf("Name:\t%s,\tVar=0/Func=1: %d\n",key, type); 
+}
+
+void printDataVariable(struct TsymbolVariable* data)
+{
+	printf("\t type: %d\n",data->type);
+}
+
+void printData(char key[], item_type type, htab_listitem* item)
+{
+	printf("Name: %s",key);
+	if(type  == type_function)
+	{
+		printf(" - function\n");
+		printDataFunction(item->ptr.function);
+	}
+	else
+	{
+		printf(" - variable\n");
+		printDataVariable(item->ptr.variable);
+	}
 }
 
 /**
