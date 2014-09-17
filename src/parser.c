@@ -437,7 +437,14 @@ void parser_code()
 					token_free(token);
 				}
 				printf("assign\n");
-				if(precedence(global.file, context_assign))
+
+				if(hitem->type != type_variable)
+				{
+					fprintf(stderr, "not var \n");
+					throw_error(error_type);
+				}
+
+				if(precedence(global.file, context_assign, hitem->ptr.variable))
 				{
 					throw_error(error_expresion);
 				}

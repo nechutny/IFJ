@@ -65,6 +65,26 @@ void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type)
 	variable->type = symbol_type(token_type);
 }
 
+symbolVariable *create_const(TToken *token){
+	symbolVariable *var = _malloc(sizeof(symbolVariable));
+	var->name = NULL;
+	var->inicialized = 0;
+	switch(token->type)
+	{
+		case token_int:
+			var->type = var_int;
+			var->value.value_number = atoi(token->data->data);
+			var->inicialized = 1;
+			return var;
+		case token_double:
+			var->type = var_double;
+			var->value.value_double = atof(token->data->data);
+			var->inicialized = 1;
+			return var;
+		default:
+			return var;
+	}
+}
 
 void symbol_function_type_set(symbolFunction* variable, TToken_type token_type)
 {
@@ -107,3 +127,4 @@ void symbol_function_arg_add(symbolFunction* func, char* name, TToken_type token
 	func->args[ func->args_count-1 ].name = string_new();
 	string_add(func->args[func->args_count-1].name, name);
 }
+

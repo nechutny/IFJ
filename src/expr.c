@@ -3,6 +3,7 @@
 #include "generator.h"
 #include "types.h"
 #include "uStack.h"
+#include "symbol.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -221,8 +222,8 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 **/
 int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 {
-	TVar *tmp;
-	TVar *new_var;
+	symbolVariable *tmp;
+	symbolVariable *new_var;
 	uStack_remove(stack);
 	//printf("uStack_top--: %d\n", uStack_top(int, stack));
 	if (uStack_top(int, stack) == operator_non_term)
@@ -244,7 +245,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	       	printf("Precedence syntax used rule %d\n",rule);
 	       	tmp = stack_top(var_stack);
 	       	stack_pop(var_stack);
-	       	new_var = create_var();
+	       	new_var = create_const(NULL);
 	       	gen_ins(rule, global.ins_list, stack_top(var_stack), tmp, new_var);
 	       	stack_pop(var_stack);
 	       	stack_push(var_stack, new_var);
@@ -271,7 +272,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 * @param filename is file to translate
 * @return number of failiure or correct
 **/
-int precedence(FILE *filename,parse_context Func_call)
+int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 {
 	TToken * token;
 	token = token_init();
@@ -324,7 +325,7 @@ int precedence(FILE *filename,parse_context Func_call)
 				uStack_push(int, stack , recon_sign(token,Func_call));
 				
 				if(token->type == token_int || token->type == token_double)
-					stack_push(var_stack,var_from_token(token));
+					stack_push(var_stack,create_const(token));
 
 				token_free(token);
 				token = token_get();
@@ -344,7 +345,7 @@ int precedence(FILE *filename,parse_context Func_call)
 				}
 
 				if(token->type == token_int || token->type == token_double)
-					stack_push(var_stack,var_from_token(token));
+					stack_push(var_stack,create_const(token));
 
 				token_free(token);
 				token = token_get();
@@ -682,6 +683,9 @@ int precedence(FILE *filename,parse_context Func_call)
 	{
 		token_free(token);
 	}
+
+	((TIns *)global.ins_list->act->data)->adr3 = result;
+	_free(((TIns *)global.ins_list->act->data)->adr3);
 
 	//token_free(token);
 	

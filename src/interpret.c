@@ -4,6 +4,7 @@
 #include "garbage.h"
 #include "generator.h"
 #include "list.h"
+#include "symbol.h"
 
 
 void interpret(){
@@ -11,26 +12,26 @@ void interpret(){
 
 	while(global.ins_list->act != NULL)
 	{
-		if(	((TVar *)((TIns *)global.ins_list->act->data)->adr1)->type == var_double || 
-			((TVar *)((TIns *)global.ins_list->act->data)->adr2)->type == var_double)
+		if(	((symbolVariable *)((TIns *)global.ins_list->act->data)->adr1)->type == variable_double || 
+			((symbolVariable *)((TIns *)global.ins_list->act->data)->adr2)->type == variable_double)
 			
-			((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type = var_double;
+			((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type = variable_double;
 	
 		else
-			((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type = var_int;
+			((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type = variable_integer;
 
-		if(	((TVar *)((TIns *)global.ins_list->act->data)->adr1)->type == var_double)
-			a = ((TVar *)((TIns *)global.ins_list->act->data)->adr1)->data.d;
+		if(	((symbolVariable *)((TIns *)global.ins_list->act->data)->adr1)->type == variable_double)
+			a = ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr1)->value.value_double;
 
-		else if(((TVar *)((TIns *)global.ins_list->act->data)->adr1)->type == var_int)
-			a = ((TVar *)((TIns *)global.ins_list->act->data)->adr1)->data.i;
+		else if(((symbolVariable *)((TIns *)global.ins_list->act->data)->adr1)->type == variable_integer)
+			a = ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr1)->value.value_number;
 		else
 			fprintf(stderr,"Semantic error incopatibile types in expresion\n");
 		
-		if(((TVar *)((TIns *)global.ins_list->act->data)->adr2)->type == var_double)
-			b = ((TVar *)((TIns *)global.ins_list->act->data)->adr2)->data.d;	
-		else if( ((TVar *)((TIns *)global.ins_list->act->data)->adr2)->type == var_int)
-			b = ((TVar *)((TIns *)global.ins_list->act->data)->adr2)->data.i;
+		if(((symbolVariable *)((TIns *)global.ins_list->act->data)->adr2)->type == variable_double)
+			b = ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr2)->value.value_double;	
+		else if( ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr2)->type == variable_integer)
+			b = ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr2)->value.value_number;
 		else 
 			fprintf(stderr,"Semantic error incopatibile types in expresion\n");
 
@@ -39,23 +40,23 @@ void interpret(){
 		switch(((TIns *)global.ins_list->act->data)->type)
 		{
 			case ins_add:
-				if(((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type == var_double)
-					((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.d = a+b;
+				if(((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type == variable_double)
+					((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_double = a+b;
 				else
-					((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.i = a+b;
+					((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number = a+b;
 				break;
 			case ins_subb:
-				if(((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type == var_double)
-					((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.d = a-b;
+				if(((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type == variable_double)
+					((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_double = a-b;
 				else
-					((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.i = a-b;
+					((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number = a-b;
 				break;
 
 			case ins_mul:
-				if(((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type == var_double)
-					((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.d = a*b;
+				if(((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type == variable_double)
+					((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_double = a*b;
 				else
-				((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.i = a*b;
+				((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number = a*b;
 				break;
 
 			case ins_div:
@@ -63,13 +64,13 @@ void interpret(){
 				fprintf(stderr, "Semantic error dividing by 0\n");
 					exit(10);
 				}
-				((TVar *)((TIns *)global.ins_list->act->data)->adr3)->type = var_double;
-				((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.d = a/b;
+				((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->type = variable_double;
+				((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_double = a/b;
 				break;
 			default:
 				printf("not yet\n");
 		}
-		printf("mezivysledek %d\n", ((TVar *)((TIns *)global.ins_list->act->data)->adr3)->data.i);
+		printf("mezivysledek %d\n", ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number);
 		list_next(global.ins_list);
 	}
 }
