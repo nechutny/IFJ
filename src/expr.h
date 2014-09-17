@@ -29,14 +29,14 @@ typedef enum {
 	operator_right_parenthesis,
 	operator_ID,
 	operator_func,
+	operator_array,
 	operator_comma,
 	operator_dolar,
-	operator_non_term,
-	operator_array
+	operator_non_term
 } operator_number;
 
 typedef enum{
-	sign_equal = 23,
+	sign_equal = 24,
 	sign_less,
 	sign_greater,
 	sign_fault

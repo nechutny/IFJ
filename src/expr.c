@@ -199,9 +199,12 @@ precedence_number enum_sign(int sign)
 precedence_number get_sign(TToken * token, uStack_t * stack, parse_context context)
 {
 	int pom = 0;
+	//fprintf(stderr,"Stack_top %d \n", uStack_top(int,stack));
+	//fprintf(stderr,"token %d \n", recon_sign(token,context));
 
 	if (uStack_top(int, stack) != operator_non_term)
 	{
+		//printf("asaaaa\n");
 		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context)];
 	}
 	else
