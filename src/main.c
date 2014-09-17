@@ -19,9 +19,9 @@ int main(int argc, char* argv[])
 	parser();
 
 
-	interpret();
+	//interpret();
 
-	printf("vysledek %d\n", ((TVar *)((TIns *)global.ins_list->last->data)->adr3)->data.i);
+	//printf("vysledek %d\n", ((TVar *)((TIns *)global.ins_list->last->data)->adr3)->data.i);
 
 	/*precedence(global.file);
 	while(global.ins_list->act != NULL){

@@ -7,8 +7,7 @@
 
 TList* list_init()
 {
-	TList *list;
-	list = _malloc(sizeof(TList*));
+	TList *list = _malloc(sizeof(TList));
 	if(list == NULL)
 	{
 		fprintf(stderr,"Null pointer.\n");
@@ -17,14 +16,14 @@ TList* list_init()
 	list->first = NULL;
 	list->last = NULL;
 	list->act = NULL;
+	
 	return list;
 }
 
 void list_insert(TList *list, void *data)
 {
-	TNode *tmp;
-	tmp = _malloc(sizeof(TNode));
-	if(tmp == NULL)
+	TNode *tmp  = _malloc(sizeof(TNode));
+	if(tmp == NULL || list == NULL)
 	{
 		fprintf(stderr,"Null pointer.\n");
 		exit(1);
