@@ -15,9 +15,6 @@ typedef enum {
 	type_variable
 } item_type;
 
-typedef struct TsymbolVariable;
-typedef struct TsymbolFunction;
-
 // List item
 typedef struct  htab_listitem_s {
   struct htab_listitem_s *next;
