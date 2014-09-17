@@ -86,7 +86,7 @@ do {											\
  * @return	Value from stack
  */
 #define uStack_top(type, stack)								\
-	((type *)stack->data)[stack->count]
+	((type *)stack->data)[stack->count-1]
 
 
 /**
