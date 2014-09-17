@@ -14,8 +14,8 @@
 
 
 typedef struct {
-	unsigned int count;
-	unsigned int allocated;
+	unsigned long count;
+	unsigned long allocated;
 	void **data;
 } uStack_t;
 
@@ -26,7 +26,7 @@ typedef struct {
  * @param	name 	name of created variable
  */
 #define uStack_init(name)	\
-	uStack_t* name = memset(_malloc(sizeof(uStack_t)), 0x00000000 ,sizeof(uStack_t));
+	uStack_t* name = memset(_malloc(sizeof(uStack_t)), 0UL ,sizeof(unsigned long));
 
 
 /**
