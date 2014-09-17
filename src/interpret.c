@@ -70,7 +70,7 @@ void interpret(){
 			default:
 				printf("not yet\n");
 		}
-		printf("mezivysledek %d\n", ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number);
+		printf("mezivysledek %ld\n", ((symbolVariable *)((TIns *)global.ins_list->act->data)->adr3)->value.value_number);
 		list_next(global.ins_list);
 	}
 }

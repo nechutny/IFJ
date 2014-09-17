@@ -76,6 +76,7 @@ do {											\
 #define uStack_pop(type, stack)								\
 	(stack->count--, ((type *)stack->data)[stack->count])
 
+
 /**
  * Get item from stack by offset
  *
@@ -87,6 +88,7 @@ do {											\
  */
 #define uStack_offset(type, stack,offset)						\
 	((type *)stack->data)[offset]
+
 
 /**
  * Return data from top of stack
