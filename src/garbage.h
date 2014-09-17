@@ -12,6 +12,7 @@
 #include "list.h"
 #include "htable.h"
 #include "symbol.h"
+#include "uStack.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -47,15 +48,19 @@ struct TGlobal
 	TList* ins_list;
 
 	htab_t* global_symbol;
-	
+
+	uStack_t* local_symbols;
 };
 extern struct TGlobal global;
 
 
 void global_init();
 void global_free();
+
 void* _malloc(unsigned long size);
 void* _realloc(void* ptr, unsigned long size);
+
+void printData(char key[], item_type type, htab_listitem* item);
 
 
 /**

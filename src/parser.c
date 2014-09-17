@@ -130,8 +130,9 @@ void parser_var()
 {
 	TToken * token = token_get();
 	htab_listitem* var;
-
 	uStack_init(varStack);
+	
+	
 	
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
@@ -151,6 +152,12 @@ void parser_var()
 				symbol_variable_init(var, token->data->data);
 				uStack_push(htab_listitem*, varStack, var);
 			}
+			else
+			{ /* Add variable to local symbol table in stack */
+				var = htab_create(uStack_pop(htab_t*,global.local_symbols), token->data->data);
+				symbol_variable_init(var, token->data->data);
+				uStack_push(htab_listitem*, varStack, var);
+			}
 			
 			token_free(token);
 
@@ -167,13 +174,11 @@ void parser_var()
 		if(isVariableType(token->type) )
 		{ /* var type */
 			
-			if(local_context == context_global)
-			{ /* Set variable type to global symbol table */
-				while(uStack_count(varStack) > 0)
-				{
-					var = uStack_pop(htab_listitem*, varStack);
-					symbol_variable_type_set(var->ptr.variable, token->type);
-				}
+			/* Set variable type to global symbol table */
+			while(uStack_count(varStack) > 0)
+			{
+				var = uStack_pop(htab_listitem*, varStack);
+				symbol_variable_type_set(var->ptr.variable, token->type);
 			}
 			token_free(token);
 			token = token_get();
@@ -268,6 +273,9 @@ void parser_function()
 		}
 		token_free(token);
 
+		htab_t* table = htab_init(42);
+		uStack_push(htab_t*,global.local_symbols,table);
+
 		/* Function variables */
 		parser_vars();
 		
@@ -283,6 +291,10 @@ void parser_function()
 			parser_body();
 			token = token_get();
 		} while(token->type != token_end);
+
+		printf("\n\n Local symbols:\n");
+		htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
+		uStack_remove(global.local_symbols);
 		
 		if(token->type != token_end)
 		{ /* Function code block end */

@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include "garbage.h"
 #include "list.h"
+#include "uStack.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -92,6 +93,9 @@ void global_init()
 	global.allocated = malloc(sizeof(struct TAllocItem));
 	global.allocated_last = global.allocated;
 	global.allocated->ptr = NULL;
+
+	global.local_symbols = _malloc(sizeof(uStack_t));
+	global.local_symbols->count = 0;
 
 	global.ins_list = list_init();
 
