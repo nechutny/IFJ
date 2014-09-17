@@ -311,9 +311,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		//if (token->type == token_colon)
 		//	fprintf(stderr, "there\n" );
 		//fprintf(stderr, "asdasda\n");
-		//fprintf(stderr,"stack_top: %d\n", (int)stack_top(stack));
+		//fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
 		//fprintf(stderr,"token_type: %d\n", token->type);
-		//fprintf(stderr,"uStack_count: %d\n", uStack_count(stack));
+		//fprintf(stderr,"uStack_count: %ld\n", uStack_count(stack));
 
 		//this condition handle minus or plus operator in the begining of expression (-2 mod 3)
 		if (((uStack_top(int,stack)) != operator_non_term) && ((token->type == token_sub) || (token->type == token_add)) && (!(uStack_top(int,stack) == operator_ID)))
