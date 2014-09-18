@@ -163,7 +163,7 @@ TToken *token_get() {
 	char sign='+';
 	while (1)
 	{
-		c = fgetc(file);
+		c = tolower(fgetc(file));
 		switch (state)
 		{
 			case state_init:
