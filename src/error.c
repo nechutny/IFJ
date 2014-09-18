@@ -132,7 +132,6 @@ int file_line()
 			line++;
 		}
 		readed++;
-		
 	}
 	
 	return line;

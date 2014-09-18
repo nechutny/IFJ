@@ -351,6 +351,7 @@ void parser_args(symbolFunction* func)
 				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data->data);
 				symbol_variable_init(var, token->data->data);
 				symbol_variable_type_set(var->ptr.variable, token2->type);
+				var->ptr.variable->inicialized = 1;
 				
 				token_free(token);
 				token_free(token2);
