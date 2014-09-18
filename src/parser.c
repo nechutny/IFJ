@@ -435,36 +435,17 @@ void parser_code()
 	printf("One command: ");
 	
 	TToken * token = token_get();
-	TToken* token2;
 	
 	switch(token->type)
 	{
 		case token_identifier:
 			/* assign or function call */
-			hitem = htab_lookup(global.global_symbol,token->data->data);
-			token2 = token;
+			hitem = VariableExists(token->data->data);
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
-				if(hitem == NULL)
+				if(hitem == NULL || hitem->type != type_variable)
 				{ /* Not global variable */
-					if(uStack_count(global.local_symbols) == 0)
-					{ /* Don't look for local variable */
-						throw_error(error_var_not_exists);
-					}
-					
-					hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token2->data->data);
-					if(hitem == NULL)
-					{ /* local variable not found */
-						throw_error(error_var_not_exists);
-					}
-					else if(hitem->type != type_variable)
-					{
-						throw_error(error_var_not_exists);
-					}
-				}
-				else if(hitem->type != type_variable)
-				{
 					throw_error(error_var_not_exists);
 				}
 				
@@ -784,28 +765,12 @@ void parser_for()
 		throw_error(error_identifier);
 	}
 	
-	hitem = htab_lookup(global.global_symbol,token->data->data);
-	if(hitem == NULL)
-	{ /* Not global variable */
-		if(uStack_count(global.local_symbols) == 0)
-		{ /* Don't look for local variable */
-			throw_error(error_var_not_exists);
-		}
-		
-		hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token->data->data);
-		if(hitem == NULL)
-		{ /* local variable not found */
-			throw_error(error_var_not_exists);
-		}
-		else if(hitem->type != type_variable)
-		{
-			throw_error(error_var_not_exists);
-		}
-	}
-	else if(hitem->type != type_variable)
-	{
+	hitem = VariableExists(token->data->data);
+	if(hitem == NULL || hitem->type != type_variable)
+	{ /* Not variable */
 		throw_error(error_var_not_exists);
 	}
+	
 	token_free(token);
 
 	token = token_get();
@@ -873,6 +838,11 @@ void parser_switch()
 	if(token->type != token_identifier)
 	{ /* Variable name for case */
 		throw_error(error_identifier);
+	}
+	htab_listitem* hitem = VariableExists(token->data->data);
+	if(hitem == NULL || hitem->type != type_variable)
+	{
+		throw_error(error_var_not_exists);
 	}
 	token_free(token);
 
