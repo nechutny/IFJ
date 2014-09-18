@@ -169,7 +169,7 @@ TToken *token_get() {
 			case state_init:
 				while(isspace(c))
 				{
-					c = fgetc(file);
+					c = tolower(fgetc(file));
 				}
 				switch (c)
 				{
