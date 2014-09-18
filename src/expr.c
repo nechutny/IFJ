@@ -4,6 +4,7 @@
 #include "types.h"
 #include "uStack.h"
 #include "symbol.h"
+#include "error.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -41,6 +42,63 @@ const int precedence_table[table_size][table_size]=
 	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '=' , '<' , '<' , '<' , '=' , '#' }, // ,
 	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '<' , '<' , '#' , '#' }, // $
 };
+
+
+int sem_check(TToken * token, seman check)
+{
+	htab_listitem * item;
+	
+	if(uStack_count(global.local_symbols) > 0)
+	{
+		item = htab_lookup(uStack_top(htab_t*,global.local_symbols), token->data->data);
+		if (item == NULL)
+		{
+			item = htab_lookup(global.global_symbol, token->data->data);
+			if (item == NULL)
+			{
+				throw_error(error_var_not_exists);
+			}
+			else if ((item->type == type_function) && (check == check_var))
+			{
+				throw_error(error_type);
+			}
+			else if ((item->type == type_variable) && (check == check_func))
+			{
+				throw_error(error_type);
+			}
+			
+			
+		}	
+		else if ((item->type == type_function) && (check == check_var))
+		{
+			throw_error(error_type);
+		}
+		else if ((item->type == type_variable) && (check == check_func))
+		{
+			throw_error(error_type);
+		}
+		
+		
+	}
+	else
+	{
+		item = htab_lookup(global.global_symbol, token->data->data);
+		if (item == NULL)
+		{
+			throw_error(error_var_not_exists);
+		}
+		else if ((item->type == type_function) && (check == check_var))
+		{
+			throw_error(error_type);
+		}
+		else if ((item->type == type_variable) && (check == check_func))
+		{
+			throw_error(error_type);
+		}
+		
+	}
+	return 0;
+}
 
 
 /**
@@ -125,16 +183,15 @@ operator_number recon_sign(TToken * token, parse_context context)
 		case token_int:
 		case token_double:
 		case token_string:
+		case token_false:
+		case token_true:
 			return operator_ID;
 
 		case token_identifier:
-			//TToken * pom;
-			//pom = token_init();
 			pom = token_get(global.file);
 			if (pom->type == token_parenthesis_left)
 			{
 				token_return_token(pom);
-				//token_free(token);
 				return operator_func;
 			}
 			else if (pom->type == token_bracket_left)
@@ -213,6 +270,17 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context)];
 		uStack_push(int, stack,operator_non_term);
 	}
+	
+	if ((token->type == token_identifier) && ((recon_sign(token,context)) == operator_ID ))
+	{
+		
+		sem_check(token, check_var);
+	}
+	else if ((token->type == token_identifier) && ((recon_sign(token,context)) == operator_func ))
+	{
+		sem_check(token, check_func);
+	}
+	
 	//printf("znak %c\n", pom );
 	return enum_sign(pom);
 }

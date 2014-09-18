@@ -8,6 +8,7 @@
 #include "symbol.h"
 #include "uStack.h"
 
+
 typedef enum {
 	operator_not,
 	operator_mul,
@@ -80,6 +81,14 @@ typedef enum
 	rule_19
 } TRule;
 
+
+typedef enum 
+{
+	check_func,
+	check_var
+}seman;
+
+int sem_check(TToken * , seman );
 int precedence(FILE *filename,parse_context Func_call, symbolVariable *result);
 precedence_number get_stack();
 precedence_number enum_sign();
