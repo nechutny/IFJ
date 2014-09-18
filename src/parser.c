@@ -458,6 +458,10 @@ void parser_code()
 					{ /* local variable not found */
 						throw_error(error_var_not_exists);
 					}
+					else if(hitem->type != type_variable)
+					{
+						throw_error(error_var_not_exists);
+					}
 				}
 				else if(hitem->type != type_variable)
 				{
@@ -771,12 +775,36 @@ void parser_repeat()
  */
 void parser_for()
 {
+	htab_listitem* hitem;
 	printf("for\n");
 
 	TToken *token = token_get();
 	if(token->type != token_identifier)
 	{
 		throw_error(error_identifier);
+	}
+	
+	hitem = htab_lookup(global.global_symbol,token->data->data);
+	if(hitem == NULL)
+	{ /* Not global variable */
+		if(uStack_count(global.local_symbols) == 0)
+		{ /* Don't look for local variable */
+			throw_error(error_var_not_exists);
+		}
+		
+		hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token->data->data);
+		if(hitem == NULL)
+		{ /* local variable not found */
+			throw_error(error_var_not_exists);
+		}
+		else if(hitem->type != type_variable)
+		{
+			throw_error(error_var_not_exists);
+		}
+	}
+	else if(hitem->type != type_variable)
+	{
+		throw_error(error_var_not_exists);
 	}
 	token_free(token);
 
