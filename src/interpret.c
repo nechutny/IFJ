@@ -62,12 +62,12 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			adr3->type = variable_double;
 			adr3->value.value_double = a/b;
 			break;
-		case 'm':
+	/*	case 'm':
 			if(adr3->type == variable_double)
 				adr3->value.value_double = fmod(a, b);
 			else
 				adr3->value.value_number = fmod(a, b);
-			break;
+			break;*/
 	}
 	adr3->inicialized = 1;
 }

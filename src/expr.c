@@ -370,7 +370,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				else if(token->type == token_identifier)
 				{
 					htab_listitem* hitem = VariableExists(token->data->data);
-					stack_push(var_stack,hitem->ptr.variable);
+					if(hitem->type == type_variable)
+						stack_push(var_stack,hitem->ptr.variable);
+					else
+						printf("volani funkce\n");
 				}
 
 				token_free(token);
@@ -395,7 +398,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				else if(token->type == token_identifier)
 				{
 					htab_listitem* hitem = VariableExists(token->data->data);
-					stack_push(var_stack,hitem->ptr.variable);
+					if(hitem->type == type_variable)
+						stack_push(var_stack,hitem->ptr.variable);
+					else
+						printf("volani funkce\n");
 				}
 
 				token_free(token);
@@ -739,7 +745,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		if(global.ins_list->count != 0)
 		{
 			TIns *ins = uStack_top(TIns *, global.ins_list);
-			_free(ins->adr3);
+		//	_free(ins->adr3);
 			ins->adr3 = result;
 		}
 		else
