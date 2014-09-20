@@ -97,7 +97,7 @@ symbolVariable* create_const(TToken *token)
 {
 	if(token == NULL)
 	{
-		fprintf(stderr,"create_const got NULL\n");
+		//fprintf(stderr,"create_const got NULL\n");
 		return NULL;
 	}
 	
