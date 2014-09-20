@@ -6,7 +6,7 @@
 
 /* 3 addres instructions */
 typedef enum {
-	ins_assign,		//0
+	ins_lab,		//0
 	ins_not,		//1
 	ins_mul,		//2
 	ins_div,		//3
@@ -36,6 +36,7 @@ typedef struct TIns
 }TIns;
 
 
-TIns *gen_ins(TRule rule, TList *list, void *adr1, void *adr2, void *adr3);
+void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3);
+void gen_code(TInsType type, void *adr1, void *adr2, void *adr3);
 
 #endif

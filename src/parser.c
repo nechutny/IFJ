@@ -13,6 +13,7 @@
 #include "expr.h"
 #include "error.h"
 #include "uStack.h"
+ #include "generator.h"
 
 parse_context local_context;
 
@@ -593,8 +594,22 @@ void parser_if()
 {
 	printf("If\n");
 	
+	symbolVariable *cond = _malloc(sizeof(symbolVariable));
+	TIns *lab_else = _malloc(sizeof(TIns)), 
+		 *lab_end = _malloc(sizeof(TIns));
+
+	lab_else->type = ins_lab;
+	lab_else->adr1 = NULL;
+	lab_else->adr2 = NULL;	
+	lab_else->adr3 = NULL;
+
+	lab_end->type = ins_lab;
+	lab_end->adr1 = NULL;
+	lab_end->adr2 = NULL;	
+	lab_end->adr3 = NULL;
+	
 	/* Expresion */
-	if(precedence(global.file, context_if, NULL))
+	if(precedence(global.file, context_if, cond))
 	{
 		throw_error(error_expresion);
 	}
@@ -605,6 +620,8 @@ void parser_if()
 		throw_error(error_then);
 	}
 	token_free(token);
+
+	gen_code(ins_jmp, cond, NULL, lab_else);
 
 	token = token_get();
 	if(token->type == token_begin)
@@ -618,7 +635,12 @@ void parser_if()
 		token_return_token(token);
 		parser_code();
 	}
-	
+
+	/* inser jump for skipping else block */
+	gen_code(ins_jmp, NULL, NULL, lab_end);
+	/* Insert label for skipping then block */
+	uStack_push(TIns *, global.ins_list, lab_else);
+
 	token = token_get();
 	if(token->type == token_else)
 	{ /* Else? */
@@ -640,6 +662,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
+	uStack_push(TIns *, global.ins_list, lab_end);
 	printf("end if\n");
 }
 
@@ -699,8 +722,23 @@ void parser_while()
 {
 	printf("while\n");
 	
+	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
+	TIns *start = _malloc(sizeof(TIns)),
+		 *end = _malloc(sizeof(TIns));
+
+	start->type = ins_lab;
+	start->adr1 = NULL;	
+	start->adr2 = NULL;
+	start->adr3 = NULL;
+
+	end->type = ins_lab;
+	end->adr1 = NULL;
+	end->adr2 = NULL;
+	end->adr3 = NULL;
+
 	/* Condition */
-	if(precedence(global.file, context_while, NULL))
+	uStack_push(TIns *, global.ins_list, start);
+	if(precedence(global.file, context_while, cond))
 	{
 		throw_error(error_expresion);
 	}

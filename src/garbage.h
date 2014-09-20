@@ -45,7 +45,8 @@ struct TGlobal
 	struct TAllocItem* allocated_last;
 
 	FILE* file;
-	TList* ins_list;
+	
+	uStack_t* ins_list;
 
 	htab_t* global_symbol;
 

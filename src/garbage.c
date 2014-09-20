@@ -97,7 +97,8 @@ void global_init()
 	global.local_symbols = _malloc(sizeof(uStack_t));
 	global.local_symbols->count = 0;
 
-	global.ins_list = list_init();
+	global.ins_list = _malloc(sizeof(uStack_t));
+	global.ins_list->count = 0;
 
 	// 42 is answer for anything!
 	global.global_symbol = htab_init(42);

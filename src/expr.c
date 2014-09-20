@@ -317,7 +317,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	       	tmp = stack_top(var_stack);
 	       	stack_pop(var_stack);
 	       	new_var = create_const(NULL);
-	       	gen_ins(rule, global.ins_list, stack_top(var_stack), tmp, new_var);
+	       	gen_expr(rule, stack_top(var_stack), tmp, new_var);
 	       	stack_pop(var_stack);
 	       	stack_push(var_stack, new_var);
 	       	return 0;
@@ -395,8 +395,32 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 			case sign_equal:
 				uStack_push(int, stack , recon_sign(token,Func_call));
 				
-				if(token->type == token_int || token->type == token_double)
+				if(token->type == token_int || token->type == token_double || token->type == token_string)
 					stack_push(var_stack,create_const(token));
+				else if(token->type == token_identifier)
+				{
+					htab_listitem* hitem = htab_lookup(global.global_symbol,token->data->data);
+					if(hitem == NULL)
+					{ /* Not global variable */
+						if(uStack_count(global.local_symbols) == 0)
+						{ /* Don't look for local variable */
+							throw_error(error_var_not_exists);
+						}
+					
+						hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token->data->data);
+					
+						if(hitem == NULL)
+						{ /* local variable not found */
+							throw_error(error_var_not_exists);
+						}
+					}
+					else if(hitem->type != type_variable)
+					{
+					throw_error(error_var_not_exists);
+					}
+					
+					stack_push(var_stack,hitem->ptr.variable);
+				}
 
 				token_free(token);
 				token = token_get();
@@ -415,8 +439,31 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 					uStack_push(int, stack,recon_sign(token,Func_call));
 				}
 
-				if(token->type == token_int || token->type == token_double)
+				if(token->type == token_int || token->type == token_double || token->type == token_string)
 					stack_push(var_stack,create_const(token));
+				else if(token->type == token_identifier)
+				{
+					htab_listitem* hitem = htab_lookup(global.global_symbol,token->data->data);
+					if(hitem == NULL)
+					{ /* Not global variable */
+						if(uStack_count(global.local_symbols) == 0)
+						{ /* Don't look for local variable */
+							throw_error(error_var_not_exists);
+						}
+					
+						hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token->data->data);
+					
+						if(hitem == NULL)
+						{ /* local variable not found */
+							throw_error(error_var_not_exists);
+						}
+					}
+					else if(hitem->type != type_variable)
+					{
+						throw_error(error_var_not_exists);
+					}	
+					stack_push(var_stack,hitem->ptr.variable);
+				}
 
 				token_free(token);
 				token = token_get();
@@ -756,6 +803,36 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	}
 
 	if(result != NULL){
+		if(global.ins_list->count != 0)
+		{
+			TIns *ins = uStack_top(TIns *, global.ins_list);
+			_free(ins->adr3);
+			ins->adr3 = result;
+		}
+		else
+		{
+			symbolVariable *var = stack_top(var_stack);
+			result->type = var->type;
+			switch(var->type){
+				case variable_integer:
+					result->value.value_number = var->value.value_number;
+					break;
+				case variable_double:
+					result->value.value_double = var->value.value_double;
+					break;
+				case variable_boolean:
+					result->value.value_boolean = var->value.value_boolean;
+					break;
+				//case variable_string:
+				//	result->value.value_string = var->value.value_string;
+				//	break;
+				//case variable_char:
+				//	result->value.value_char = var->value.value_char;
+				//	break;
+				default:
+					printf("array or string or char\n");				
+			}
+		}
 		//((TIns *)global.ins_list->act->data)->adr3 = result;
 		// _free(((TIns *)global.ins_list->act->data)->adr3);
 	}

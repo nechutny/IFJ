@@ -5,21 +5,16 @@
 #include "list.h"
 #include "expr.h"
 
-TIns *gen_ins(TRule rule, TList *list, void *adr1, void *adr2, void *adr3)
+void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 {
 	TIns *ins = _malloc(sizeof(TIns));
+		
 	ins->adr1 = adr1;
 	ins->adr2 = adr2;
 	ins->adr3 = adr3;
 
 	switch(rule)
-	{
-		case rule_1:
-			ins->type = ins_assign;
-			break;		
-		case rule_2:
-			ins->type = ins_assign;
-			break;
+	{	
 		case rule_3:
 			ins->type = ins_not;
 			break;
@@ -71,8 +66,16 @@ TIns *gen_ins(TRule rule, TList *list, void *adr1, void *adr2, void *adr3)
 		default:
 			printf("not yet\n");
 	}
-
-	list_insert(list, ins);
-	return ins;
+	uStack_push(TIns *, global.ins_list, ins);
+	return;
 }
 
+void gen_code(TInsType type, void *adr1, void *adr2, void *adr3){
+	TIns *ins = _malloc(sizeof(TIns));
+	ins->type = type;
+	ins->adr1 = adr1;
+	ins->adr2 = adr2;	
+	ins->adr3 = adr3;
+	
+	uStack_push(TIns *, global.ins_list, ins);
+}
