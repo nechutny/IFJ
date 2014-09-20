@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "interpret.h"
 #include "garbage.h"
@@ -60,6 +61,12 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			}
 			adr3->type = variable_double;
 			adr3->value.value_double = a/b;
+			break;
+		case 'm':
+			if(adr3->type == variable_double)
+				adr3->value.value_double = fmod(a, b);
+			else
+				adr3->value.value_number = fmod(a, b);
 			break;
 	}
 	adr3->inicialized = 1;
@@ -125,6 +132,22 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 	adr3->inicialized = 1;
 }
 
+void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
+	adr3->type = variable_boolean;
+	if(adr1->type != variable_boolean || adr2->type != variable_boolean){
+		fprintf(stderr, "one variable is not bool\n");
+		exit(12);
+	}
+		
+	if(c == 'a')
+		adr3->value.value_boolean = adr1->value.value_boolean && adr2->value.value_boolean;
+	else if(c == 'o')
+		adr3->value.value_boolean = adr1->value.value_boolean || adr2->value.value_boolean;
+
+	adr3->inicialized = 1;
+
+}
+
 void interpret(){
 	int i = 0;
 	TIns *ins;
@@ -162,6 +185,12 @@ void interpret(){
 				break;
 			case ins_greateq:
 				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				break;
+			case ins_and:
+				logic('a', ins->adr1, ins->adr2, ins->adr3);
+				break;
+			case ins_or:
+				logic('o', ins->adr1, ins->adr2, ins->adr3);
 				break;
 			default:
 				printf("NOT YET\n");	
