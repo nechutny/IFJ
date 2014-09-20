@@ -295,7 +295,7 @@ void parser_function()
 		
 		do
 		{
-			parser_body();
+			parser_main();
 			token = token_get();
 		} while(token->type != token_end);
 
@@ -387,25 +387,6 @@ void parser_args(symbolFunction* func)
 	{
 		throw_error(error_identifier);
 	}
-}
-
-
-/**
- * Parse function body containing code
- */
-void parser_body()
-{
-	print_debug("Function body");
-	TToken * token = token_get();
-	while(token->type != token_end)
-	{ /* Parse content until we get end; */
-		token_return_token(token);
-		parser_main();
-		
-		token = token_get();
-	}
-	print_debug("Function body end");
-	token_return_token(token);
 }
 
 
@@ -895,7 +876,7 @@ void parser_switch()
 		if(token->type == token_begin)
 		{ /* else block */
 			token_free(token);
-			parser_body();
+			parser_main();
 		}
 		else
 		{ /* only one command */

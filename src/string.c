@@ -18,7 +18,7 @@ TString * string_new() {
 		return NULL;
 	}
 	
-	string->data = (char *) _malloc( sizeof( char ) * 50 );
+	string->data = (char *) _malloc( sizeof( char ) * 32 );
 	if( string->data == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		_free( string );
@@ -27,7 +27,7 @@ TString * string_new() {
 	
 //	memcpy( string, 0, sizeof( char ) * 10 );
 	string->data[0] = '\0';
-	string->allocated = 50;
+	string->allocated = 32;
 	string->length = 0;
 	
 	return string;
@@ -35,12 +35,13 @@ TString * string_new() {
 
 int string_add_chr( TString * string, char c ) {
 	if( string->allocated < ( string->length + 1 ) ) {
-		string = ( TString * ) _realloc( string, ( sizeof( char ) * ( string->allocated + 10 ) ) );
+		string->allocated += 32;
+		string = ( TString * ) _realloc( string, ( sizeof( char ) * ( string->allocated) ) );
 		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
 		}		
-		string->allocated += 10;
+		
 	}
 
 	string->data[ string->length ] = c;
@@ -53,20 +54,19 @@ int string_add_chr( TString * string, char c ) {
 /* přidá řetězec do stringu, vrací 1 pokud se povedl, nula pokud ne */
 int string_add( TString * string, char * text ) {
 	int len = strlen( text );
-	int total_len = len + string->length;
+	int total_len = len + string->length+1;
 	
-	if( ( total_len + 1 ) >= string->allocated ) {
-		string->data = ( char * ) _realloc( string->data, ( sizeof( char ) * ( string->allocated + ( ( total_len+1 ) / string->allocated ) * 10 ) ) );
+	if( ( total_len ) >= string->allocated ) {
+		string->allocated = total_len;
+		string->data = ( char * ) _realloc( string->data, ( sizeof( char ) * string->allocated ) );
 		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
 		}
-		string->allocated = string->allocated + ( ( total_len+1) / string->allocated ) * 10;	
 	}
-	string->length = string->length + len;
-	string->allocated = string->allocated + (total_len / string->allocated ) * 10;
+	string->length += len;
 		
-	strcat( string->data, text );
+	strncat( string->data, text, len );
 	
 	return 1;
 }	
