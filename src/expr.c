@@ -53,69 +53,20 @@ int sem_check(TToken * token, seman check)
 
 	if (item == NULL)
 	{
-		fprintf(stderr,"pppfff\n");
+		//fprintf(stderr,"pppfff\n");
 		throw_error(error_var_not_exists);
 	}
 	else if ((item->type == type_function) && (check == check_var))
 	{
-		fprintf(stderr,"pppfff3\n");
+		//fprintf(stderr,"pppfff3\n");
 		throw_error(error_type);
 	}
 	else if ((item->type == type_variable) && (check == check_func))
 	{
-		fprintf(stderr,"pppfff2\n");
+		//fprintf(stderr,"pppfff2\n");
 		throw_error(error_type);
 	}
-	/*if(uStack_count(global.local_symbols) > 0)
-	{
-		item = htab_lookup(uStack_top(htab_t*,global.local_symbols), token->data->data);
-		if (item == NULL)
-		{
-			item = htab_lookup(global.global_symbol, token->data->data);
-			if (item == NULL)
-			{
-				throw_error(error_var_not_exists);
-			}
-			else if ((item->type == type_function) && (check == check_var))
-			{
-				throw_error(error_type);
-			}
-			else if ((item->type == type_variable) && (check == check_func))
-			{
-				throw_error(error_type);
-			}
-			
-			
-		}	
-		else if ((item->type == type_function) && (check == check_var))
-		{
-			throw_error(error_type);
-		}
-		else if ((item->type == type_variable) && (check == check_func))
-		{
-			throw_error(error_type);
-		}
-		
-		
-	}
-	else
-	{
-		item = htab_lookup(global.global_symbol, token->data->data);
-		if (item == NULL)
-		{
-			throw_error(error_var_not_exists);
-		}
-		else if ((item->type == type_function) && (check == check_var))
-		{
-			throw_error(error_type);
-		}
-		else if ((item->type == type_variable) && (check == check_func))
-		{
-			throw_error(error_type);
-		}
-		
-	}*/
-	printf("aaaaaaaaaaaaaa\n");
+
 	return 0;
 }
 
@@ -423,7 +374,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 					{ /* Not global variable */
 						if(uStack_count(global.local_symbols) == 0)
 						{ /* Don't look for local variable */
-							printf("ble\n");
 							throw_error(error_var_not_exists);
 						}
 					
@@ -432,7 +382,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 						if(hitem == NULL)
 						{ /* local variable not found */
 							throw_error(error_var_not_exists);
-							printf("ble\n");
 						}
 					}
 					else if(hitem->type != type_variable)
