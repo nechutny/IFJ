@@ -42,12 +42,12 @@ typedef struct {
 do {											\
 	if(stack->count == 0)								\
 	{										\
-		stack->data = _malloc(sizeof(type));					\
-		stack->allocated = 1;							\
+		stack->data = _malloc(sizeof(type)*2);					\
+		stack->allocated = 2;							\
 	}										\
 	else if(stack->allocated <= stack->count)					\
 	{										\
-		stack->allocated++;							\
+		stack->allocated += 2;							\
 		stack->data = _realloc(stack->data, sizeof(type)*stack->allocated);	\
 	}										\
 	((type *)stack->data)[stack->count] = _data;					\

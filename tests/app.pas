@@ -9,7 +9,7 @@ function funkce1( arg1 : real, arg2 : integer ) : integer;
 begin
 	//writeln( arg1, cislo, 15-2 );
 	
-	for bla := 1 to 15 do
+	for cislo := 1 to 15 do
 		return 2;
 end;
 function funkce2() : integer;

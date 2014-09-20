@@ -14,6 +14,7 @@
 #include "error.h"
 #include "uStack.h"
  #include "generator.h"
+#include "debug.h"
 
 parse_context local_context;
 
@@ -53,7 +54,7 @@ void parser_file()
 	{
 		throw_error(error_identifier);
 	}
-	printf("Program name %s\n",token->data->data);
+	print_debug("Program name %s", token->data->data);
 	token_free(token);
 	
 	token = token_get();
@@ -78,7 +79,7 @@ void parser_file()
 	}
 	token_free(token);
 	
-	printf("Main body\n");
+	print_debug("Main body");
 	parser_main();
 	
 	token = token_get();
@@ -94,7 +95,7 @@ void parser_file()
 		throw_error(error_dot);
 	}
 
-	printf("Main body end\n");
+	print_debug("Main body end");
 
 	token = token_get();
 	if(token->type != token_eof)
@@ -145,7 +146,7 @@ void parser_var()
 			{
 				throw_error(error_identifier);
 			}
-			printf("Variable %s\n",token->data->data);
+			print_debug("Variable %s",token->data->data);
 
 			if(local_context == context_global)
 			{ /* Add variable to global symbol table */
@@ -230,7 +231,7 @@ void parser_function()
 		{ /* Identifier */
 			throw_error(error_identifier);
 		}
-		printf("function %s:\n",token->data->data);
+		print_debug("function %s:",token->data->data);
 		/* Add variable to global symbol table */
 		var = htab_create(global.global_symbol, token->data->data);
 		symbol_function_init(var, token->data->data, offset);
@@ -295,7 +296,7 @@ void parser_function()
 		
 		do
 		{
-			parser_body();
+			parser_main();
 			token = token_get();
 		} while(token->type != token_end);
 
@@ -391,30 +392,11 @@ void parser_args(symbolFunction* func)
 
 
 /**
- * Parse function body containing code
- */
-void parser_body()
-{
-	printf("Function body\n");
-	TToken * token = token_get();
-	while(token->type != token_end)
-	{ /* Parse content until we get end; */
-		token_return_token(token);
-		parser_main();
-		
-		token = token_get();
-	}
-	printf("Function body end\n");
-	token_return_token(token);
-}
-
-
-/**
  * Code block containing more code ended with 'end'
  */
 void parser_main()
 {
-	printf("Code block\n");
+	print_debug("Code block");
 	TToken * token = token_get();
 	while(token->type != token_end)
 	{
@@ -422,7 +404,7 @@ void parser_main()
 		parser_code();
 		token = token_get();
 	}
-	printf("Code block end\n");
+	print_debug("Code block end");
 	token_return_token(token);
 }
 
@@ -433,35 +415,20 @@ void parser_main()
 void parser_code()
 {
 	htab_listitem* hitem;
-	printf("One command: ");
+	print_debug("One command: ");
 	
 	TToken * token = token_get();
-	TToken* token2;
 	
 	switch(token->type)
 	{
 		case token_identifier:
 			/* assign or function call */
-			hitem = htab_lookup(global.global_symbol,token->data->data);
-			token2 = token;
+			hitem = VariableExists(token->data->data);
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
-				if(hitem == NULL)
+				if(hitem == NULL || hitem->type != type_variable)
 				{ /* Not global variable */
-					if(uStack_count(global.local_symbols) == 0)
-					{ /* Don't look for local variable */
-						throw_error(error_var_not_exists);
-					}
-					
-					hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), token2->data->data);
-					if(hitem == NULL)
-					{ /* local variable not found */
-						throw_error(error_var_not_exists);
-					}
-				}
-				else if(hitem->type != type_variable)
-				{
 					throw_error(error_var_not_exists);
 				}
 				
@@ -481,7 +448,7 @@ void parser_code()
 					}
 					token_free(token);
 				}
-				printf("assign\n");
+				print_debug("assign");
 
 				if(hitem != NULL)
 				{
@@ -497,7 +464,7 @@ void parser_code()
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
-				printf("function call\n");
+				print_debug("function call");
 				if(hitem == NULL)
 				{
 					throw_error(error_function_not_exists);
@@ -562,7 +529,7 @@ void parser_code()
 			
 		case token_return:
 			/* return */
-			printf("return \n");
+			print_debug("return");
 			token_free(token);
 			if(precedence(global.file, context_assign, NULL))
 			{
@@ -592,7 +559,7 @@ void parser_code()
  */
 void parser_if()
 {
-	printf("If\n");
+	print_debug("If");
 	
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));
 	TIns *lab_else = _malloc(sizeof(TIns)), 
@@ -644,7 +611,7 @@ void parser_if()
 	token = token_get();
 	if(token->type == token_else)
 	{ /* Else? */
-		printf("else\n");
+		print_debug("else");
 		token = token_get();
 		if(token->type == token_begin)
 		{ /* else block */
@@ -664,6 +631,7 @@ void parser_if()
 	}
 	uStack_push(TIns *, global.ins_list, lab_end);
 	printf("end if\n");
+	print_debug("end if");
 }
 
 
@@ -681,7 +649,7 @@ void parser_goto()
 		{ /* End with ';' ? */
 			throw_error(error_semicolon);
 		}
-		printf("goto\n");
+		print_debug("goto");
 		token_free(token);
 	}
 	else
@@ -705,7 +673,7 @@ void parser_label()
 		{
 			throw_error(error_semicolon);
 		}
-		printf("label\n");
+		print_debug("label");
 		token_free(token);
 	}
 	else
@@ -720,7 +688,7 @@ void parser_label()
  */
 void parser_while()
 {
-	printf("while\n");
+	print_debug("while");
 	
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 	TIns *start = _malloc(sizeof(TIns)),
@@ -764,7 +732,7 @@ void parser_while()
 		parser_code();
 	}
 	
-	printf("end while\n");
+	print_debug("end while");
 }
 
 
@@ -773,7 +741,7 @@ void parser_while()
  */
 void parser_repeat()
 {
-	printf("repeat\n");
+	print_debug("repeat");
 
 	TToken *token = token_get();
 	if(token->type == token_begin)
@@ -800,7 +768,7 @@ void parser_repeat()
 		throw_error(error_expresion);
 	}
 	
-	printf("end repeat\n");
+	print_debug("end repeat");
 }
 
 
@@ -809,13 +777,21 @@ void parser_repeat()
  */
 void parser_for()
 {
-	printf("for\n");
+	htab_listitem* hitem;
+	print_debug("for");
 
 	TToken *token = token_get();
 	if(token->type != token_identifier)
 	{
 		throw_error(error_identifier);
 	}
+	
+	hitem = VariableExists(token->data->data);
+	if(hitem == NULL || hitem->type != type_variable)
+	{ /* Not variable */
+		throw_error(error_var_not_exists);
+	}
+	
 	token_free(token);
 
 	token = token_get();
@@ -864,7 +840,7 @@ void parser_for()
 		parser_code();
 	}
 
-	printf("end for\n");
+	print_debug("end for");
 }
 
 /**
@@ -877,12 +853,17 @@ void parser_for()
  */
 void parser_switch()
 {
-	printf("switch\n");
+	print_debug("switch");
 
 	TToken *token = token_get();
 	if(token->type != token_identifier)
 	{ /* Variable name for case */
 		throw_error(error_identifier);
+	}
+	htab_listitem* hitem = VariableExists(token->data->data);
+	if(hitem == NULL || hitem->type != type_variable)
+	{
+		throw_error(error_var_not_exists);
 	}
 	token_free(token);
 
@@ -896,7 +877,7 @@ void parser_switch()
 	token = token_get();
 	while(token->type != token_end && token->type != token_else)
 	{ /* Cases */
-		printf("case\n");
+		print_debug("case");
 		token_return_token(token);
 		if(precedence(global.file, context_case, NULL))
 		{
@@ -929,12 +910,12 @@ void parser_switch()
 
 	if(token->type == token_else)
 	{
-		printf("else\n");
+		print_debug("else");
 		token = token_get();
 		if(token->type == token_begin)
 		{ /* else block */
 			token_free(token);
-			parser_body();
+			parser_main();
 		}
 		else
 		{ /* only one command */

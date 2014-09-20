@@ -40,3 +40,7 @@ tests/%.out: tests/%.pas
 # Documentation
 documentation: doc/dokumentace.tex
 	pdflatex  -output-directory=./doc/ doc/dokumentace.tex
+
+sandwich:
+	-$(shell if [[ $$(whoami) == "root" ]] ; then echo "# Yes, my lord."; else echo "# You are not root!"; fi)
+
