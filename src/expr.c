@@ -47,8 +47,26 @@ const int precedence_table[table_size][table_size]=
 int sem_check(TToken * token, seman check)
 {
 	htab_listitem * item;
-	
-	if(uStack_count(global.local_symbols) > 0)
+	printf("aaaa\n");
+	printf("%s\n",token->data->data );
+	item = VariableExists(token->data->data);
+
+	if (item == NULL)
+	{
+		fprintf(stderr,"pppfff\n");
+		throw_error(error_var_not_exists);
+	}
+	else if ((item->type == type_function) && (check == check_var))
+	{
+		fprintf(stderr,"pppfff3\n");
+		throw_error(error_type);
+	}
+	else if ((item->type == type_variable) && (check == check_func))
+	{
+		fprintf(stderr,"pppfff2\n");
+		throw_error(error_type);
+	}
+	/*if(uStack_count(global.local_symbols) > 0)
 	{
 		item = htab_lookup(uStack_top(htab_t*,global.local_symbols), token->data->data);
 		if (item == NULL)
@@ -96,7 +114,8 @@ int sem_check(TToken * token, seman check)
 			throw_error(error_type);
 		}
 		
-	}
+	}*/
+	printf("aaaaaaaaaaaaaa\n");
 	return 0;
 }
 
@@ -404,6 +423,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 					{ /* Not global variable */
 						if(uStack_count(global.local_symbols) == 0)
 						{ /* Don't look for local variable */
+							printf("ble\n");
 							throw_error(error_var_not_exists);
 						}
 					
@@ -412,6 +432,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 						if(hitem == NULL)
 						{ /* local variable not found */
 							throw_error(error_var_not_exists);
+							printf("ble\n");
 						}
 					}
 					else if(hitem->type != type_variable)
