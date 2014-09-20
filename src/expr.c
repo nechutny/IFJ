@@ -47,8 +47,6 @@ const int precedence_table[table_size][table_size]=
 int sem_check(TToken * token, seman check)
 {
 	htab_listitem * item;
-	printf("aaaa\n");
-	printf("%s\n",token->data->data );
 	item = VariableExists(token->data->data);
 
 	if (item == NULL)
