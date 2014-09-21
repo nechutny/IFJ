@@ -70,7 +70,6 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			break;*/
 	}
 	adr3->inicialized = 1;
-	printf("a: %d  b: %d\n",a,b );
 }
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
@@ -150,12 +149,10 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 }
 
 void interpret(){
-	int i = 0;
 	TNode *node = global.ins_list->first;
 	TIns *ins;
 	while(node != NULL)
 	{
-		printf("--------------%d\n", i++);
 		ins = node->data;
 		switch(ins->type)
 		{

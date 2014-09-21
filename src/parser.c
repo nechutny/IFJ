@@ -760,6 +760,21 @@ void parser_repeat()
 {
 	print_debug("repeat");
 
+	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
+
+	TIns *start = _malloc(sizeof(TIns));
+
+	TNode	*n_start = _malloc(sizeof(TNode));
+
+	start->type = ins_lab;
+	start->adr1 = NULL;	
+	start->adr2 = NULL;
+	start->adr3 = NULL;
+
+	n_start->data = start;
+
+	list_insert_node(global.ins_list, n_start);
+
 	TToken *token = token_get();
 	if(token->type == token_begin)
 	{ /* Code block */
@@ -780,11 +795,11 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	if(precedence(global.file, context_repeat, NULL))
+	if(precedence(global.file, context_repeat, cond))
 	{
 		throw_error(error_expresion);
 	}
-	
+	gen_code(ins_jmp, cond, NULL, n_start);
 	print_debug("end repeat");
 }
 
