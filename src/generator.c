@@ -66,7 +66,7 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 		default:
 			printf("not yet\n");
 	}
-	uStack_push(TIns *, global.ins_list, ins);
+	list_insert(global.ins_list, ins);
 	return;
 }
 
@@ -77,5 +77,5 @@ void gen_code(TInsType type, void *adr1, void *adr2, void *adr3){
 	ins->adr2 = adr2;	
 	ins->adr3 = adr3;
 	
-	uStack_push(TIns *, global.ins_list, ins);
+	list_insert(global.ins_list, ins);
 }

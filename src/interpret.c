@@ -70,6 +70,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			break;*/
 	}
 	adr3->inicialized = 1;
+	printf("a: %d  b: %d\n",a,b );
 }
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
@@ -150,10 +151,12 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 
 void interpret(){
 	int i = 0;
+	TNode *node = global.ins_list->first;
 	TIns *ins;
-	while(i != global.ins_list->count)
+	while(node != NULL)
 	{
-		ins = uStack_offset(TIns *, global.ins_list, i);
+		printf("--------------%d\n", i++);
+		ins = node->data;
 		switch(ins->type)
 		{
 			case ins_add:
@@ -192,10 +195,19 @@ void interpret(){
 			case ins_or:
 				logic('o', ins->adr1, ins->adr2, ins->adr3);
 				break;
+			case ins_lab:
+				break;
+			case ins_jmp:
+				if(ins->adr1 == NULL || ((symbolVariable *)ins->adr1)->value.value_boolean == 0)
+				{
+					node = ins->adr3;
+					continue;
+				}
+				break;
 			default:
 				printf("NOT YET\n");	
 		}
-		i++;
+		node = node->n;
 	}
 
 }

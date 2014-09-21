@@ -26,7 +26,9 @@ int main(int argc, char* argv[])
 
 	//interpret();
 
-	//printf("vysledek %d\n", ((TVar *)((TIns *)global.ins_list->last->data)->adr3)->data.i);
+	//symbolVariable *var = VariableExists("x")->ptr.variable;
+
+	//printf("vysledek %lu\n", var->value.value_number);
 
 	/*precedence(global.file);
 	while(global.ins_list->act != NULL){

@@ -46,7 +46,7 @@ struct TGlobal
 
 	FILE* file;
 	
-	uStack_t* ins_list;
+	TList* ins_list;
 
 	htab_t* global_symbol;
 

@@ -740,9 +740,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	}
 
 	if(result != NULL){
-		if(global.ins_list->count != 0)
+		if(global.ins_list->last != NULL)
 		{
-			TIns *ins = uStack_top(TIns *, global.ins_list);
+			TIns *ins = global.ins_list->last->data;
 		//	_free(ins->adr3);
 			ins->adr3 = result;
 		}

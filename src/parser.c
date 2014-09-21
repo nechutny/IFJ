@@ -565,6 +565,9 @@ void parser_if()
 	TIns *lab_else = _malloc(sizeof(TIns)), 
 		 *lab_end = _malloc(sizeof(TIns));
 
+	TNode	*n_else = _malloc(sizeof(TNode)),
+			*n_end = _malloc(sizeof(TNode));
+
 	lab_else->type = ins_lab;
 	lab_else->adr1 = NULL;
 	lab_else->adr2 = NULL;	
@@ -575,6 +578,9 @@ void parser_if()
 	lab_end->adr2 = NULL;	
 	lab_end->adr3 = NULL;
 	
+	n_else->data = lab_else;
+	n_end->data = lab_end;
+
 	/* Expresion */
 	if(precedence(global.file, context_if, cond))
 	{
@@ -588,7 +594,7 @@ void parser_if()
 	}
 	token_free(token);
 
-	gen_code(ins_jmp, cond, NULL, lab_else);
+	gen_code(ins_jmp, cond, NULL, n_else);
 
 	token = token_get();
 	if(token->type == token_begin)
@@ -604,9 +610,10 @@ void parser_if()
 	}
 
 	/* inser jump for skipping else block */
-	gen_code(ins_jmp, NULL, NULL, lab_end);
+	gen_code(ins_jmp, NULL, NULL, n_end);
 	/* Insert label for skipping then block */
-	uStack_push(TIns *, global.ins_list, lab_else);
+	list_insert_node(global.ins_list, n_else);
+
 
 	token = token_get();
 	if(token->type == token_else)
@@ -629,8 +636,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
-	uStack_push(TIns *, global.ins_list, lab_end);
-	printf("end if\n");
+	list_insert_node(global.ins_list, n_end);
 	print_debug("end if");
 }
 
@@ -691,8 +697,12 @@ void parser_while()
 	print_debug("while");
 	
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
+
 	TIns *start = _malloc(sizeof(TIns)),
 		 *end = _malloc(sizeof(TIns));
+
+	TNode	*n_start = _malloc(sizeof(TNode)),
+			*n_end = _malloc(sizeof(TNode));
 
 	start->type = ins_lab;
 	start->adr1 = NULL;	
@@ -704,8 +714,12 @@ void parser_while()
 	end->adr2 = NULL;
 	end->adr3 = NULL;
 
+	n_start->data = start;
+	n_end->data = end;
+
 	/* Condition */
-	uStack_push(TIns *, global.ins_list, start);
+	list_insert_node(global.ins_list, n_start);
+
 	if(precedence(global.file, context_while, cond))
 	{
 		throw_error(error_expresion);
@@ -718,7 +732,9 @@ void parser_while()
 		throw_error(error_do);
 	}
 	token_free(token);
-	
+
+	gen_code(ins_jmp, cond, NULL, n_end);
+
 	token = token_get();
 	if(token->type == token_begin)
 	{ /* Code block */
@@ -731,7 +747,8 @@ void parser_while()
 		token_return_token(token);
 		parser_code();
 	}
-	
+	gen_code(ins_jmp, NULL, NULL, n_start);
+	list_insert_node(global.ins_list, n_end);
 	print_debug("end while");
 }
 
