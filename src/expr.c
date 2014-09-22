@@ -272,7 +272,6 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context,stack)];
 		uStack_push(int, stack,operator_non_term);
 	}
-	//printf("helemese \n");
 	//printf("recon %d \n", recon_sign(token,context,stack));
 	if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_ID ))
 	{
@@ -299,14 +298,11 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	symbolVariable *tmp;
 	symbolVariable *new_var;
 	uStack_remove(stack);
-	//printf("uStack_top--: %d\n", uStack_top(int, stack));
 	if (uStack_top(int, stack) == operator_non_term)
     {
 		uStack_remove(stack);
-		//printf("uStack_top---: %d\n", uStack_top(int, stack));
 		if (rule == rule_19)
 		{
-			//uStack_remove(stack);
 	      	uStack_push(int, stack,operator_non_term);
 	       	printf("Precedence syntax used rule %d\n",rule);
 	    // 	gen_ins(rule, global.ins_list, NULL, NULL, NULL);
@@ -327,8 +323,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	    }
 	    else
 	    {
-	    fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-	    return 1;
+			throw_error(error_sign_less_precedence);
 	    }
 
 	}
@@ -350,8 +345,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	    }
 	    else
 	    {
-			fprintf(stderr,"ERROR: Excpects: << but it gets: %d \n",uStack_top(int, stack));
-			return 1;
+			throw_error(error_sign_less_precedence);
 	    }		
 	}	
 	else
@@ -393,12 +387,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	
 	}
 
-	//printf("stack_top: %d\n", (int)stack_top(stack));
-	//printf("dolar: %d\n",operator_dolar );
 	if (token->type == token_semicolon)
 	{
-		fprintf(stderr,"ERROR: Wrong syntax\n");
-		return 1;
+		throw_error(error_syntax_in_precedence);
 	}
 
 	do
@@ -410,12 +401,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		//fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
 		//fprintf(stderr,"token_type: %d\n", token->type);
 		//fprintf(stderr,"uStack_count: %ld\n", uStack_count(stack));
-
-		//this condition handle minus or plus operator in the begining of expression (-2 mod 3)
-		//if (((uStack_top(int,stack)) == operator_right_parenthesis) && ((token->type == token_sub) || (token->type == token_add)))
-			//uStack_push(int,stack,operator_non_term);
-	
-		//fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
 		
 		switch(get_sign(token,stack,Func_call)){
 			case sign_equal:
@@ -477,8 +462,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	       				//gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
 					}
 					else{
-						fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int,stack));
-						return 1;
+						throw_error(error_sign_less_precedence);
 					}
 				}
 				//This condition handle rule E -> (E)
@@ -486,7 +470,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				{
 					uStack_remove(stack);
 			
-					//fprintf(stderr, " stack %d\n",uStack_top(int, stack) );
 					switch (uStack_top(int, stack))
 					{
 
@@ -497,7 +480,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 							if (uStack_top(int, stack) == operator_left_parenthesis)
 							{
 								uStack_remove(stack);
-								//uStack_push(int, stack,operator_non_term);
 								if(uStack_top(int, stack) == sign_less)
 								{
 									uStack_remove(stack);
@@ -516,8 +498,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									}
 									else
 									{
-										fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-										return 1;
+										throw_error(error_sign_less_precedence);
 									}
 								}
 								else if (uStack_top(int, stack) == operator_array)
@@ -531,27 +512,22 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									}
 									else
 									{
-										fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-										return 1;
+										throw_error(error_sign_less_precedence);
 									}
 								}
 								else
 								{
-
-									fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-									return 1;
+									throw_error(error_sign_less_precedence);
 								}
 							}
 							//This handle rule E -> func(E,E...)
 							else if (uStack_top(int, stack) == operator_comma)
 							{
-								//fprintf(stderr,"ahoooooooooooooo\n");
 								int number_param = 1;
 								int check_E = 1;
 								uStack_remove(stack);
 								while (!(uStack_top(int, stack) == operator_left_parenthesis))
 								{
-									//fprintf(stderr, "uStack_top: %d\n",uStack_top(int, stack) );
 									if ((uStack_top(int, stack) == operator_non_term) && check_E)
 									{
 										check_E = 0;
@@ -570,11 +546,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									}
 								}
 								uStack_remove(stack);
-								//printf("asdasd\n");
 								if (uStack_top(int, stack) == operator_func)
 								{
 									uStack_remove(stack);
-									//printf("asdaaaaaaaaaaaaaa\n");
 									if (uStack_top(int, stack) == sign_less)
 									{
 										uStack_remove(stack);
@@ -583,8 +557,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									}
 									else
 									{
-										fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-										return 1;
+										throw_error(error_sign_less_precedence);
 									}
 								}	
 								else
@@ -620,14 +593,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 								}
 								else
 								{
-									fprintf(stderr,"ERROR: Excpects: < but it gets: %d \n",uStack_top(int, stack));
-									return 1;
+									throw_error(error_sign_less_precedence);
 								}
 							}
 							else
 							{
-								fprintf(stderr,"ERROR Wrong syntax\n");
-								return 1;
+								throw_error(error_syntax_in_precedence);
 							}
 							break;
 
@@ -637,7 +608,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				//This condition should handle with others rules, ended with E
 				else if (uStack_top(int, stack) == operator_non_term)
 				{
-					//printf("uStack_top-: %d\n", uStack_top(int, stack));
 					uStack_remove(stack);
 					switch(uStack_top(int,stack)){
 						case operator_not:
@@ -773,14 +743,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				}
 				else
 				{
-					fprintf(stderr,"ERROR Wrong syntax\n");
-					return 1;
+					throw_error(error_syntax_in_precedence);
 				}
 				break;
 
 			case sign_fault:
-				fprintf(stderr,"ERROR: Got error sign from precedence table\n");
-				return 1;
+				throw_error(error_sign_fault);
 		}
 
 	}while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,Func_call,stack)) == operator_dolar )) );
@@ -837,6 +805,4 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	//token_free(token);
 	
 	return 0;
-
 }
-
