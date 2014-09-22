@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	if (global.file==NULL)
 		return 0;
 		
-	parser();
+	parser_file();
 
 
 	//interpret();
