@@ -19,6 +19,7 @@ typedef enum {
 	operator_plus,
 	operator_minus,
 	operator_or,
+	operator_xor,
 	operator_equal,
 	operator_diff,
 	operator_less,
@@ -37,7 +38,7 @@ typedef enum {
 } operator_number;
 
 typedef enum{
-	sign_equal = 24,
+	sign_equal = 25,
 	sign_less,
 	sign_greater,
 	sign_fault
@@ -78,7 +79,11 @@ typedef enum
 	rule_16,
 	rule_17,
 	rule_18,
-	rule_19
+	rule_19,
+	rule_20,
+	rule_21,
+	rule_22,
+	rule_23
 } TRule;
 
 
