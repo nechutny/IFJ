@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	
 	global_init();
 
-	if( (global.file=fopen(argv[1],"r")) ==NULL)
+	if( (global.file = fopen(argv[1], "r")) == NULL)
 		return 99;
 
 	parser_file();

@@ -20,6 +20,6 @@ begin
 
 	ret := max(a, b);
 
-	writeln( 'Max value is : ', ret );
+	write( 'Max value is : ', ret );
 
 end.
