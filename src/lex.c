@@ -121,7 +121,7 @@ void set_identifier(TToken *token){
  						"of","to","program","ID","mod","div","not","and","or",
  						"begin","end","while","for","if","then","else",
  						"porcedure","function","return","true","false","null",
- 						"integer","real","char","boolean","string","array"};
+ 						"integer","real","char","boolean","string","array","xor","forward"};
  	TToken_type tokens[]={token_var,token_in,token_do,token_repeat,token_until,
  						token_label,token_goto,token_case,token_of,token_to,
  						token_program,token_id,token_mod,token_div,token_not,
@@ -129,10 +129,10 @@ void set_identifier(TToken *token){
  						token_for,token_if,token_then,token_else,
  						token_procedure,token_function,token_return,token_true,
  						token_false,token_null,token_integer,token_real,
- 						token_char,token_boolean,token_string_var,token_array};
+ 						token_char,token_boolean,token_string_var,token_array,token_xor,token_forward};
 
  	token->type = token_identifier;
- 	for (int i = 0; i <= 35; i++)
+ 	for (int i = 0; i <= 37; i++)
  	{
  		if (strcmp(keywords[i],token->data->data)==0)
  		{

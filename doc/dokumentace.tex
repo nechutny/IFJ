@@ -29,4 +29,22 @@
 
 \pagebreak
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Lexikální analyzátor} \label{lexika}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Lexikální analyzátor je implementován konečným automatem, který načítá zdrojový kód ze souboru a 
+čte z něj jednotlivé tokeny. 
+
+Vstupní soubor získá lexikální analyzátor z globální proměnné \textit{global} popsané v \textit{garbage.h}. 
+Je volán syntaktickým analyzátorem, kterému vrací strukturu \textit{TToken} obsahující typ tokenu a v případě 
+textového řetězce, klíčového slova a číslice obsahuje jěště hodnotu.
+
+Syntaktický analyzátor volá funkci \textit{token\_get}. Ta pomocí funkce \textit{token\_init} naalokuje 
+token. Dále mu přiřadí odpovídající hodnotu  podle načteného lexému ze zdrojového souboru a vrátí jej. 
+Syntaktický analyzátor dále používá další dvě funkce. \textit{token\_return_token} slouží k navrácení již 
+načteného tokenu k opětovnému načtení při dalším volání funkce \textit{token\_get}. \textit{token\_free} uvolní strukturu tokenu z paměti.
+
+Zjednodušený obrázek konečného automatu naleznete na poslední straně(\ref{konecny automat}).
+
 \end{document}

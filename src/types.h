@@ -95,6 +95,9 @@ typedef enum {
 	token_bracket_left,		// 59
 	token_bracket_right,		// 60
 
+	token_xor,				//61
+	token_forward,			//62
+
 // integrated functions not working yet (it depands on task from teachers)
 	token_f_boolval,		
 	token_f_doubleval,		
