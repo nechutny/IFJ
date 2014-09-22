@@ -3,7 +3,8 @@ var	cislo, cislo2 : integer = 5;
 	desetine : real = 12.5;
 	text : string;
 	znak : char;
-	
+
+{ foo }
 function funkce2() : integer; forward;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
@@ -14,6 +15,7 @@ begin
 		funkce1 := 2;
 end;
 function funkce2() : integer;
+var xyz : real;
 begin
 	text[1] := 'A';
 	write( -7-4 );

@@ -310,8 +310,6 @@ void parser_function()
 				token = token_get();
 			} while(token->type != token_end);
 
-			
-			
 			uStack_remove(global.local_symbols);
 			
 			if(token->type != token_end)
