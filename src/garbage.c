@@ -10,6 +10,7 @@
 #include "garbage.h"
 #include "list.h"
 #include "uStack.h"
+#include "parser.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -100,7 +101,7 @@ void global_init()
 	global.ins_list = list_init();
 
 	// 42 is answer for anything!
-	global.global_symbol = htab_init(42);
+	global.global_symbol = htab_init(HASH_TABLE_SIZE);
 	
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
