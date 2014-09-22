@@ -441,15 +441,17 @@ void parser_code()
 	print_debug("One command: ");
 	
 	TToken * token = token_get();
+	TToken *token2;
 	
 	switch(token->type)
 	{
 		case token_identifier:
 			/* assign or function call */
-			hitem = VariableExists(token->data->data);
+			token2 = token;
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
+				hitem = VariableExists(token2->data->data);
 				if(hitem == NULL || hitem->type != type_variable)
 				{ /* Not global variable */
 					throw_error(error_var_not_exists);
@@ -487,6 +489,7 @@ void parser_code()
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
+				hitem = htab_lookup(global.global_symbol, token2->data->data);
 				print_debug("function call");
 				if(hitem == NULL)
 				{

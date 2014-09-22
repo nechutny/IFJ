@@ -11,7 +11,7 @@ begin
 	write( arg1, cislo, 15-2 );
 	
 	for cislo := 1 to 15 do
-		return 2;
+		funkce1 := 2;
 end;
 function funkce2() : integer;
 begin
@@ -36,7 +36,7 @@ begin
 	end else begin
 		arg1 := -arg1*5;
 	end;
-	return 2;
+	funkce3 := 2;
 	funkce3( arg1);
 end;
 
