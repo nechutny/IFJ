@@ -214,6 +214,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 		case token_colon:
 		case token_of:
 		case token_to:
+		case token_end:
 			return operator_dolar;
 
 		default:
