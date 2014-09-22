@@ -11,7 +11,7 @@ begin
 	else
 		result := num2;
 		
-	return result;
+	max := result;
 end;
 
 begin

@@ -211,7 +211,7 @@ void parser_var()
 void parser_function()
 {
 	TToken * token = token_get();
-	htab_listitem* var;
+	htab_listitem* var, *var2;
 	unsigned long offset = ftell(global.file);
 	
 	if(token->type == token_function)
@@ -272,6 +272,11 @@ void parser_function()
 			throw_error(error_type);
 		}
 		symbol_function_type_set(var->ptr.function, token->type);
+		
+		var2 = htab_create(uStack_top(htab_t*, global.local_symbols), var->key);
+		symbol_variable_init(var2, var->key);
+		symbol_variable_type_set(var2->ptr.variable, token->type);
+		
 		token_free(token);
 		
 		token = token_get();
@@ -543,16 +548,6 @@ void parser_code()
 			/* switch */
 			token_free(token);
 			parser_switch();
-			break;
-			
-		case token_return:
-			/* return */
-			print_debug("return");
-			token_free(token);
-			if(precedence(global.file, context_assign, NULL))
-			{
-				throw_error(error_expresion);
-			}
 			break;
 			
 		case token_semicolon:

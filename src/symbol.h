@@ -11,7 +11,7 @@
 #include "types.h"
 
 #define VariableExists(name)							\
-	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : (htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
+	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : ((htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL )  ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
 
 
 typedef enum {
