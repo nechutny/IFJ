@@ -13,13 +13,13 @@ typedef enum {
 	state_init,
 	state_colon,
 	state_identifier,
-	state_slash,
+	//state_slash,
 	state_apostrophe,
-	state_line_comment,
+	//state_line_comment,
 	state_multiline_comment,
 	state_dot,
-	state_star,
-	state_parenthesis_left,
+	//state_star,
+	//state_parenthesis_left,
 	state_string,
 	state_double,
 	state__double_e,
@@ -29,7 +29,8 @@ typedef enum {
 	state_int,
 	state_greater,
 	state_less,
-	state_invalid
+	state_invalid,
+	state_grille
 } TState;
 
 TToken * token_init();

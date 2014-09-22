@@ -63,6 +63,9 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 		case rule_18:
 			ins->type = ins_in;
 			break;
+		case rule_24:
+			ins->type = ins_uminus;
+			break;
 		default:
 			printf("not yet\n");
 	}

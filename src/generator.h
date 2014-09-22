@@ -23,7 +23,8 @@ typedef enum {
 	ins_greateq,	//14
 	ins_in,			//15
 	ins_jmp,		//16
-	ins_call		//17
+	ins_call,		//17
+	ins_uminus		//18
 } TInsType;
 
 typedef struct TIns
