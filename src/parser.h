@@ -1,5 +1,5 @@
 /**
- * 	@project	IFJ 2014/2015
+ *	@project	IFJ 2014/2015
  *	@file		parser.h
  *
  *	@author		Stanislav Nechutny - xnechu01

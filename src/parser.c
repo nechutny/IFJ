@@ -1,5 +1,5 @@
 /**
- * 	@project	IFJ 2014/2015
+ *	@project	IFJ 2014/2015
  *	@file		parser.c
  *
  *	@author		Stanislav Nechutny - xnechu01
@@ -13,7 +13,7 @@
 #include "expr.h"
 #include "error.h"
 #include "uStack.h"
- #include "generator.h"
+#include "generator.h"
 #include "debug.h"
 
 parse_context local_context;
