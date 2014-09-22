@@ -167,9 +167,14 @@ TToken *token_get() {
 							string_add_chr(token->data, c);
 							break;
 						}
-						else
+						else if (c == EOF)
 						{
 							token->type = token_eof;
+							return token;
+						}
+						else
+						{
+							token->type = token_invalid;
 							return token;
 						}
 				}
