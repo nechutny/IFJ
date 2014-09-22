@@ -328,19 +328,14 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 
 	}
 	else if (rule == rule_24)
-	{
+	{	// 2 + - 4
 	
 		if (uStack_top(int, stack) == sign_less)
 	    {
 	        uStack_remove(stack);
 	      	uStack_push(int, stack,operator_non_term);
 	       	printf("Precedence syntax used rule %d\n",rule);
-	       	tmp = stack_top(var_stack);
-	       	stack_pop(var_stack);
-	       	new_var = create_const(NULL);
-	       	gen_expr(rule, stack_top(var_stack), tmp, new_var);
-	       	stack_pop(var_stack);
-	       	stack_push(var_stack, new_var);
+	       	gen_expr(rule, stack_top(var_stack), NULL, stack_top(var_stack));
 	       	return 0;
 	    }
 	    else

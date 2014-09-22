@@ -45,7 +45,7 @@ void token_free( TToken * token ) {
 //set correct type of token (is it keyword or indentifier?)
 void set_identifier(TToken *token){
  	char * keywords[]={"var","in","do","repeat","until","label","goto","case",
- 						"of","to","program","ID","mod","div","not","and","or",
+ 						"of","to","program","id","mod","div","not","and","or",
  						"begin","end","while","for","if","then","else",
  						"porcedure","function","return","true","false","null",
  						"integer","real","char","boolean","string","array",
@@ -129,17 +129,19 @@ TToken *token_get() {
 						token->type = token_parenthesis_right;
 						return token;
 					case '/':
-						state = state_slash;
-						break;
+						token->type = token_slash;
+						return token;
 					case '(':
-						state = state_parenthesis_left;
-						break;
+						token->type = token_parenthesis_left;
+						return token;
 					case '[':
 						token->type = token_bracket_left;
 						return token;
 					case ']':
 						token->type = token_bracket_right;
 						return token;
+					case '{':
+						state = state_multiline_comment;
 					case ':':
 						state = state_colon;
 						break;
@@ -208,7 +210,7 @@ TToken *token_get() {
 				else if (c == EOF || c == '+' || c == ',' || c == '*' ||
 						c == '/' || c == '-' || c == '=' || c == ')' ||
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || isspace(c))	// '(' shouldnt be there)
+						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_int;
@@ -251,7 +253,7 @@ TToken *token_get() {
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || isspace(c))	// '(' shouldnt be there)
+						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
@@ -305,7 +307,7 @@ TToken *token_get() {
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || isspace(c))	// '(' shouldnt be there)
+						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
@@ -317,54 +319,10 @@ TToken *token_get() {
 					return token;
 				}
 				break;
-			case state_slash:
-				if (c=='/')
-				{
-					state = state_line_comment;
-				}
-				else if (isalnum(c) || isspace(c) || c=='_')
-				{
-					ungetc(c, file);
-					token->type=token_slash;
-					return token;
-				}
-				else
-				{
-					token->type=token_invalid;
-					return token;
-				}
-				break;
-			case  state_line_comment:
-				if (c=='\n')
-				{
-					state = state_init;
-				}
-				break;
-			case state_parenthesis_left:
-				if (c=='*')
-				{
-					state = state_multiline_comment;
-				}
-				else
-				{
-					ungetc(c, file);
-					token->type = token_parenthesis_left;
-					return token;
-				}
 			case state_multiline_comment:
-				if (c=='*')
-				{
-					state = state_star;
-				}
-				break;
-			case state_star:
-				if (c==')')
+				if (c=='}')
 				{
 					state = state_init;
-				}
-				else if (c!='*')
-				{
-					state = state_multiline_comment;
 				}
 				break;
 			case state_colon:
