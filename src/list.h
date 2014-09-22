@@ -10,6 +10,7 @@ typedef struct _TNode {
 typedef struct _TList {
 	TNode * first;
 	TNode * last;
+	TNode * act;
 } TList;
 
 TList* list_init();

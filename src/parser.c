@@ -304,6 +304,8 @@ void parser_function()
 			}
 			token_free(token);
 			
+			uStack_push(TList *, global.ins_list_stack ,var->ptr.function->ins);
+
 			do
 			{
 				parser_main();
@@ -320,6 +322,8 @@ void parser_function()
 			}
 			token_free(token);
 			
+			uStack_remove(global.ins_list_stack);
+
 			token = token_get();
 			if(token->type == token_semicolon)
 			{
@@ -501,6 +505,8 @@ void parser_code()
 				{
 					throw_error(error_expresion);
 				}
+
+				gen_code(ins_call, hitem->ptr.function, NULL, NULL);
 			}
 			else
 			{
@@ -633,7 +639,7 @@ void parser_if()
 	/* inser jump for skipping else block */
 	gen_code(ins_jmp, NULL, NULL, n_end);
 	/* Insert label for skipping then block */
-	list_insert_node(global.ins_list, n_else);
+	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_else);
 
 
 	token = token_get();
@@ -657,7 +663,7 @@ void parser_if()
 	{
 		token_return_token(token);
 	}
-	list_insert_node(global.ins_list, n_end);
+	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_end);
 	print_debug("end if");
 }
 
@@ -739,7 +745,7 @@ void parser_while()
 	n_end->data = end;
 
 	/* Condition */
-	list_insert_node(global.ins_list, n_start);
+	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_start);
 
 	if(precedence(global.file, context_while, cond))
 	{
@@ -769,7 +775,7 @@ void parser_while()
 		parser_code();
 	}
 	gen_code(ins_jmp, NULL, NULL, n_start);
-	list_insert_node(global.ins_list, n_end);
+	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_end);
 	print_debug("end while");
 }
 
@@ -794,7 +800,7 @@ void parser_repeat()
 
 	n_start->data = start;
 
-	list_insert_node(global.ins_list, n_start);
+	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_start);
 
 	TToken *token = token_get();
 	if(token->type == token_begin)

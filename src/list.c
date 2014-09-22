@@ -15,6 +15,7 @@ TList* list_init()
 	}
 	list->first = NULL;
 	list->last = NULL;
+	list->act = NULL;
 	
 	return list;
 }

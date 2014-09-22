@@ -764,9 +764,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	}
 
 	if(result != NULL){
-		if(global.ins_list->last != NULL)
+		if(uStack_top(TList *,global.ins_list_stack)->last != NULL)
 		{
-			TIns *ins = global.ins_list->last->data;
+			TIns *ins = uStack_top(TList *,global.ins_list_stack)->last->data;
 		//	_free(ins->adr3);
 			ins->adr3 = result;
 		}

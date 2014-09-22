@@ -12,6 +12,7 @@
 #include "htable.h"
 #include "garbage.h"
 #include "error.h"
+#include "list.h"
 
 
 /**
@@ -164,6 +165,7 @@ void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 	var->ptr.function->startOffset = offset;
 	var->ptr.function->name = string_new();
 	string_add(var->ptr.function->name, name);
+	var->ptr.function->ins = list_init();
 }
 
 
