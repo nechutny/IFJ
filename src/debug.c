@@ -13,12 +13,18 @@
 /**
  * Print properly indented message only if are debug messages enabled
  *
+ * @param	lvl		Type of debug information for disable/enable in debug.h
  * @param	fmt		Formating string like in printf
  * @param	variadic	Values for %x in first string
  */
-void print_debug(const char *fmt, ...)
+void print_debug(debug_level lvl, const char *fmt, ...)
 {
 	if(!DEBUG_MESSAGES)
+	{
+		return;
+	}
+
+	if(!DEBUG_MESSAGE_PARSER && lvl == debug_parser)
 	{
 		return;
 	}

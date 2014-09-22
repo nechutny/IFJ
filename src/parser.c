@@ -45,7 +45,7 @@ void parser_file()
 	{
 		throw_error(error_identifier);
 	}
-	print_debug("Program name %s", token->data->data);
+	print_debug(debug_parser,"Program name %s", token->data->data);
 	token_free(token);
 	
 	token = token_get();
@@ -70,7 +70,7 @@ void parser_file()
 	}
 	token_free(token);
 	
-	print_debug("Main body");
+	print_debug(debug_parser,"Main body");
 	parser_main();
 	
 	token = token_get();
@@ -86,7 +86,7 @@ void parser_file()
 		throw_error(error_dot);
 	}
 
-	print_debug("Main body end");
+	print_debug(debug_parser,"Main body end");
 
 	token = token_get();
 	if(token->type != token_eof)
@@ -137,7 +137,7 @@ void parser_var()
 			{
 				throw_error(error_identifier);
 			}
-			print_debug("Variable %s",token->data->data);
+			print_debug(debug_parser,"Variable %s",token->data->data);
 
 			if(local_context == context_global)
 			{ /* Add variable to global symbol table */
@@ -222,7 +222,7 @@ void parser_function()
 		{ /* Identifier */
 			throw_error(error_identifier);
 		}
-		print_debug("function %s:",token->data->data);
+		print_debug(debug_parser,"function %s:",token->data->data);
 		/* Add variable to global symbol table */
 
 		/* check if is only prototpy or nothing */
@@ -419,7 +419,7 @@ void parser_args(symbolFunction* func)
  */
 void parser_main()
 {
-	print_debug("Code block");
+	print_debug(debug_parser,"Code block");
 	TToken * token = token_get();
 	while(token->type != token_end)
 	{
@@ -427,7 +427,7 @@ void parser_main()
 		parser_code();
 		token = token_get();
 	}
-	print_debug("Code block end");
+	print_debug(debug_parser,"Code block end");
 	token_return_token(token);
 }
 
@@ -438,7 +438,7 @@ void parser_main()
 void parser_code()
 {
 	htab_listitem* hitem;
-	print_debug("One command: ");
+	print_debug(debug_parser,"One command: ");
 	
 	TToken * token = token_get();
 	TToken *token2;
@@ -473,7 +473,7 @@ void parser_code()
 					}
 					token_free(token);
 				}
-				print_debug("assign");
+				print_debug(debug_parser,"assign");
 
 				if(hitem != NULL)
 				{
@@ -490,7 +490,7 @@ void parser_code()
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
 				hitem = htab_lookup(global.global_symbol, token2->data->data);
-				print_debug("function call");
+				print_debug(debug_parser,"function call");
 				if(hitem == NULL)
 				{
 					throw_error(error_function_not_exists);
@@ -583,7 +583,7 @@ void parser_code()
  */
 void parser_if()
 {
-	print_debug("If");
+	print_debug(debug_parser,"If");
 	
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));
 	TIns *lab_else = _malloc(sizeof(TIns)), 
@@ -642,7 +642,7 @@ void parser_if()
 	token = token_get();
 	if(token->type == token_else)
 	{ /* Else? */
-		print_debug("else");
+		print_debug(debug_parser,"else");
 		token = token_get();
 		if(token->type == token_begin)
 		{ /* else block */
@@ -661,7 +661,7 @@ void parser_if()
 		token_return_token(token);
 	}
 	list_insert_node(global.ins_list, n_end);
-	print_debug("end if");
+	print_debug(debug_parser,"end if");
 }
 
 
@@ -679,7 +679,7 @@ void parser_goto()
 		{ /* End with ';' ? */
 			throw_error(error_semicolon);
 		}
-		print_debug("goto");
+		print_debug(debug_parser,"goto");
 		token_free(token);
 	}
 	else
@@ -703,7 +703,7 @@ void parser_label()
 		{
 			throw_error(error_semicolon);
 		}
-		print_debug("label");
+		print_debug(debug_parser,"label");
 		token_free(token);
 	}
 	else
@@ -718,7 +718,7 @@ void parser_label()
  */
 void parser_while()
 {
-	print_debug("while");
+	print_debug(debug_parser,"while");
 	
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
@@ -773,7 +773,7 @@ void parser_while()
 	}
 	gen_code(ins_jmp, NULL, NULL, n_start);
 	list_insert_node(global.ins_list, n_end);
-	print_debug("end while");
+	print_debug(debug_parser,"end while");
 }
 
 
@@ -782,7 +782,7 @@ void parser_while()
  */
 void parser_repeat()
 {
-	print_debug("repeat");
+	print_debug(debug_parser,"repeat");
 
 	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
@@ -824,7 +824,7 @@ void parser_repeat()
 		throw_error(error_expresion);
 	}
 	gen_code(ins_jmp, cond, NULL, n_start);
-	print_debug("end repeat");
+	print_debug(debug_parser,"end repeat");
 }
 
 
@@ -834,7 +834,7 @@ void parser_repeat()
 void parser_for()
 {
 	htab_listitem* hitem;
-	print_debug("for");
+	print_debug(debug_parser,"for");
 
 	TToken *token = token_get();
 	if(token->type != token_identifier)
@@ -896,7 +896,7 @@ void parser_for()
 		parser_code();
 	}
 
-	print_debug("end for");
+	print_debug(debug_parser,"end for");
 }
 
 /**
@@ -909,7 +909,7 @@ void parser_for()
  */
 void parser_switch()
 {
-	print_debug("switch");
+	print_debug(debug_parser,"switch");
 
 	TToken *token = token_get();
 	if(token->type != token_identifier)
@@ -933,7 +933,7 @@ void parser_switch()
 	token = token_get();
 	while(token->type != token_end && token->type != token_else)
 	{ /* Cases */
-		print_debug("case");
+		print_debug(debug_parser,"case");
 		token_return_token(token);
 		if(precedence(global.file, context_case, NULL))
 		{
@@ -966,7 +966,7 @@ void parser_switch()
 
 	if(token->type == token_else)
 	{
-		print_debug("else");
+		print_debug(debug_parser,"else");
 		token = token_get();
 		if(token->type == token_begin)
 		{ /* else block */

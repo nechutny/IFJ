@@ -10,8 +10,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define DEBUG_MESSAGES	1
+#define DEBUG_MESSAGES		1
+#define DEBUG_MESSAGE_PARSER	1
 
-void print_debug(const char *fmt, ...);
+typedef enum {
+	debug_parser
+} debug_level;
+
+void print_debug(debug_level lvl, const char *fmt, ...);
+
+
 
 #endif
