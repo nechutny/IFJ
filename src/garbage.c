@@ -98,7 +98,10 @@ void global_init()
 	global.local_symbols = _malloc(sizeof(uStack_t));
 	global.local_symbols->count = 0;
 
-	global.ins_list = list_init();
+	global.ins_list_stack = _malloc(sizeof(uStack_t));
+	global.ins_list_stack->count = 0;
+	
+	uStack_push(TList*, global.ins_list_stack, list_init());
 
 	// 42 is answer for anything!
 	global.global_symbol = htab_init(HASH_TABLE_SIZE);

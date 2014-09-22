@@ -9,6 +9,7 @@
 
 #include "string.h"
 #include "types.h"
+#include "list.h"
 
 #define VariableExists(name)							\
 	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : ((htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL )  ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
@@ -48,6 +49,7 @@ typedef struct TsymbolFunction {
 	functionArgs *args;
 	int defined;
 	unsigned long startOffset;
+	TList * ins;
 } symbolFunction;
 
 

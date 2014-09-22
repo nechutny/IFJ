@@ -223,7 +223,7 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 }
 
 void interpret(){
-	TNode *node = global.ins_list->first;
+	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
 	TIns *ins;
 	while(node != NULL)
 	{
@@ -294,11 +294,20 @@ void interpret(){
 						fprintf(stderr, "unar minus\n");
 						exit(4);
 				}
-
+			case ins_call:
+				uStack_top(TList *,global.ins_list_stack)->act = node->n;
+				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
+				node = uStack_top(TList *,global.ins_list_stack)->first;
+				break;
 			default:
 				printf("NOT YET\n");	
 		}
 		node = node->n;
+		if(node == NULL && global.ins_list_stack->count > 1)
+		{
+			uStack_remove(global.ins_list_stack);
+			node = uStack_top(TList *,global.ins_list_stack)->act;
+		}
 	}
 
 }

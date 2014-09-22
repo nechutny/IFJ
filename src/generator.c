@@ -69,7 +69,7 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 		default:
 			printf("not yet\n");
 	}
-	list_insert(global.ins_list, ins);
+	list_insert(uStack_top(TList *,global.ins_list_stack), ins);
 	return;
 }
 
@@ -80,5 +80,5 @@ void gen_code(TInsType type, void *adr1, void *adr2, void *adr3){
 	ins->adr2 = adr2;	
 	ins->adr3 = adr3;
 	
-	list_insert(global.ins_list, ins);
+	list_insert(uStack_top(TList *,global.ins_list_stack), ins);
 }
