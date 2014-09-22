@@ -10,38 +10,39 @@
 
 
 typedef enum {
-	operator_not,
-	operator_mul,
-	operator_div,
-	operator_sign_div,
-	operator_mod,
-	operator_and,
-	operator_plus,
-	operator_minus,
-	operator_or,
-	operator_xor,
-	operator_equal,
-	operator_diff,
-	operator_less,
-	operator_less_equal,
-	operator_greater,
-	operator_greater_equal,
-	operator_in,
-	operator_left_parenthesis,
-	operator_right_parenthesis,
-	operator_ID,
-	operator_func,
-	operator_array,
-	operator_comma,
-	operator_dolar,
-	operator_non_term
+	operator_unary_minus,		// 0
+	operator_not,				// 1
+	operator_mul,				// 2
+	operator_div,				// 3
+	operator_sign_div,			// 4
+	operator_mod,				// 5
+	operator_and,				// 6
+	operator_plus,				// 7
+	operator_minus,				// 8
+	operator_or,				// 9
+	operator_xor,				// 10
+	operator_equal,				// 11
+	operator_diff,				// 12
+	operator_less,				// 13
+	operator_less_equal,		// 14
+	operator_greater,			// 15
+	operator_greater_equal,		// 16
+	operator_in,				// 17
+	operator_left_parenthesis,	// 18
+	operator_right_parenthesis,	// 19
+	operator_ID,				// 20
+	operator_func,				// 21
+	operator_array,				// 22
+	operator_comma,				// 23
+	operator_dolar,				// 24
+	operator_non_term			// 25
 } operator_number;
 
 typedef enum{
-	sign_equal = 25,
-	sign_less,
-	sign_greater,
-	sign_fault
+	sign_equal = 26,			// 26
+	sign_less,					// 27
+	sign_greater,				// 28
+	sign_fault					// 29
 } precedence_number;
 
 typedef enum{
@@ -85,7 +86,8 @@ typedef enum
 	rule_20,
 	rule_21,
 	rule_22,
-	rule_23
+	rule_23,
+	rule_24
 } TRule;
 
 
@@ -96,6 +98,7 @@ typedef enum
 }seman;
 
 int sem_check(TToken * , seman );
+operator_number recon_sign(TToken * token, parse_context context, uStack_t * stack);
 int precedence(FILE *filename,parse_context Func_call, symbolVariable *result);
 precedence_number get_stack();
 precedence_number enum_sign();

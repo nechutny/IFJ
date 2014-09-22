@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define table_size 24
+#define table_size 25
 
 /**
 * Precedence table with priorities.
@@ -17,31 +17,32 @@
 **/
 const int precedence_table[table_size][table_size]=
 {
-//    not    *     /    div   mod   and    +     -    or    xor   =    <>     <    <=     >    >=    in     (     )    ID    func  array  ,    $
-	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // not
-	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // *
-	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // /
-	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // div
-	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // mod
-	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // and	
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // +
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // -
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // or
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // xor
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // =
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <>
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <=
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // >
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // >=
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // in
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '=' , '<' , '<' , '<' , '=' , '#' }, // (
-	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '#' , '#' , '>' , '>' }, // )
-	{ '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '#' , '#' , '>' , '>' }, // ID
-	{ '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '=' , '#' , '#' , '#' , '#' , '#' , '#' }, // func
-	{ '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '=' , '#' , '#' , '#' , '#' , '#' , '#' }, // array
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '=' , '<' , '<' , '<' , '=' , '#' }, // ,
-	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '<' , '<' , '#' , '#' }, // $
+//   unary- not    *     /    div   mod   and    +     -    or    xor   =     <>     <    <=     >    >=    in     (     )    ID    func  array  ,    $
+	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '#' , '>' }, //unary -
+	{ '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // not
+	{ '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // *
+	{ '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // /
+	{ '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // div
+	{ '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // mod
+	{ '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // and	
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // +
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // -
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // or
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // xor
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // =
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <>
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // <=
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // >
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // >=
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // in
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '=' , '<' , '<' , '<' , '=' , '#' }, // (
+	{ '#' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '#' , '#' , '>' , '>' }, // )
+	{ '#' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '#' , '>' , '#' , '#' , '#' , '>' , '>' }, // ID
+	{ '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '=' , '#' , '#' , '#' , '#' , '#' , '#' }, // func
+	{ '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '#' , '=' , '#' , '#' , '#' , '#' , '#' , '#' }, // array
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '=' , '<' , '<' , '<' , '=' , '#' }, // ,
+	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '<' , '<' , '#' , '#' }, // $
 };
 
 
@@ -72,10 +73,11 @@ int sem_check(TToken * token, seman check)
 * @param token token
 * @return operator_number
 **/
-operator_number recon_sign(TToken * token, parse_context context)
+operator_number recon_sign(TToken * token, parse_context context, uStack_t * stack)
 {
 	TToken * pom;
 	pom = token_init();
+	int pom_operand = 0;
 
 	switch(token->type){
 		case token_not:
@@ -100,10 +102,42 @@ operator_number recon_sign(TToken * token, parse_context context)
 			return operator_plus;
 
 		case token_sub:
-			return operator_minus;
+			//printf("stack_top in ser %d \n", uStack_top(int,stack));
+			if (((uStack_count(stack)) == 1) && (uStack_top(int,stack) == operator_dolar ))
+			{
+				return operator_unary_minus;
+			}
+			else if (((uStack_top(int,stack)) == operator_left_parenthesis) || (uStack_top(int,stack) == operator_comma) )
+			{
+				return operator_unary_minus;
+			}
+			else if (uStack_top(int, stack) >= sign_equal)
+			{
+				pom_operand = uStack_top(int, stack);
+				uStack_remove(stack);
+				if (((uStack_top(int,stack)) <= operator_left_parenthesis) || (uStack_top(int,stack) == operator_comma) || (uStack_top(int,stack) == operator_dolar )) 
+				{
+					uStack_push(int,stack ,pom_operand );
+					return operator_unary_minus;
+				}
+				else
+				{
+					uStack_push(int,stack ,pom_operand );
+					return operator_minus;
+				}
+				
+			}
+			else if (((uStack_top(int,stack)) <= operator_left_parenthesis))
+			{
+				return operator_unary_minus;
+			}
+			else
+			{	
+				return operator_minus;
+			}
 			
-		//case token_xor:
-		//	return operator_xor;
+		case token_xor:
+			return operator_xor;
 
 		case token_or:
 			return operator_or;
@@ -230,22 +264,22 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 
 	if (uStack_top(int, stack) != operator_non_term)
 	{
-		//printf("asaaaa\n");
-		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context)];
+		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context,stack)];
 	}
 	else
 	{
 		uStack_remove(stack);
-		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context)];
+		pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context,stack)];
 		uStack_push(int, stack,operator_non_term);
 	}
-	
-	if ((token->type == token_identifier) && ((recon_sign(token,context)) == operator_ID ))
+	//printf("helemese \n");
+	//printf("recon %d \n", recon_sign(token,context,stack));
+	if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_ID ))
 	{
 		
 		sem_check(token, check_var);
 	}
-	else if ((token->type == token_identifier) && ((recon_sign(token,context)) == operator_func ))
+	else if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_func ))
 	{
 		sem_check(token, check_func);
 	}
@@ -298,10 +332,32 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	    }
 
 	}
+	else if (rule == rule_24)
+	{
+	
+		if (uStack_top(int, stack) == sign_less)
+	    {
+	        uStack_remove(stack);
+	      	uStack_push(int, stack,operator_non_term);
+	       	printf("Precedence syntax used rule %d\n",rule);
+	       	tmp = stack_top(var_stack);
+	       	stack_pop(var_stack);
+	       	new_var = create_const(NULL);
+	       	gen_expr(rule, stack_top(var_stack), tmp, new_var);
+	       	stack_pop(var_stack);
+	       	stack_push(var_stack, new_var);
+	       	return 0;
+	    }
+	    else
+	    {
+			fprintf(stderr,"ERROR: Excpects: << but it gets: %d \n",uStack_top(int, stack));
+			return 1;
+	    }		
+	}	
 	else
 	{
-	fprintf(stderr,"ERROR: Excpects: E but it gets: %d \n",uStack_top(int, stack));
-	return 1;
+		fprintf(stderr,"ERROR: Excpectss: E but it gets: %d \n",uStack_top(int, stack));
+		return 1;
 	}
 	return 1;
 }
@@ -356,13 +412,14 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		//fprintf(stderr,"uStack_count: %ld\n", uStack_count(stack));
 
 		//this condition handle minus or plus operator in the begining of expression (-2 mod 3)
-		if (((uStack_top(int,stack)) != operator_non_term) && ((token->type == token_sub) || (token->type == token_add)) && (!(uStack_top(int,stack) == operator_ID)))
-			uStack_push(int,stack,operator_non_term);
-
+		//if (((uStack_top(int,stack)) == operator_right_parenthesis) && ((token->type == token_sub) || (token->type == token_add)))
+			//uStack_push(int,stack,operator_non_term);
+	
+		//fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
 		
 		switch(get_sign(token,stack,Func_call)){
 			case sign_equal:
-				uStack_push(int, stack , recon_sign(token,Func_call));
+				uStack_push(int, stack , recon_sign(token,Func_call,stack));
 				
 				if(token->type == token_int || token->type == token_double || token->type == token_string)
 					stack_push(var_stack,create_const(token));
@@ -383,13 +440,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				if (uStack_top(int , stack) != operator_non_term)
 				{
 					uStack_push(int, stack, sign_less);
-					uStack_push(int,stack,recon_sign(token,Func_call));
+					uStack_push(int,stack,recon_sign(token,Func_call,stack));
 				}
 				else{
 					uStack_remove(stack);
 					uStack_push(int,stack,sign_less);
 					uStack_push(int,stack,operator_non_term);
-					uStack_push(int, stack,recon_sign(token,Func_call));
+					uStack_push(int, stack,recon_sign(token,Func_call,stack));
 				}
 
 				if(token->type == token_int || token->type == token_double || token->type == token_string)
@@ -408,6 +465,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				break;	
 
 			case sign_greater:
+				//printf("aasdasd");
 				//This condition handle rule E -> ID
 				if (uStack_top(int,stack) == operator_ID){
 					uStack_remove(stack);
@@ -700,6 +758,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 								return 1;
 							}
 							break;
+							
+						case operator_unary_minus:
+							if ((check_rule(stack,rule_24, var_stack)) == 1 )
+							{
+								return 1;
+							}
+							break;
 
 	          			default:
 	          				fprintf(stderr,"ERROR:: Excpects: operator but it gets: %d \n",uStack_top(int,stack));
@@ -717,15 +782,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				fprintf(stderr,"ERROR: Got error sign from precedence table\n");
 				return 1;
 		}
-		/*if ( (uStack_count(stack) == 2) && (uStack_top(int, stack) == operator_non_term) && ((token->type == token_colon ) || (token->type == token_do) ||\
-	 //(token->type == token_then) || (token->type == token_of)))
-			//uStack_remove(stack);*/
 
-		//printf("------uStack_top: %d\n", uStack_top(int, stack));
-		//printf("------token_type: %d\n", token->type);
-		//printf("------uStack_count: %d\n", stack_count(stack));
-
-	}while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,Func_call)) == operator_dolar )) );
+	}while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,Func_call,stack)) == operator_dolar )) );
 
 	printf("Precedence syntax analysis OK! \n");
 	//fprintf(stderr, " token_type END: %d\n",token->type );
