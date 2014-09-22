@@ -56,6 +56,8 @@ typedef enum{
 	context_index,
 	context_global,
 	context_function,
+	context_write,
+	context_readln,
 } parse_context;
 
 typedef enum

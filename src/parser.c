@@ -558,6 +558,14 @@ void parser_code()
 		case token_semicolon:
 			/* empty command */
 			break;
+
+		case token_write:
+			precedence(global.file, context_write, NULL);
+			break;
+			
+		case token_readln:
+			precedence(global.file, context_readln, NULL);
+			break;
 			
 		default:
 			/* Unkown command */
