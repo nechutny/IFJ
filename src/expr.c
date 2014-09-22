@@ -345,8 +345,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
 	}	
 	else
 	{
-		fprintf(stderr,"ERROR: Excpectss: E but it gets: %d \n",uStack_top(int, stack));
-		return 1;
+		throw_error(error_syntax_in_precedence);
 	}
 	return 1;
 }
@@ -390,9 +389,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	do
 	{
 		
-		//if (token->type == token_colon)
-		//	fprintf(stderr, "there\n" );
-		//fprintf(stderr, "asdasda\n");
 		//fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
 		//fprintf(stderr,"token_type: %d\n", token->type);
 		//fprintf(stderr,"uStack_count: %ld\n", uStack_count(stack));
@@ -536,8 +532,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									}
 									else
 									{
-										fprintf(stderr,"ERROR: Wrong sign in function parametr \n");
-										return 1;
+										throw_error(error_function_parametr_precedence);
 									}
 								}
 								uStack_remove(stack);
@@ -557,14 +552,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 								}	
 								else
 								{
-									fprintf(stderr,"ERROR: Excpects: func but it gets: %d \n",uStack_top(int, stack));
-									return 1;
+									throw_error(error_missing_func_precedence);
 								}
 							}
 							else
 							{
-								fprintf(stderr,"ERROR: Excpects: ( but it gets: %d \n",uStack_top(int, stack));
-								return 1;
+								throw_error(error_left_parenthesis_precedence);
 							}
 							break;
 						}
@@ -732,8 +725,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 							break;
 
 	          			default:
-	          				fprintf(stderr,"ERROR:: Excpects: operator but it gets: %d \n",uStack_top(int,stack));
-	          				return 1;
+							throw_error(error_operator_precedence);
 					}
 				}
 				else
@@ -754,9 +746,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	 (token->type == token_then) || (token->type == token_of) || (token->type == token_to)\
 	 || (Func_call == context_index))
 	{
-		//fprintf(stderr, "Vracim %d\n",token->type );
 		token_return_token(token);
-		//fprintf(stderr,"asdasd\n");
 	}
 	else
 	{

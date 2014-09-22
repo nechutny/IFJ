@@ -37,6 +37,11 @@ typedef enum{
 	error_syntax_in_precedence,
 	error_sign_fault,
 	error_sign_less_precedence,
+	error_function_parametr_precedence,
+	error_missing_func_precedence,
+	error_left_parenthesis_precedence,
+	error_operator_precedence,
+	error_non_term_precedence,
 	error_unkown,
 } errors;
 

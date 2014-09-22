@@ -3,20 +3,22 @@ var	cislo, cislo2 : integer = 5;
 	desetine : real = 12.5;
 	text : string;
 	znak : char;
-	
+
+{ foo }
 function funkce2() : integer; forward;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
 begin
-	//writeln( arg1, cislo, 15-2 );
+	write( arg1, cislo, 15-2 );
 	
 	for cislo := 1 to 15 do
-		return 2;
+		funkce1 := 2;
 end;
 function funkce2() : integer;
+var xyz : real;
 begin
 	text[1] := 'A';
-	//writeln( -7-4 );
+	write( -7-4 );
 	while False do begin
 		funkce2( );
 		desetine := desetine - 15;
@@ -26,7 +28,7 @@ end;
 function funkce3( arg1 : integer ) : integer;
 var var1 : integer = 10;
 begin
-	//writeln( arg1 );
+	write( arg1 );
 	if arg1 = 5 then begin
 		arg1 := 5+var1;
 		funkce2();
@@ -36,7 +38,7 @@ begin
 	end else begin
 		arg1 := -arg1*5;
 	end;
-	return 2;
+	funkce3 := 2;
 	funkce3( arg1);
 end;
 
