@@ -98,17 +98,15 @@ typedef enum {
 	token_xor,				//61
 	token_forward,			//62
 
-// integrated functions not working yet (it depands on task from teachers)
-	token_f_boolval,		
-	token_f_doubleval,		
-	token_f_intval,			
-	token_f_strval,			
-	token_f_get_string,		
-	token_f_put_string,		
-	token_f_strlen,			
-	token_f_get_substring,		
-	token_f_find_string,		
-	token_f_sort_string		
+	token_readln,
+	token_write,
+// integrated functions
+	token_f_find,
+	token_f_copy,
+	token_f_length,
+	token_f_sort,
+
+			
 } TToken_type;
 
 typedef struct _TToken {

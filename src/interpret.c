@@ -10,6 +10,15 @@
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
 
+	if(adr1->type == variable_string && adr2->type == variable_string && c == '+'){
+		adr3->type = variable_string;
+	//	adr3->value.value_string = adr1->value.value_string;
+	//	strcat(adr3->value.value_string, adr2->value.value_string);
+		return;
+	}else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+')
+		fprintf(stderr, "one variable is not string\n" );
+		exit(4);
+	//else if()
 	if(adr1->type == variable_double || adr2->type == variable_double)
 		adr3->type = variable_double;
 	else

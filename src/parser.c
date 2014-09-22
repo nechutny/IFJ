@@ -20,15 +20,6 @@ parse_context local_context;
 
 static int isVariableType(int type);
 
-/**
- * Main function for starting parser.
- * Depend on global variable 'global' with opened file.
- */
-void parser()
-{
-	parser_file();
-}
-
 
 /**
  * program programName;
