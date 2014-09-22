@@ -34,6 +34,9 @@ typedef enum{
 	error_var_not_exists,
 	error_read_invalid,
 	error_read_to_bool,
+	error_syntax_in_precedence,
+	error_sign_fault,
+	error_sign_less_precedence,
 	error_unkown,
 } errors;
 

@@ -369,7 +369,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	uStack_init(stack);
 	uStack_push(int, stack, operator_dolar);
 	
-	if (Func_call == context_args)
+	if ((Func_call == context_args) || (Func_call == context_write) || (Func_call == context_readln))
 	{
 		uStack_push(int, stack, sign_less);
 		uStack_push(int, stack, operator_func);

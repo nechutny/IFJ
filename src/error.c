@@ -140,6 +140,21 @@ void throw_error(errors code)
 			fprintf(stderr,"Read to boolean variable");
 			return_code = 4;
 			break;
+			
+		case error_syntax_in_precedence:
+			fprintf(stderr,"Wrong syntax in expression");
+			return_code = 2;
+			break;
+			
+		case error_sign_fault:
+			fprintf(stderr,"Got error sign from precedence table");
+			return_code = 2;
+			break;
+			
+		case error_sign_less_precedence:
+			fprintf(stderr,"Excpects: < in expression");
+			return_code = 2;
+			break;
 
 		default:
 			fprintf(stderr, "Unkown error");
