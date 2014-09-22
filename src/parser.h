@@ -28,4 +28,6 @@ void parser_goto();
 void parser_label();
 void parser_switch();
 
+#define HASH_TABLE_SIZE	42
+
 #endif 

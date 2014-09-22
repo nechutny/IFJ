@@ -233,7 +233,18 @@ void parser_function()
 		}
 		print_debug("function %s:",token->data->data);
 		/* Add variable to global symbol table */
-		var = htab_create(global.global_symbol, token->data->data);
+
+		/* check if is only prototpy or nothing */
+		var = htab_lookup(global.global_symbol, token->data->data);
+		if(var != NULL && var->type == type_function && var->ptr.function->defined)
+		{
+			throw_error(error_function_already_defined);
+		}
+		else
+		{
+			var = htab_create(global.global_symbol, token->data->data);
+		}
+		
 		symbol_function_init(var, token->data->data, offset);
 		token_free(token);
 		
@@ -244,7 +255,7 @@ void parser_function()
 		}
 		token_free(token);
 
-		htab_t* table = htab_init(42);
+		htab_t* table = htab_init(HASH_TABLE_SIZE);
 		uStack_push(htab_t*, global.local_symbols, table);
 		
 		/* Function arguments */
@@ -279,47 +290,63 @@ void parser_function()
 		}
 		token_free(token);
 
-		
-
-		/* Function variables */
-		parser_vars();
-
-		printf("\n\n Local symbols:\n");
-		htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
-
 		token = token_get();
-		if(token->type != token_begin)
-		{ /* Function body */
-			throw_error(error_begin);
-		}
-		token_free(token);
-		
-		do
+		if(token->type != token_forward)
 		{
-			parser_main();
+			token_return_token(token);
+			var->ptr.function->defined = 1;
+			/* Function variables */
+			parser_vars();
+
+			printf("\n\n Local symbols:\n");
+			htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
+
 			token = token_get();
-		} while(token->type != token_end);
-
-		
-		
-		uStack_remove(global.local_symbols);
-		
-		if(token->type != token_end)
-		{ /* Function code block end */
-			throw_error(error_end);
-		}
-		token_free(token);
-		
-		token = token_get();
-		if(token->type == token_semicolon)
-		{
+			if(token->type != token_begin)
+			{ /* Function body */
+				throw_error(error_begin);
+			}
 			token_free(token);
-			parser_function();
+			
+			do
+			{
+				parser_main();
+				token = token_get();
+			} while(token->type != token_end);
+
+			
+			
+			uStack_remove(global.local_symbols);
+			
+			if(token->type != token_end)
+			{ /* Function code block end */
+				throw_error(error_end);
+			}
+			token_free(token);
+			
+			token = token_get();
+			if(token->type == token_semicolon)
+			{
+				token_free(token);
+				parser_function();
+			}
+			else
+			{
+				throw_error(error_semicolon);
+			}
 		}
 		else
 		{
-			throw_error(error_semicolon);
+			uStack_remove(global.local_symbols);
+			token = token_get();
+			if(token->type != token_semicolon)
+			{
+				throw_error(error_semicolon);
+			}
+			parser_function();
 		}
+
+		
 	}
 	else
 	{

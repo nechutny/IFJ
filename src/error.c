@@ -97,6 +97,9 @@ void throw_error(errors code)
 			fprintf(stderr,"Called function not exists");
 			break;
 
+		case error_function_already_defined:
+			fprintf(stderr,"Function already defined");
+
 		case error_function_is_var:
 			fprintf(stderr,"Called function name is variable");
 			break;

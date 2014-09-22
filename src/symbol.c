@@ -160,6 +160,7 @@ void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 	
 	var->ptr.function->args_count = 0;
 	var->ptr.function->args = NULL;
+	var->ptr.function->defined = 0;
 	var->ptr.function->startOffset = offset;
 	var->ptr.function->name = string_new();
 	string_add(var->ptr.function->name, name);

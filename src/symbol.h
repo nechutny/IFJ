@@ -46,6 +46,7 @@ typedef struct TsymbolFunction {
 	variableType returnType;
 	unsigned int args_count;
 	functionArgs *args;
+	int defined;
 	unsigned long startOffset;
 } symbolFunction;
 
