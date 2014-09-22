@@ -5,6 +5,7 @@ var	cislo, cislo2 : integer = 5;
 	znak : char;
 
 { foo }
+
 function funkce2() : integer; forward;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
@@ -14,6 +15,7 @@ begin
 	for cislo := 1 to 15 do
 		funkce1 := 2;
 end;
+
 function funkce2() : integer;
 var xyz : real;
 begin
