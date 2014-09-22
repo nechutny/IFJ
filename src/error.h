@@ -32,7 +32,9 @@ typedef enum{
 	error_function_is_var,
 	error_function_already_defined,
 	error_var_not_exists,
-	error_unkown
+	error_read_invalid,
+	error_read_to_bool,
+	error_unkown,
 } errors;
 
 

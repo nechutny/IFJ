@@ -4,9 +4,16 @@
  *
  *	@author		Stanislav Nechutny - xnechu01
  */
+#ifndef _BUILTIN_H_
+#define _BUILTIN_H_
+
 #include <stdarg.h>
 #include <stdio.h>
 #include "symbol.h"
+#include "uStack.h"
 
-void pascal_write(int count, ...);
-int pasal_length(symbolVariable* var);
+void pascal_write(uStack_t* args);
+void pascal_readln(symbolVariable* var);
+int pascal_length(symbolVariable* var);
+
+#endif
