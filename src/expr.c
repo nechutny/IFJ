@@ -214,6 +214,8 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 		case token_colon:
 		case token_of:
 		case token_to:
+		case token_end:
+		case token_invalid:
 			return operator_dolar;
 
 		default:
@@ -744,7 +746,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	//fprintf(stderr, " token_type END: %d\n",token->type );
 	if ((token->type == token_colon ) || (token->type == token_do) ||\
 	 (token->type == token_then) || (token->type == token_of) || (token->type == token_to)\
-	 || (Func_call == context_index))
+	 || (Func_call == context_index) || (token->type == token_end))
 	{
 		token_return_token(token);
 	}
