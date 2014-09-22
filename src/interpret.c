@@ -10,15 +10,23 @@
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
 
-	if(adr1->type == variable_string && adr2->type == variable_string && c == '+'){
+	if(adr1->type == variable_string && adr2->type == variable_string && c == '+')
+	{
 		adr3->type = variable_string;
-	//	adr3->value.value_string = adr1->value.value_string;
-	//	strcat(adr3->value.value_string, adr2->value.value_string);
+		strcpy(adr3->value.value_string, adr2->value.value_string);
+		strcat(adr3->value.value_string, adr2->value.value_string);
 		return;
-	}else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+')
+	}
+	else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+'){
 		fprintf(stderr, "one variable is not string\n" );
 		exit(4);
-	//else if()
+	}
+	else if(adr1->type == variable_string || adr2->type == variable_string)
+	{
+		fprintf(stderr, "string\n");
+		exit(4);
+	}
+
 	if(adr1->type == variable_double || adr2->type == variable_double)
 		adr3->type = variable_double;
 	else
@@ -83,8 +91,14 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
+	int x = 0;
 
 	adr3->type = variable_boolean;
+
+	if(adr1->type != adr2->type){
+		fprintf(stderr, "incopatibile type\n" );
+		exit(4);
+	}
 
 	switch(adr1->type){
 		case variable_double:
@@ -116,23 +130,74 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 			exit(12);
 	}
 
+	if( adr1->type == variable_string)
+		x = strcmp(adr1->value.value_string,adr2->value.value_string);
+
 	switch(type){
 		case ins_equal:
+			if( adr1->type == variable_string)
+			{
+				if(x)
+					adr3->value.value_boolean = 0;
+				else
+					adr3->value.value_boolean = 1;
+			}
+			else
 			adr3->value.value_boolean = (a == b);
 			break;
 		case ins_nequal:
+			if( adr1->type == variable_string)
+			{
+				if(x)
+					adr3->value.value_boolean = 1;
+				else
+					adr3->value.value_boolean = 0;
+			}
+			else
 			adr3->value.value_boolean = (a != b);
 			break;
 		case ins_less:
+			if( adr1->type == variable_string)
+			{
+				if(x < 0)
+					adr3->value.value_boolean = 1;
+				else
+					adr3->value.value_boolean = 0;
+			}
+			else
 			adr3->value.value_boolean = (a < b);
 			break;
 		case ins_lesseq:
+			if( adr1->type == variable_string)
+			{
+				if(x < 0 || x == 0)
+					adr3->value.value_boolean = 1;
+				else
+					adr3->value.value_boolean = 0;
+			}
+			else
 			adr3->value.value_boolean = (a <= b);
 			break;
 		case ins_greater:
+			if( adr1->type == variable_string)
+			{
+				if(x > 0)
+					adr3->value.value_boolean = 1;
+				else
+					adr3->value.value_boolean = 0;
+			}
+			else
 			adr3->value.value_boolean = (a > b);
 			break;
 		case ins_greateq:
+			if( adr1->type == variable_string)
+			{
+				if(x > 0 || x == 0)
+					adr3->value.value_boolean = 1;
+				else
+					adr3->value.value_boolean = 0;
+			}
+			else
 			adr3->value.value_boolean = (a >= b);
 			break;
 		default:
@@ -210,6 +275,26 @@ void interpret(){
 					continue;
 				}
 				break;
+			case ins_uminus:
+				switch(((symbolVariable *)ins->adr1)->type)
+				{
+					case variable_integer:
+						((symbolVariable *)ins->adr1)->value.value_number = 0 - ((symbolVariable *)ins->adr1)->value.value_number;
+						break;
+					case variable_double:
+						((symbolVariable *)ins->adr1)->value.value_double = 0 - ((symbolVariable *)ins->adr1)->value.value_double;
+						break;
+					case variable_boolean:
+						if(((symbolVariable *)ins->adr1)->value.value_boolean)
+							((symbolVariable *)ins->adr1)->value.value_boolean = 0;
+						else
+							((symbolVariable *)ins->adr1)->value.value_boolean = 1;
+						break;
+					default:
+						fprintf(stderr, "unar minus\n");
+						exit(4);
+				}
+
 			default:
 				printf("NOT YET\n");	
 		}
