@@ -142,6 +142,7 @@ TToken *token_get() {
 						return token;
 					case '{':
 						state = state_multiline_comment;
+						break;
 					case ':':
 						state = state_colon;
 						break;
