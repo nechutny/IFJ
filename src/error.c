@@ -156,6 +156,27 @@ void throw_error(errors code)
 			return_code = 2;
 			break;
 
+		case error_function_parametr_precedence:
+			fprintf(stderr,"Wrong function argument in expression");
+			return_code = 2;
+			break;
+			
+		case error_missing_func_precedence:
+			fprintf(stderr,"Missing function name in expression");
+			return_code = 2;
+			break;
+			
+		case error_left_parenthesis_precedence:
+			fprintf(stderr,"Excpects: ( in expression");
+			return_code = 2;
+			break;
+			
+		case error_operator_precedence:
+			fprintf(stderr,"Excpects: operator in expression");
+			return_code = 2;
+			break;
+			
+
 		default:
 			fprintf(stderr, "Unkown error");
 			return_code = 9;
