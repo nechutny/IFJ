@@ -29,6 +29,11 @@ void print_debug(debug_level lvl, const char *fmt, ...)
 		return;
 	}
 
+	if(!DEBUG_MESSAGE_PREC && lvl == debug_prec)
+	{
+		return;
+	}
+
 	va_list args;
 	va_start(args, fmt);
 	
