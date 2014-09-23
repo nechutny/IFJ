@@ -86,6 +86,9 @@ TToken *token_get() {
 	if((token = token_init()) == NULL){		//alokace noveho tokenu
 		return NULL;
 	}
+	char buffer[32];
+	memset(&buffer,0,32);
+	unsigned int buff_i = 0;
 	token_last = token;
 	TState state = state_init;
 	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
@@ -159,13 +162,15 @@ TToken *token_get() {
 						if (isalpha(c) || c == '_')
 						{	//identifikator nebo klicove slovo;
 							state = state_identifier;
-							string_add_chr(token->data, c);
+							//string_add_chr(token->data, c);
+							buffer[buff_i] = c;
 						}
 						else if (isdigit(c))
 						{
 							state = state_int;
 							number_state = state_int;
-							string_add_chr(token->data, c);
+							//string_add_chr(token->data, c);
+							buffer[buff_i] = c;
 							break;
 						}
 						else if (c == EOF)
@@ -183,11 +188,13 @@ TToken *token_get() {
 			case state_identifier:
 				if(isalnum(c) || c == '_')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 				}
 				else
 				{
 					ungetc(c, file);
+					string_add(token->data,buffer);
 					set_identifier(token);
 					return token;
 				}
@@ -195,22 +202,26 @@ TToken *token_get() {
 			case state_int:
 				if(isdigit(c))
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 				}
 				else if (c=='.')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state__double_dot;
 				}
 				else if (c=='+' || c=='-')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					sign = c;
 					state = state__double_sign_e;
 				}
 				else if (c=='e' || c=='E')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state__double_e;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' ||
@@ -220,6 +231,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_int;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -231,7 +243,8 @@ TToken *token_get() {
 			case state__double_dot:
 				if (isdigit(c))
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state_double;
 					number_state = state_double;
 				}
@@ -244,16 +257,19 @@ TToken *token_get() {
 			case state_double:
 				if(isdigit(c))
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 				}
 				else if (c=='+' || c=='-')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state__double_sign_e;
 				}
 				else if (c=='e' || c=='E')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state__double_e;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
@@ -263,6 +279,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -274,21 +291,25 @@ TToken *token_get() {
 			case state__double_sign_e:
 				if (c=='e' || c=='E')
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state__double_e;
 				}
 				else
 				{
+					/* WARNING: More than one ungetc may not be supported!!! */
 					ungetc(c, file);
 					ungetc(sign, file);
 					if(number_state==state_int)
 					{
 						token->type=token_int;
+						string_add(token->data,buffer);
 						return token;
 					}
 					else
 					{
 						token->type=token_double;
+						string_add(token->data,buffer);
 						return token;
 					}
 				}
@@ -296,7 +317,8 @@ TToken *token_get() {
 			case state__double_e:
 				if (isdigit(c))
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 					state = state_double_e;
 				}
 				else
@@ -308,7 +330,8 @@ TToken *token_get() {
 			case state_double_e:
 				if (isdigit(c))
 				{
-					string_add_chr(token->data, c);
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
@@ -317,6 +340,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -335,54 +359,74 @@ TToken *token_get() {
 				if (c=='=')
 				{
 					token->type = token_assign;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_colon;
+					string_add(token->data,buffer);
 					return token;
 				}
 			case state_greater:
 				if (c=='=')
 				{
-					token->type = token_greater_equal;;
+					token->type = token_greater_equal;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_greater;
+					string_add(token->data,buffer);
 					return token;
 				}
 			case state_less:
 				if (c=='=')
 				{
 					token->type = token_less_equal;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else if (c=='>')
 				{
 					token->type = token_not_equal;
+					string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_less;
+					string_add(token->data,buffer);
 					return token;
 				}
 			case state_apostrophe:
 				if (c=='\'')
 				{
 					token->type = token_string;
+					string_add(token->data,buffer);
 					return token;
 				}
-				string_add_chr(token->data, c);
+				//string_add_chr(token->data, c);
+				buffer[buff_i] = c;
 				break;
 			default:
 				printf("Chuck Norris\n");
 				break; //you shouldnt get there
+		}
+		
+		if(state != state_multiline_comment && c != '}')
+		{
+			buff_i++;
+			if(buff_i == 31)
+			{
+				string_add(token->data,buffer);
+				buff_i = 0;
+				memset(&buffer, 0, 32);
+			}
 		}
 	}
 }

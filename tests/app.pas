@@ -51,7 +51,7 @@ begin
 		cislo := 3;
 		desetine := 1.25;
 	end;
-	text := 'foo fooo bar';
+	text := 'foo fooo bar s hooooooooooooooooooooooooooooooooooooooooooodne dlooooooooooooooooooooooooooooooooooohym texteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeem';
 
 	cislo := text[1];
 
