@@ -5,6 +5,7 @@
 #include "uStack.h"
 #include "symbol.h"
 #include "error.h"
+#include "debug.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -245,7 +246,7 @@ precedence_number enum_sign(int sign)
             return sign_fault;
 
         default:
-            //print_debug(debug_prec, "blblb\n");
+            //print_debug(debug_prec, "blblb");
             return sign_fault;
             //default fault, but it's from table where isn't anything else
     }
@@ -274,7 +275,7 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
         pom = precedence_table[uStack_top(int, stack)][recon_sign(token,context,stack)];
         uStack_push(int, stack,operator_non_term);
     }
-    //print_debug(debug_prec, "recon %d \n", recon_sign(token,context,stack));
+    //print_debug(debug_prec, "recon %d ", recon_sign(token,context,stack));
     if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_ID ))
     {
         
@@ -285,7 +286,7 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
         sem_check(token, check_func);
     }
     
-    //print_debug(debug_prec, "znak %c\n", pom );
+    //print_debug(debug_prec, "znak %c", pom );
     return enum_sign(pom);
 }
 
@@ -306,7 +307,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
         if (rule == rule_19)
         {
             uStack_push(int, stack,operator_non_term);
-            print_debug(debug_prec, "Precedence syntax used rule %d\n",rule);
+            print_debug(debug_prec, "Precedence syntax used rule %d",rule);
         //  gen_ins(rule, global.ins_list, NULL, NULL, NULL);
             return 0;
         }
@@ -314,7 +315,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
         {
             uStack_remove(stack);
             uStack_push(int, stack,operator_non_term);
-            print_debug(debug_prec, "Precedence syntax used rule %d\n",rule);
+            print_debug(debug_prec, "Precedence syntax used rule %d",rule);
             tmp = stack_top(var_stack);
             stack_pop(var_stack);
             new_var = create_const(NULL);
@@ -336,7 +337,7 @@ int check_rule(uStack_t * stack, TRule rule, TStack *var_stack)
         {
             uStack_remove(stack);
             uStack_push(int, stack,operator_non_term);
-            print_debug(debug_prec, "Precedence syntax used rule %d\n",rule);
+            print_debug(debug_prec, "Precedence syntax used rule %d",rule);
             gen_expr(rule, stack_top(var_stack), NULL, stack_top(var_stack));
             return 0;
         }
@@ -407,7 +408,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                     if(hitem->type == type_variable)
                         stack_push(var_stack,hitem->ptr.variable);
                     else
-                        print_debug(debug_prec, "volani funkce\n");
+                        print_debug(debug_prec, "volani funkce");
                 }
 
                 token_free(token);
@@ -435,7 +436,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                     if(hitem->type == type_variable)
                         stack_push(var_stack,hitem->ptr.variable);
                     else
-                        print_debug(debug_prec, "volani funkce\n");
+                        print_debug(debug_prec, "volani funkce");
                 }
 
                 token_free(token);
@@ -451,7 +452,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                     {
                         uStack_remove(stack);
                         uStack_push(int,stack,operator_non_term);
-                        print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID\n");
+                        print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID");
                         //gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
                     }
                     else{
@@ -477,7 +478,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 {
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
-                                    print_debug(debug_prec, "Precedence syntax used rule 2: E -> (E)\n");
+                                    print_debug(debug_prec, "Precedence syntax used rule 2: E -> (E)");
                                 //  gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
                                 }
                                 else if (uStack_top(int, stack) == operator_func)
@@ -487,7 +488,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
-                                        print_debug(debug_prec, "Precedence syntax used rule 20: E -> func(E)\n");
+                                        print_debug(debug_prec, "Precedence syntax used rule 20: E -> func(E)");
                                     }
                                     else
                                     {
@@ -501,7 +502,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
-                                        print_debug(debug_prec, "Precedence syntax used rule 22: E -> array[E]\n");
+                                        print_debug(debug_prec, "Precedence syntax used rule 22: E -> array[E]");
                                     }
                                     else
                                     {
@@ -545,7 +546,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
-                                        print_debug(debug_prec, "Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs\n",number_param);
+                                        print_debug(debug_prec, "Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs",number_param);
                                     }
                                     else
                                     {
@@ -578,7 +579,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 {
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
-                                    print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() \n");
+                                    print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() ");
 
                                 }
                                 else
@@ -742,7 +743,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
     }while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,Func_call,stack)) == operator_dolar )) );
 
-    print_debug(debug_prec, "Precedence syntax analysis OK! \n");
+    print_debug(debug_prec, "Precedence syntax analysis OK! ");
     //fprintf(stderr, " token_type END: %d\n",token->type );
     if ((token->type == token_colon ) || (token->type == token_do) ||\
      (token->type == token_then) || (token->type == token_of) || (token->type == token_to)\
@@ -783,7 +784,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                 //  result->value.value_char = var->value.value_char;
                 //  break;
                 default:
-                    print_debug(debug_prec, "array or string or char\n");               
+                    print_debug(debug_prec, "array or string or char");               
             }
         }
         //((TIns *)global.ins_list->act->data)->adr3 = result;
