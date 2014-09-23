@@ -224,7 +224,7 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 
 void interpret(){
 	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
-	TIns *ins;
+	TIns *ins, *func_call = NULL;
 	while(node != NULL)
 	{
 		ins = node->data;
@@ -295,6 +295,7 @@ void interpret(){
 						exit(4);
 				}
 			case ins_call:
+				func_call = ins;
 				uStack_top(TList *,global.ins_list_stack)->act = node->n;
 				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
 				node = uStack_top(TList *,global.ins_list_stack)->first;
@@ -305,8 +306,42 @@ void interpret(){
 		node = node->n;
 		if(node == NULL && global.ins_list_stack->count > 1)
 		{
+
 			uStack_remove(global.ins_list_stack);
 			node = uStack_top(TList *,global.ins_list_stack)->act;
+
+			if(func_call != NULL)
+			{
+				htab_listitem *hitem = htab_lookup(((symbolFunction*)func_call->adr1)->local_symbol,"num1");
+													//((symbolFunction*)func_call->adr1)->name->data);
+				if(hitem->type == type_variable)
+				{
+					((symbolVariable *)func_call->adr3)->type = ((symbolFunction*)func_call->adr1)->returnType;
+					((symbolVariable *)func_call->adr3)->value.value_number = hitem->ptr.variable->value.value_number;
+				}
+				else
+					printf("********without return*******\n");
+			}
+			/*symbolVariable *var = htab_lookup( ((symbolFunction *)ins->adr1) ((symbolFunction *)ins->adr1)->name->data)->ptr.variable;
+			switch(((symbolVariable *)ins->adr3)->type)
+			{
+				case variable_integer:
+					((symbolVariable *)ins->adr3)->value.value_number = 
+					break;
+				case variable_double:
+					((symbolVariable *)ins->adr3)->value.value_double =
+					break;
+				case value_boolean:
+					((symbolVariable *)ins->adr3)->value.value_boolean = 
+					break;
+				case variable_string:
+					//((symbolVariable *)ins->adr3)->value.
+					break;
+				case variable_char:
+					//((symbolVariable *)ins->adr3)->value.value_char =
+					break;
+
+			}*/
 		}
 	}
 

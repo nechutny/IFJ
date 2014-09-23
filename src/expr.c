@@ -9,7 +9,6 @@
 #include <ctype.h>
 
 #define table_size 25
-
 /**
 * Precedence table with priorities.
 * Rows are tokens on the top of the stack and collums are actual tokens.
@@ -45,6 +44,7 @@ const int precedence_table[table_size][table_size]=
 	{ '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '<' , '#' , '<' , '<' , '<' , '#' , '#' }, // $
 };
 
+symbolFunction *func = NULL;
 
 int sem_check(TToken * token, seman check)
 {
@@ -192,8 +192,11 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 
 		case token_identifier:
 			pom = token_get(global.file);
+			//lookup pom->data->data
+			//push nekam
 			if (pom->type == token_parenthesis_left)
 			{
+				func = VariableExists(token->data->data)->ptr.function;
 				token_return_token(pom);
 				return operator_func;
 			}
@@ -364,6 +367,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 	TStack *var_stack;
 	var_stack = stack_init();
+	symbolVariable *new_var = NULL;
 
 	uStack_init(stack);
 	uStack_push(int, stack, operator_dolar);
@@ -543,6 +547,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 									{
 										uStack_remove(stack);
 										uStack_push(int, stack,operator_non_term);
+										stack_push(var_stack, new_var);
+										gen_code(ins_call,func,NULL,new_var);
 										printf("Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs\n",number_param);
 									}
 									else
@@ -576,6 +582,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 								{
 									uStack_remove(stack);
 									uStack_push(int, stack,operator_non_term);
+									
+									stack_push(var_stack, new_var);
+									gen_code(ins_call,func,NULL,new_var);
 									printf("Precedence syntax used rule 19: E -> func() \n");
 
 								}

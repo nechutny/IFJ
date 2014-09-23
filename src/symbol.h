@@ -10,6 +10,8 @@
 #include "string.h"
 #include "types.h"
 #include "list.h"
+#include "htable.h"
+
 
 #define VariableExists(name)							\
 	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : ((htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL )  ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
@@ -42,6 +44,8 @@ typedef struct TsymbolVariable {
 	int inicialized;		// Is inicialized
 } symbolVariable;
 
+//#include "htable.h"
+
 typedef struct TsymbolFunction {
 	TString* name;
 	variableType returnType;
@@ -50,10 +54,9 @@ typedef struct TsymbolFunction {
 	int defined;
 	unsigned long startOffset;
 	TList * ins;
+	htab_t* local_symbol;
 } symbolFunction;
 
-
-#include "htable.h"
 
 void symbol_variable_init(htab_listitem* var, char* name);
 void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type);

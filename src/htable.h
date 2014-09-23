@@ -7,6 +7,7 @@
 
 #ifndef _HTABLE_H_
 #define _HTABLE_H_
+//#include "symbol.h"
 
 
 
@@ -25,8 +26,6 @@ typedef struct  htab_listitem_s {
   item_type type;
   char key[];
 } htab_listitem;
-
-#include "symbol.h"
 
 // Hash table
 typedef struct  htab {

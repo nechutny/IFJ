@@ -247,6 +247,7 @@ void parser_function()
 		token_free(token);
 
 		htab_t* table = htab_init(HASH_TABLE_SIZE);
+		var->ptr.function->local_symbol = table;
 		uStack_push(htab_t*, global.local_symbols, table);
 		
 		/* Function arguments */

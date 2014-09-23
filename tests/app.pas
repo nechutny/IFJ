@@ -4,7 +4,7 @@ var	cislo, cislo2 : integer = 5;
 	text : string;
 	znak : char;
 
-{ foo }
+
 function funkce2() : integer; forward;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
