@@ -94,7 +94,8 @@ TToken *token_get() {
 	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
 	string_clear(token->data);
 	char c;
-	char sign='+';
+	//char sign='+';
+	int ascii=0;
 	while (1)
 	{
 		c = tolower(fgetc(file));
@@ -163,14 +164,14 @@ TToken *token_get() {
 						{	//identifikator nebo klicove slovo;
 							state = state_identifier;
 							//string_add_chr(token->data, c);
-							buffer[buff_i] = c;
+							buffer[buff_i] = c; buff_i++;
 						}
 						else if (isdigit(c))
 						{
 							state = state_int;
 							number_state = state_int;
 							//string_add_chr(token->data, c);
-							buffer[buff_i] = c;
+							buffer[buff_i] = c; buff_i++;
 							break;
 						}
 						else if (c == EOF)
@@ -189,7 +190,7 @@ TToken *token_get() {
 				if(isalnum(c) || c == '_')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 				}
 				else
 				{
@@ -203,25 +204,25 @@ TToken *token_get() {
 				if(isdigit(c))
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 				}
 				else if (c=='.')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state__double_dot;
 				}
 				else if (c=='+' || c=='-')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
-					sign = c;
+					buffer[buff_i] = c; buff_i++;
+					//sign = c;
 					state = state__double_sign_e;
 				}
 				else if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state__double_e;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' ||
@@ -244,7 +245,7 @@ TToken *token_get() {
 				if (isdigit(c))
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state_double;
 					number_state = state_double;
 				}
@@ -258,18 +259,18 @@ TToken *token_get() {
 				if(isdigit(c))
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 				}
 				else if (c=='+' || c=='-')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state__double_sign_e;
 				}
 				else if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state__double_e;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
@@ -292,14 +293,12 @@ TToken *token_get() {
 				if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state__double_e;
 				}
 				else
 				{
-					/* WARNING: More than one ungetc may not be supported!!! */
-					ungetc(c, file);
-					ungetc(sign, file);
+					fseek(file, -2L, SEEK_CUR);
 					if(number_state==state_int)
 					{
 						token->type=token_int;
@@ -318,7 +317,7 @@ TToken *token_get() {
 				if (isdigit(c))
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 					state = state_double_e;
 				}
 				else
@@ -331,7 +330,7 @@ TToken *token_get() {
 				if (isdigit(c))
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c;
+					buffer[buff_i] = c; buff_i++;
 				}
 				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
@@ -406,27 +405,105 @@ TToken *token_get() {
 			case state_apostrophe:
 				if (c=='\'')
 				{
-					token->type = token_string;
-					string_add(token->data,buffer);
-					return token;
+					c = tolower(fgetc(file));
+					if (c == '\'')
+					{
+						buffer[buff_i] = c; buff_i++;
+						break;
+					}
+					else if (c == '#')
+					{
+						ascii = 0;
+						c = tolower(fgetc(file));
+						if (c == '\'')
+						{
+							token->type = token_invalid;
+							return token;
+						}
+						while (c == '0')
+						{
+							c = tolower(fgetc(file));
+						}
+						if (c == '\'')	//napr #00 
+						{
+							token->type = token_invalid;
+							return token;
+						}
+						else
+						{
+							if (!isdigit(c))
+							{
+								token->type = token_invalid;
+								return token;
+							}
+							else
+							{
+								ascii=(int)c;	//jednotky
+								c = tolower(fgetc(file));
+								if (c == '\'')
+								{
+									buffer[buff_i] = ascii; buff_i++;
+									break;
+								}
+								else if (!isdigit(c))
+								{
+									token->type = token_invalid;
+									return token;
+								}
+								else
+								{
+									ascii = (ascii * 10) + (int)c;	//desitky
+									c = tolower(fgetc(file));
+									if (c == '\'')
+									{
+										buffer[buff_i] = ascii; buff_i++;
+										break;
+									}
+									else if (!isdigit(c))
+									{
+										token->type = token_invalid;
+										return token;
+									}
+									else
+									{
+										ascii = (ascii * 10) + (int)c;		//stovky
+										c = tolower(fgetc(file));
+										if (c != '\'' || ascii > 255)
+										{
+											token->type = token_invalid;
+											return token;
+										}
+										else
+										{
+											buffer[buff_i] = ascii; buff_i++;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						ungetc(c, file);
+						token->type = token_string;
+						return token;
+					}
 				}
 				//string_add_chr(token->data, c);
-				buffer[buff_i] = c;
+				buffer[buff_i] = c; buff_i++;
 				break;
 			default:
 				printf("Chuck Norris\n");
 				break; //you shouldnt get there
 		}
 		
-		if(state != state_multiline_comment && c != '}')
+		if(buff_i == 31)
 		{
-			buff_i++;
-			if(buff_i == 31)
-			{
-				string_add(token->data,buffer);
-				buff_i = 0;
-				memset(&buffer, 0, 32);
-			}
+			string_add(token->data,buffer);
+			buff_i = 0;
+			memset(&buffer, 0, 32);
 		}
+		
 	}
 }
