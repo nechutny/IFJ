@@ -4,6 +4,7 @@ var	cislo, cislo2 : integer = 5;
 	text : string;
 	znak : char;
 
+{ foo }
 
 function funkce2() : integer; forward;
 
@@ -14,6 +15,7 @@ begin
 	for cislo := 1 to 15 do
 		funkce1 := 2;
 end;
+
 function funkce2() : integer;
 var xyz : real;
 begin
@@ -49,7 +51,7 @@ begin
 		cislo := 3;
 		desetine := 1.25;
 	end;
-	text := 'foo fooo bar';
+	text := 'foo fooo bar s hooooooooooooooooooooooooooooooooooooooooooodne dlooooooooooooooooooooooooooooooooooohym texteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeem';
 
 	cislo := text[1];
 
