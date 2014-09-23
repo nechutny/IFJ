@@ -36,7 +36,7 @@ TString * string_new() {
 int string_add_chr( TString * string, char c ) {
 	if( string->allocated < ( string->length + 1 ) ) {
 		string->allocated += 32;
-		string->data _realloc( string->data, ( sizeof( char ) * ( string->allocated) ) );
+		string->data = _realloc( string->data, ( sizeof( char ) * ( string->allocated) ) );
 		if( string->data == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
