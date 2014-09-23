@@ -92,6 +92,7 @@ TToken *token_get() {
 	string_clear(token->data);
 	char c;
 	char sign='+';
+	int ascii=0;
 	while (1)
 	{
 		c = tolower(fgetc(file));
@@ -375,8 +376,90 @@ TToken *token_get() {
 			case state_apostrophe:
 				if (c=='\'')
 				{
-					token->type = token_string;
-					return token;
+					c = tolower(fgetc(file));
+					if (c == '\'')
+					{
+						string_add_chr(token->data, '\'');
+						break;
+					}
+					else if (c == '#')
+					{
+						ascii = 0;
+						c = tolower(fgetc(file));
+						if (c == '\'')
+						{
+							token->type = token_invalid;
+							return token;
+						}
+						while (c == '0')
+						{
+							c = tolower(fgetc(file));
+						}
+						if (c == '\'')	//napr #00 
+						{
+							token->type = token_invalid;
+							return token;
+						}
+						else
+						{
+							if (!isdigit(c))
+							{
+								token->type = token_invalid;
+								return token;
+							}
+							else
+							{
+								ascii=(int)c;	//jednotky
+								c = tolower(fgetc(file));
+								if (c == '\'')
+								{
+									string_add_chr(token->data, ascii);
+									break;
+								}
+								else if (!isdigit(c))
+								{
+									token->type = token_invalid;
+									return token;
+								}
+								else
+								{
+									ascii = (ascii * 10) + (int)c;	//desitky
+									c = tolower(fgetc(file));
+									if (c == '\'')
+									{
+										string_add_chr(token->data, ascii);
+										break;
+									}
+									else if (!isdigit(c))
+									{
+										token->type = token_invalid;
+										return token;
+									}
+									else
+									{
+										ascii = (ascii * 10) + (int)c;		//stovky
+										c = tolower(fgetc(file));
+										if (c != '\'' || ascii > 255)
+										{
+											token->type = token_invalid;
+											return token;
+										}
+										else
+										{
+											string_add_chr(token->data, ascii);
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						ungetc(c, file);
+						token->type = token_string;
+						return token;
+					}
 				}
 				string_add_chr(token->data, c);
 				break;
