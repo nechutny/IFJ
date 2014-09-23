@@ -12,18 +12,18 @@
 TString * string_new() {
 	TString * string;
 	
-	string = ( TString * ) _malloc( sizeof( TString ) );
+	string = ( TString * ) _malloc( sizeof( TString ) + sizeof( char ) * 32 );
 	if( string == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		return NULL;
 	}
 	
-	string->data = (char *) _malloc( sizeof( char ) * 32 );
+	/*string->data = (char *) _malloc( sizeof( char ) * 32 );
 	if( string->data == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		_free( string );
 		return NULL;
-	}
+	}*/
 	
 //	memcpy( string, 0, sizeof( char ) * 10 );
 	string->data[0] = '\0';
@@ -36,8 +36,8 @@ TString * string_new() {
 int string_add_chr( TString * string, char c ) {
 	if( string->allocated < ( string->length + 1 ) ) {
 		string->allocated += 32;
-		string->data = _realloc( string->data, ( sizeof( char ) * ( string->allocated) ) );
-		if( string->data == NULL ) {
+		string = _realloc( string, sizeof( TString ) + ( sizeof( char ) * ( string->allocated) ) );
+		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
 		}		
@@ -58,7 +58,7 @@ int string_add( TString * string, char * text ) {
 	
 	if( ( total_len ) >= string->allocated ) {
 		string->allocated = total_len;
-		string->data = ( char * ) _realloc( string->data, ( sizeof( char ) * string->allocated ) );
+		string = _realloc( string, ( sizeof( TString ) + sizeof( char ) * string->allocated ) );
 		if( string == NULL ) {
 			fprintf( stderr, "%s", strerror( errno ) );
 			return 0;
@@ -89,7 +89,7 @@ void string_free( TString * string ) {
 	if( string == NULL )
 		return;
 
-	_free( string->data );
+	//_free( string->data );
 	_free( string );
 	
 	string = NULL;

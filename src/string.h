@@ -2,9 +2,9 @@
 #define STRING_H
 
 typedef struct _string {
-	char * data;
 	int allocated;
 	int length;
+	char data[];
 } TString;
 /* naalokuje novej string */
 TString * string_new();
