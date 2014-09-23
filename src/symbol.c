@@ -29,7 +29,7 @@ void symbol_variable_init(htab_listitem* var, char* name)
 
 	var->ptr.variable->name = string_new();
 	var->ptr.variable->inicialized = 0;
-	string_add(var->ptr.variable->name, name);
+	var->ptr.variable->name = string_add(var->ptr.variable->name, name);
 }
 
 
@@ -164,7 +164,7 @@ void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 	var->ptr.function->defined = 0;
 	var->ptr.function->startOffset = offset;
 	var->ptr.function->name = string_new();
-	string_add(var->ptr.function->name, name);
+	var->ptr.function->name = string_add(var->ptr.function->name, name);
 	var->ptr.function->ins = list_init();
 }
 
@@ -197,6 +197,6 @@ void symbol_function_arg_add(symbolFunction* func, char* name, TToken_type token
 	func->args[ func->args_count-1 ].type = symbol_type(token_type);
 	
 	func->args[ func->args_count-1 ].name = string_new();
-	string_add(func->args[func->args_count-1].name, name);
+	func->args[func->args_count-1].name = string_add(func->args[func->args_count-1].name, name);
 }
 
