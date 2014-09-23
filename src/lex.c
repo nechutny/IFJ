@@ -280,8 +280,7 @@ TToken *token_get() {
 				}
 				else
 				{
-					ungetc(c, file);
-					ungetc(sign, file);
+					fseek(file, -2L, SEEK_CUR);
 					if(number_state==state_int)
 					{
 						token->type=token_int;
