@@ -13,7 +13,7 @@
 
 
 /**
- * Prepare new string structire
+ * Prepare new string structure
  *
  * @return	pointer to new string structure
  */
@@ -98,19 +98,35 @@ TString* string_add( TString * string, char * text )
 }	
 
 
-/* vymaže text */
+/**
+ * Clear content of string structure
+ *
+ * @param	string	pointer to string structure
+ */
 void string_clear( TString * string ) {
 	string->data[0] = '\0';
 	string->length = 0;
 }
 
-/* přepíše string (asi zavolat string_clear a string_add */
+
+/**
+ * Rewrite whole content of string to new value
+ *
+ * @param	string	pointer to string structure
+ * @param	text	new content
+ * @return	new pointer to structure
+ */
 TString* string_rewrite( TString * string, char * text ) {
 	string_clear( string );
 	return string_add( string, text );
 }
 	
-/* zruší string */
+
+/**
+ * Unallocate string
+ *
+ * @param	string	pointer to string structure
+ */
 void string_free( TString * string ) {
 	if( string == NULL )
 		return;
