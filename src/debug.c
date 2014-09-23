@@ -33,6 +33,10 @@ void print_debug(debug_level lvl, const char *fmt, ...)
 	{
 		return;
 	}
+	if(!DEBUG_MESSAGE_SYMBOL && lvl == debug_symbol)
+	{
+		return;
+	}
 
 	va_list args;
 	va_start(args, fmt);

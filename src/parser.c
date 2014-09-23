@@ -294,7 +294,7 @@ void parser_function()
 			/* Function variables */
 			parser_vars();
 
-			printf("\n\n Local symbols:\n");
+			print_debug(debug_symbol,"Local symbols:");
 			htab_foreach(uStack_top(htab_t*,global.local_symbols), printData);
 
 			token = token_get();

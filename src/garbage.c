@@ -11,6 +11,7 @@
 #include "list.h"
 #include "uStack.h"
 #include "parser.h"
+#include "debug.h"
 
 /*
  *   __      __  _____    _____   _______    ____    _____  
@@ -113,31 +114,31 @@ void global_init()
 
 void printDataFunction(struct TsymbolFunction* data)
 {
-	printf("\t return type: %d\n",data->returnType);
-	printf("\t start at: %ld\n",data->startOffset);
-	printf("\t arguments: %d\n",data->args_count);
+	print_debug(debug_symbol,"\t return type: %d",data->returnType);
+	print_debug(debug_symbol,"\t start at: %ld",data->startOffset);
+	print_debug(debug_symbol,"\t arguments: %d",data->args_count);
 	for(int i = 0; i < data->args_count; i++)
 	{
-		printf("\t\targ type: %d, name: %s\n",data->args[i].type, data->args[i].name->data);
+		print_debug(debug_symbol,"\t\targ type: %d, name: %s",data->args[i].type, data->args[i].name->data);
 	}
 }
 
 void printDataVariable(struct TsymbolVariable* data)
 {
-	printf("\t type: %d\n",data->type);
+	print_debug(debug_symbol,"\t type: %d",data->type);
 }
 
 void printData(char key[], item_type type, htab_listitem* item)
 {
-	printf("Name: %s",key);
+	print_debug(debug_symbol,"Name: %s",key);
 	if(type  == type_function)
 	{
-		printf(" - function\n");
+		print_debug(debug_symbol," - function");
 		printDataFunction(item->ptr.function);
 	}
 	else
 	{
-		printf(" - variable\n");
+		print_debug(debug_symbol," - variable");
 		printDataVariable(item->ptr.variable);
 	}
 }
@@ -150,7 +151,7 @@ void global_free()
 	struct TAllocItem* tmp;
 	struct TAllocItem* ptr;
 
-	printf("\n\n Global symbols:\n");
+	print_debug(debug_symbol,"Global symbols:");
 	htab_foreach(global.global_symbol, printData);
 
 	ptr = global.allocated;

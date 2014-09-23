@@ -13,10 +13,12 @@
 #define DEBUG_MESSAGES		1
 #define DEBUG_MESSAGE_PARSER	1
 #define DEBUG_MESSAGE_PREC	1
+#define DEBUG_MESSAGE_SYMBOL	1
 
 typedef enum {
 	debug_parser,
-	debug_prec
+	debug_prec,
+	debug_symbol,
 } debug_level;
 
 void print_debug(debug_level lvl, const char *fmt, ...);
