@@ -195,7 +195,7 @@ TToken *token_get() {
 				else
 				{
 					ungetc(c, file);
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					set_identifier(token);
 					return token;
 				}
@@ -232,7 +232,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_int;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -280,7 +280,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -302,13 +302,13 @@ TToken *token_get() {
 					if(number_state==state_int)
 					{
 						token->type=token_int;
-						string_add(token->data,buffer);
+						token->data = string_add(token->data,buffer);
 						return token;
 					}
 					else
 					{
 						token->type=token_double;
-						string_add(token->data,buffer);
+						token->data = string_add(token->data,buffer);
 						return token;
 					}
 				}
@@ -339,7 +339,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
@@ -358,48 +358,48 @@ TToken *token_get() {
 				if (c=='=')
 				{
 					token->type = token_assign;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_colon;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 			case state_greater:
 				if (c=='=')
 				{
 					token->type = token_greater_equal;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_greater;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 			case state_less:
 				if (c=='=')
 				{
 					token->type = token_less_equal;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else if (c=='>')
 				{
 					token->type = token_not_equal;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_less;
-					string_add(token->data,buffer);
+					token->data = string_add(token->data,buffer);
 					return token;
 				}
 			case state_apostrophe:
@@ -500,7 +500,7 @@ TToken *token_get() {
 		
 		if(buff_i == 31)
 		{
-			string_add(token->data,buffer);
+			token->data = string_add(token->data, buffer);
 			buff_i = 0;
 			memset(&buffer, 0, 32);
 		}

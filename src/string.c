@@ -8,69 +8,95 @@
 #include "main.h"
 #include "garbage.h"
 
-/* naalokuje novej string */
-TString * string_new() {
+/* Size of alloc blocks */
+#define ALLOC_SIZE	32
+
+
+/**
+ * Prepare new string structire
+ *
+ * @return	pointer to new string structure
+ */
+TString * string_new()
+{
 	TString * string;
 	
-	string = ( TString * ) _malloc( sizeof( TString ) + sizeof( char ) * 32 );
-	if( string == NULL ) {
-		fprintf( stderr, "%s", strerror( errno ) );
+	string = _malloc(sizeof(TString) + sizeof(char)*ALLOC_SIZE);
+	if( string == NULL )
+	{
+		fprintf(stderr, "%s", strerror(errno));
 		return NULL;
 	}
 	
-	/*string->data = (char *) _malloc( sizeof( char ) * 32 );
-	if( string->data == NULL ) {
-		fprintf( stderr, "%s", strerror( errno ) );
-		_free( string );
-		return NULL;
-	}*/
-	
-//	memcpy( string, 0, sizeof( char ) * 10 );
 	string->data[0] = '\0';
-	string->allocated = 32;
+	string->allocated = ALLOC_SIZE;
 	string->length = 0;
 	
 	return string;
 }
 
-int string_add_chr( TString * string, char c ) {
-	if( string->allocated < ( string->length + 1 ) ) {
-		string->allocated += 32;
-		string = _realloc( string, sizeof( TString ) + ( sizeof( char ) * ( string->allocated) ) );
-		if( string == NULL ) {
-			fprintf( stderr, "%s", strerror( errno ) );
-			return 0;
-		}		
+
+/**
+ * Add one character to string structire
+ *
+ * @param	string	Pointer to string structure as target
+ * @param	c	character for add
+ * @return	0 ... error, 1 ... success
+ */
+int string_add_chr( TString * string, char c )
+{
+	if( string->allocated < (string->length+1))
+	{
+		string->allocated += ALLOC_SIZE;
+		string = _realloc(string, sizeof(TString) + (sizeof(char)*(string->allocated)));
 		
-	}
-
-	string->data[ string->length ] = c;
-	string->data[ string->length +1 ] = '\0'; 
-	
-	string->length++;
-	return 1;
-}
-
-/* přidá řetězec do stringu, vrací 1 pokud se povedl, nula pokud ne */
-int string_add( TString * string, char * text ) {
-	int len = strlen( text );
-	int total_len = len + string->length+1;
-	
-	if( ( total_len ) >= string->allocated ) {
-		string->allocated = total_len;
-		string = _realloc( string, ( sizeof( TString ) + sizeof( char ) * string->allocated ) );
-		if( string == NULL ) {
-			fprintf( stderr, "%s", strerror( errno ) );
+		if(string == NULL)
+		{
+			fprintf(stderr, "%s", strerror(errno));
 			return 0;
 		}
 	}
-	string->length += len;
-		
-	strncat( string->data, text, len );
+
+	string->data[ string->length ] = c;
+	string->length++;
+	string->data[ string->length ] = '\0'; 
 	
 	return 1;
-}	
+}
+
+/**
+ * Add char to string
+ *
+ * @param	string	Pointer to string structure as target
+ * @param	text	Character for add
+ * @return	New pointer to structure
+ */
+TString* string_add( TString * string, char * text )
+{
+
+	unsigned int len = strlen(text);
 	
+	unsigned int total_len = len+(string->length)+1;
+	
+	if( total_len > string->allocated )
+	{
+		string->allocated = total_len;
+		string = _realloc(string, sizeof(TString) + (sizeof(char)*(string->allocated)));
+		if(string == NULL)
+		{
+			fprintf(stderr, "%s", strerror(errno));
+			return 0;
+		}
+	}
+	
+		
+	strncat(string->data, text, len);
+
+	string->length += len;
+	
+	return string;
+}	
+
 
 /* vymaže text */
 void string_clear( TString * string ) {
@@ -79,7 +105,7 @@ void string_clear( TString * string ) {
 }
 
 /* přepíše string (asi zavolat string_clear a string_add */
-int string_rewrite( TString * string, char * text ) {
+TString* string_rewrite( TString * string, char * text ) {
 	string_clear( string );
 	return string_add( string, text );
 }
@@ -92,5 +118,5 @@ void string_free( TString * string ) {
 	//_free( string->data );
 	_free( string );
 	
-	string = NULL;
+	//string = NULL;
 }
