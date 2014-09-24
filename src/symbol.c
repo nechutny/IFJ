@@ -151,7 +151,7 @@ symbolVariable* create_const(TToken *token)
 		
 		case token_string:
 			var->type = variable_string;
-			strcpy(var->value.value_string, token->data->data);
+			strncpy(var->value.value_string, token->data->data, 255);
 			var->inicialized = 1;
 			return var;
 		default:

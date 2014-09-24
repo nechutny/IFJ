@@ -487,6 +487,7 @@ TToken *token_get() {
 					{
 						ungetc(c, file);
 						token->type = token_string;
+						token->data = string_add(token->data, buffer);
 						return token;
 					}
 				}
