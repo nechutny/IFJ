@@ -6,6 +6,7 @@
 #include "generator.h"
 #include "list.h"
 #include "symbol.h"
+#include "builtin.h"
 
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
@@ -304,6 +305,16 @@ void interpret(){
 				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
 				node = uStack_top(TList *,global.ins_list_stack)->first;
 				continue;
+			case ins_incall:
+				switch(((int)ins->adr1))
+                {
+                    case 0:
+                	    pascal_write(ins->adr2);
+                	    break;
+                    default:
+                    	printf("NOT yet\n");
+                                            }
+				break;
 			default:
 				printf("NOT YET\n");	
 		}

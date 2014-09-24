@@ -6,6 +6,7 @@
 #include "symbol.h"
 #include "error.h"
 #include "debug.h"
+#include "builtin.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -371,6 +372,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     var_stack = stack_init();
     symbolVariable *new_var = NULL;
 
+    uStack_init(func_args);
+
     uStack_init(stack);
     uStack_push(int, stack, operator_dolar);
     
@@ -446,15 +449,15 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                         uStack_remove(stack);
                         uStack_push(int,stack,operator_non_term);
                         print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID");
-                        if(func != NULL)
+                        if(Func_call == context_write)
+                        {
+                            uStack_push(symbolVariable *, func_args, stack_top(var_stack));
+                        }
+                        else if(func != NULL)
                         {
                             htab_listitem *hitem = htab_lookup(func->local_symbol,func->args[i].name->data);
                             gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
-                    //        copy_variable(hitem->ptr.variable, stack_top(var_stack));
-                    //        symbolVariable * hokuspokus = stack_top(var_stack);
                             i++;
-                    //      printf("hokuspokus: %d\n", hokuspokus);
-                    //      printf("***************************name %s\n",hitem->ptr.variable->name->data);
                         }
                     }
                     else{
@@ -547,11 +550,25 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
-                                        new_var = _malloc(sizeof(symbolVariable));
-                                        stack_push(var_stack, new_var);
-                                        gen_code(ins_call,func,NULL,new_var);
-                                        func = NULL;
-                                        i = 0;
+                                        
+                                        if(Func_call != context_write)
+                                        {    
+                                            new_var = _malloc(sizeof(symbolVariable));
+                                            stack_push(var_stack, new_var);
+                                            gen_code(ins_call,func,NULL,new_var);
+                                            func = NULL;
+                                            i = 0;
+                                        }
+                                        else
+                                        {
+                                            switch(Func_call)
+                                            {
+                                                case context_write:
+                                                    gen_code(ins_incall, 0, func_args,NULL);
+                                                default:
+                                                    printf("not yet\n");
+                                            }
+                                        }
                                         print_debug(debug_prec, "Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs",number_param);
                                     }
                                     else

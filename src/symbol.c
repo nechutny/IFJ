@@ -142,26 +142,18 @@ symbolVariable* create_const(TToken *token)
 			var->value.value_number = atoi(token->data->data);
 			var->inicialized = 1;
 			return var;
-			break;
 			
 		case token_double:
 			var->type = variable_double;
 			var->value.value_double = atof(token->data->data);
 			var->inicialized = 1;
 			return var;
-			break;
 		
 		case token_string:
 			var->type = variable_string;
-			int i = 0;
-			while(token->data->data[i] != '\0')
-			{
-				var->value.value_string[i] = token->data->data[i];
-				i++;
-			}
-			var->value.value_string[i] = '\0';
+			strcpy(var->value.value_string, token->data->data);
 			var->inicialized = 1;
-
+			return var;
 		default:
 			return var;
 	}
