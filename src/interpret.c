@@ -228,6 +228,7 @@ void interpret(){
 	while(node != NULL)
 	{
 		ins = node->data;
+		printf("ins type: %d\n",ins->type);
 		switch(ins->type)
 		{
 			case ins_add:
@@ -275,6 +276,9 @@ void interpret(){
 					continue;
 				}
 				break;
+			case ins_assign:
+				copy_variable(ins->adr1, ins->adr3);
+				break;
 			case ins_uminus:
 				switch(((symbolVariable *)ins->adr1)->type)
 				{
@@ -299,7 +303,7 @@ void interpret(){
 				uStack_top(TList *,global.ins_list_stack)->act = node->n;
 				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
 				node = uStack_top(TList *,global.ins_list_stack)->first;
-				break;
+				continue;
 			default:
 				printf("NOT YET\n");	
 		}
@@ -312,36 +316,14 @@ void interpret(){
 
 			if(func_call != NULL)
 			{
-				htab_listitem *hitem = htab_lookup(((symbolFunction*)func_call->adr1)->local_symbol,"num1");
-													//((symbolFunction*)func_call->adr1)->name->data);
+				htab_listitem *hitem = htab_lookup(((symbolFunction*)func_call->adr1)->local_symbol,((symbolFunction*)func_call->adr1)->name->data);
 				if(hitem->type == type_variable)
 				{
-					((symbolVariable *)func_call->adr3)->type = ((symbolFunction*)func_call->adr1)->returnType;
-					((symbolVariable *)func_call->adr3)->value.value_number = hitem->ptr.variable->value.value_number;
+					copy_variable(func_call->adr3, hitem->ptr.variable);
 				}
 				else
 					printf("********without return*******\n");
 			}
-			/*symbolVariable *var = htab_lookup( ((symbolFunction *)ins->adr1) ((symbolFunction *)ins->adr1)->name->data)->ptr.variable;
-			switch(((symbolVariable *)ins->adr3)->type)
-			{
-				case variable_integer:
-					((symbolVariable *)ins->adr3)->value.value_number = 
-					break;
-				case variable_double:
-					((symbolVariable *)ins->adr3)->value.value_double =
-					break;
-				case value_boolean:
-					((symbolVariable *)ins->adr3)->value.value_boolean = 
-					break;
-				case variable_string:
-					//((symbolVariable *)ins->adr3)->value.
-					break;
-				case variable_char:
-					//((symbolVariable *)ins->adr3)->value.value_char =
-					break;
-
-			}*/
 		}
 	}
 

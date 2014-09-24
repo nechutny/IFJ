@@ -22,9 +22,9 @@ int main(int argc, char* argv[])
 
 	parser_file();
 
-	//interpret();
+	interpret();
 
-	//printf("vysledek: %lu\n", VariableExists("ret")->ptr.variable->value.value_number);
+	printf("***********\nvysledek: %lu\n***********\n", VariableExists("ret")->ptr.variable->value.value_number);
 
 	return 0;
 }

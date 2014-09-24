@@ -3,6 +3,7 @@
 
 #include "list.h"
 #include "expr.h"
+#include "types.h"
 
 /* 3 addres instructions */
 typedef enum {
@@ -24,7 +25,8 @@ typedef enum {
 	ins_in,			//15
 	ins_jmp,		//16
 	ins_call,		//17
-	ins_uminus		//18
+	ins_uminus,		//18
+	ins_assign		//19
 } TInsType;
 
 typedef struct TIns

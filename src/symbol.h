@@ -61,6 +61,7 @@ typedef struct TsymbolFunction {
 void symbol_variable_init(htab_listitem* var, char* name);
 void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type);
 
+void copy_variable(symbolVariable *var1, symbolVariable *var2);
 symbolVariable *create_const(TToken *token);
 
 void symbol_function_init(htab_listitem* var, char* name, unsigned long offset);

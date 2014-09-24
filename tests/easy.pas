@@ -15,7 +15,7 @@ begin
 end;
 
 begin
-	a := 100;
+	a := 400;
 	b := 200;
 
 	ret := max(a, b);

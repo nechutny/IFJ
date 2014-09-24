@@ -4,6 +4,7 @@
 #include "garbage.h"
 #include "list.h"
 #include "expr.h"
+#include "types.h"
 
 void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 {

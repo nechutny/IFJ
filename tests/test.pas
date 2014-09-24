@@ -1,15 +1,11 @@
 program fooo;
 
-var	x, a, b : integer;	
+var	a, b, ret : integer;	
 
 begin
-	a := 5;
-	b := 10;
-	x := 0;
+	a := 50;
+	b := 15;
 
-	repeat
-		x := x + 1;
-	until (x > 5);
-
-	x:= x+1;	
+	ret := a + b;
+	ret := ret+1;	
 end.

@@ -24,6 +24,7 @@ void list_insert_node(TList *list, TNode *node){
 	if(list->last != NULL)	list->last->n = node;
 	if(list->first == NULL)	list->first = node;
 	list->last = node;
+	node->n = NULL;
 	return;
 }
 

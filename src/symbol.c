@@ -88,6 +88,39 @@ void symbol_variable_type_set(symbolVariable* variable, TToken_type token_type)
 }
 
 
+void copy_variable(symbolVariable *var1, symbolVariable *var2)
+{
+	if(var2->type != var1->type)
+	{
+		fprintf(stderr, "incopatible type in function call\n");
+		exit(4);
+	}
+
+	switch(var1->type)
+	{
+		case variable_integer:
+			var1->value.value_number = var2->value.value_number;
+			break;
+		case variable_double:
+			var1->value.value_double = var2->value.value_double;
+			break;
+		case variable_boolean:
+			var1->value.value_boolean = var2->value.value_boolean;
+			break;
+		case variable_string:
+			strcpy(var1->value.value_string, var2->value.value_string);
+			break;
+		case variable_char:
+			strcpy(var1->value.value_char, var2->value.value_char);
+			break;
+		default:
+			fprintf(stderr, "array\n");
+	}
+	var1->inicialized = 1;
+}
+
+
+
 /**
  * Create symbolVariable for constant value
  *

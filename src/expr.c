@@ -366,6 +366,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     token = token_init();
     token = token_get();
 
+    int i = 0;
     TStack *var_stack;
     var_stack = stack_init();
     symbolVariable *new_var = NULL;
@@ -402,17 +403,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
             case sign_equal:
                 uStack_push(int, stack , recon_sign(token,Func_call,stack));
                 
-                if(token->type == token_int || token->type == token_double || token->type == token_string)
-                    stack_push(var_stack,create_const(token));
-                else if(token->type == token_identifier)
-                {
-                    htab_listitem* hitem = VariableExists(token->data->data);
-                    if(hitem->type == type_variable)
-                        stack_push(var_stack,hitem->ptr.variable);
-                    else
-                        print_debug(debug_prec, "volani funkce");
-                }
-
                 token_free(token);
                 token = token_get();
                 break;
@@ -431,14 +421,15 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                 }
 
                 if(token->type == token_int || token->type == token_double || token->type == token_string)
-                    stack_push(var_stack,create_const(token));
+                    {stack_push(var_stack,create_const(token));
+                //    printf("++++++++++%s   %d\n", token->data->data, Func_call);
+                    }
                 else if(token->type == token_identifier)
                 {
+                    //printf("++++++++++%s\n", token->data->data);
                     htab_listitem* hitem = VariableExists(token->data->data);
                     if(hitem->type == type_variable)
                         stack_push(var_stack,hitem->ptr.variable);
-                    else
-                        print_debug(debug_prec, "volani funkce");
                 }
 
                 token_free(token);
@@ -455,7 +446,16 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                         uStack_remove(stack);
                         uStack_push(int,stack,operator_non_term);
                         print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID");
-                        //gen_ins(rule_1, global.ins_list, NULL, NULL, NULL);
+                        if(func != NULL)
+                        {
+                            htab_listitem *hitem = htab_lookup(func->local_symbol,func->args[i].name->data);
+                            gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
+                    //        copy_variable(hitem->ptr.variable, stack_top(var_stack));
+                    //        symbolVariable * hokuspokus = stack_top(var_stack);
+                            i++;
+                    //      printf("hokuspokus: %d\n", hokuspokus);
+                    //      printf("***************************name %s\n",hitem->ptr.variable->name->data);
+                        }
                     }
                     else{
                         throw_error(error_sign_less_precedence);
@@ -481,7 +481,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
                                     print_debug(debug_prec, "Precedence syntax used rule 2: E -> (E)");
-                                //  gen_ins(rule_2, global.ins_list, NULL, NULL, NULL);
                                 }
                                 else if (uStack_top(int, stack) == operator_func)
                                 {
@@ -548,8 +547,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
+                                        new_var = _malloc(sizeof(symbolVariable));
                                         stack_push(var_stack, new_var);
                                         gen_code(ins_call,func,NULL,new_var);
+                                        func = NULL;
+                                        i = 0;
                                         print_debug(debug_prec, "Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs",number_param);
                                     }
                                     else
@@ -584,8 +586,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
 
+                                    new_var = _malloc(sizeof(symbolVariable));
                                     stack_push(var_stack, new_var);
                                     gen_code(ins_call,func,NULL,new_var);
+                                    func = NULL;
+                                    i = 0;
                                     print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() ");
 
                                 }
@@ -763,39 +768,23 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         token_free(token);
     }
 
-    if(result != NULL){
+    if(result != NULL && Func_call == context_assign)
+    {
+    //    symbolVariable *qqq = stack_top(var_stack);
+        //printf("++++--------++++++++------%d\n",qqq );
+        gen_code(ins_assign, result, NULL, stack_top(var_stack));
+    }
+    else if(result != NULL){
         if(uStack_top(TList *,global.ins_list_stack)->last != NULL)
         {
             TIns *ins = uStack_top(TList *,global.ins_list_stack)->last->data;
-        //  _free(ins->adr3);
             ins->adr3 = result;
         }
         else
         {
             symbolVariable *var = stack_top(var_stack);
-            result->type = var->type;
-            switch(var->type){
-                case variable_integer:
-                    result->value.value_number = var->value.value_number;
-                    break;
-                case variable_double:
-                    result->value.value_double = var->value.value_double;
-                    break;
-                case variable_boolean:
-                    result->value.value_boolean = var->value.value_boolean;
-                    break;
-                //case variable_string:
-                //  result->value.value_string = var->value.value_string;
-                //  break;
-                //case variable_char:
-                //  result->value.value_char = var->value.value_char;
-                //  break;
-                default:
-                    print_debug(debug_prec, "array or string or char");               
-            }
+            if(var != NULL) copy_variable(result, var);
         }
-        //((TIns *)global.ins_list->act->data)->adr3 = result;
-        // _free(((TIns *)global.ins_list->act->data)->adr3);
     }
     //token_free(token);
     
