@@ -308,7 +308,7 @@ void interpret(){
 				node = uStack_top(TList *,global.ins_list_stack)->first;
 				continue;
 			case ins_incall:
-				switch(((int)ins->adr1))
+				switch(((long long)ins->adr1))
                 {
                     case 0:
                 	    pascal_write(ins->adr2);
