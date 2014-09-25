@@ -98,7 +98,11 @@ TToken *token_get() {
 	int ascii=0;
 	while (1)
 	{
-		c = tolower(fgetc(file));
+		c = fgetc(file);
+		if(state != state_apostrophe)
+		{
+			c = tolower(c);
+		}
 		switch (state)
 		{
 			case state_init:
