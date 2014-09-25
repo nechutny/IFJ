@@ -503,7 +503,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         uStack_push(int, stack,operator_non_term);
                                         print_debug(debug_prec, "Precedence syntax used rule 20: E -> func(E)");
 
-                                        if(Func_call != context_write)
+                                        if(Func_call != context_write && Func_call != context_readln)
                                         {    
                                             new_var = _malloc(sizeof(symbolVariable));
                                             stack_push(var_stack, new_var);
@@ -518,8 +518,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                                 case context_write:
                                                     gen_code(ins_incall, 0, func_args,NULL);
                                                     uStack_remove(func_args);
+                                                    break;
                                                 case context_readln:
-                                                    gen_code(ins_incall, 1, uStack_pop(*symbolVariable, func_args), NULL);
+                                                    printf("stack count: %d\n", func_args->count);
+                                                    gen_code(ins_incall, 1, uStack_pop(symbolVariable*, func_args), NULL);
+                                                    break;
                                                 default:
                                                     printf("not yet\n");
                                             }
@@ -582,7 +585,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
                                         
-                                        if(Func_call != context_write)
+                                        if(Func_call != context_write && Func_call != context_readln)
                                         {    
                                             new_var = _malloc(sizeof(symbolVariable));
                                             stack_push(var_stack, new_var);
@@ -596,7 +599,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             {
                                                 case context_write:
                                                     gen_code(ins_incall, 0, func_args,NULL);
-                                                    uStack_clean;
+                                                    uStack_clean(func_args);
                                                 default:
                                                     printf("not yet\n");
                                             }

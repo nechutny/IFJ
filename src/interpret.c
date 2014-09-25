@@ -315,7 +315,7 @@ void interpret(){
                 		pascal_readln(ins->adr2);
                     default:
                     	printf("NOT yet\n");
-                                            }
+                }
 				break;
 			default:
 				printf("NOT YET\n");	
