@@ -82,14 +82,3 @@ void pascal_readln(symbolVariable* var)
 	}
 }
 
-
-/**
- * Return length for string variable
- *
- * @param	var	Structure with variable for result
- * @return	String length
- */
-int pascal_length(symbolVariable* var)
-{
-	return strlen(var->value.value_string);
-}
