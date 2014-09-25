@@ -409,7 +409,7 @@ TToken *token_get() {
 			case state_apostrophe:
 				if (c=='\'')
 				{
-					c = tolower(fgetc(file));
+					c = fgetc(file);
 					if (c == '\'')
 					{
 						buffer[buff_i] = c; buff_i++;
@@ -418,7 +418,7 @@ TToken *token_get() {
 					else if (c == '#')
 					{
 						ascii = 0;
-						c = tolower(fgetc(file));
+						c = fgetc(file);
 						if (c == '\'')
 						{
 							token->type = token_invalid;
@@ -426,7 +426,7 @@ TToken *token_get() {
 						}
 						while (c == '0')
 						{
-							c = tolower(fgetc(file));
+							c = fgetc(file);
 						}
 						if (c == '\'')	//napr #00 
 						{
@@ -443,7 +443,7 @@ TToken *token_get() {
 							else
 							{
 								ascii=(int)c;	//jednotky
-								c = tolower(fgetc(file));
+								c = fgetc(file);
 								if (c == '\'')
 								{
 									buffer[buff_i] = ascii; buff_i++;
@@ -457,7 +457,7 @@ TToken *token_get() {
 								else
 								{
 									ascii = (ascii * 10) + (int)c;	//desitky
-									c = tolower(fgetc(file));
+									c = fgetc(file);
 									if (c == '\'')
 									{
 										buffer[buff_i] = ascii; buff_i++;
