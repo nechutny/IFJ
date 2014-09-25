@@ -463,11 +463,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                             uStack_push(symbolVariable *, uStack_top(uStack_t*,func_args_stack), stack_top(var_stack));
                         }
                         else if(func != NULL)
-                        {
-                            // this is debug info for accessing func->args[ i ] out of scope
-                            htab_foreach(func->local_symbol, printData);
-                            printf("%d",i);
-                
+                        {                
                             htab_listitem *hitem = htab_lookup(func->local_symbol, func->args[i].name->data);
                             gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
                             i++;

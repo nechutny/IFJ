@@ -20,6 +20,6 @@ begin
 
 	ret := max(a, b);
 
-	write(ret,' FooF  ',99999);
+	write(ret,' FooF '#10'  ',99999);
 
 end.
