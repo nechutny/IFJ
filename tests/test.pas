@@ -1,7 +1,7 @@
 program fooo;
 
-var	a, b, ret : integer;	
-
 begin
-	write('foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooc');
+
+	write(100000000);
 end.
+
