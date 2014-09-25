@@ -123,5 +123,13 @@ do {											\
 	_free(stack);									\
 } while(0);
 
+/**
+ * Remove all elements fro stack
+ * 
+ * @param	stack	pointer to stack
+ */
+#define uStack_clean(stack)								\
+	stack->count = 0;
+
 
 #endif

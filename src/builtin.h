@@ -14,6 +14,13 @@
 
 void pascal_write(uStack_t* args);
 void pascal_readln(symbolVariable* var);
-int pascal_length(symbolVariable* var);
+
+/**
+ * Return length for string variable
+ *
+ * @param	var	Structure with variable for result
+ * @return	String length
+ */
+#define pascal_length(var)  strlen(var->value.value_string);
 
 #endif
