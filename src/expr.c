@@ -377,7 +377,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     var_stack = stack_init();
     symbolVariable *new_var = NULL;
 
+    uStack_t *tmp = NULL;
+
+    uStack_init(func_args_stack);
     uStack_init(func_args);
+    uStack_push(uStack_t*, func_args_stack, func_args);
 
     uStack_init(stack);
     uStack_push(int, stack, operator_dolar);
@@ -454,15 +458,15 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                         uStack_remove(stack);
                         uStack_push(int,stack,operator_non_term);
                         print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID");
-                        if(Func_call == context_write)
+                        if(Func_call == context_write || Func_call == context_readln)
                         {
-                            uStack_push(symbolVariable *, func_args, stack_top(var_stack));
+                            uStack_push(symbolVariable *, uStack_top(uStack_t*,func_args_stack), stack_top(var_stack));
                         }
                         else if(func != NULL)
                         {
-                // this is debug info for accessing func->args[ i ] out of scope
-                htab_foreach(func->local_symbol, printData);
-                printf("%d",i);
+                            // this is debug info for accessing func->args[ i ] out of scope
+                            htab_foreach(func->local_symbol, printData);
+                            printf("%d",i);
                 
                             htab_listitem *hitem = htab_lookup(func->local_symbol, func->args[i].name->data);
                             gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
@@ -516,15 +520,17 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             switch(Func_call)
                                             {
                                                 case context_write:
-                                                    gen_code(ins_incall, 0, func_args,NULL);
-                                                    uStack_remove(func_args);
+                                                    printf("qqqqqqqqqqqqqqqqqqqqqqq\n");
+                                                    gen_code(ins_incall, 0, uStack_pop(uStack_t *, func_args_stack),NULL);
+                                                    uStack_init2(func_args);
+                                                    uStack_push(uStack_t*, func_args_stack, func_args);
                                                     break;
                                                 case context_readln:
-                                                    printf("stack count: %d\n", func_args->count);
-                                                    gen_code(ins_incall, 1, uStack_pop(symbolVariable*, func_args), NULL);
+                                                    tmp = uStack_pop(uStack_t *, func_args_stack);
+                                                    gen_code(ins_incall, 1, uStack_top(symbolVariable*, tmp), NULL);
                                                     break;
                                                 default:
-                                                    printf("not yet\n");
+                                                    printf("not yet incall\n");
                                             }
                                         }
                                     }
@@ -598,10 +604,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             switch(Func_call)
                                             {
                                                 case context_write:
-                                                    gen_code(ins_incall, 0, func_args,NULL);
-                                                    uStack_clean(func_args);
+                                                    gen_code(ins_incall, 0, uStack_pop(uStack_t *, func_args_stack),NULL);
+                                                    uStack_init2(func_args);
+                                                    uStack_push(uStack_t*, func_args_stack, func_args);
+                                                    break;
                                                 default:
-                                                    printf("not yet\n");
+                                                    printf("not rule 21: %d %d\n",Func_call, context_write);
                                             }
                                         }
                                         print_debug(debug_prec, "Precedence syntax used rule 21: E -> func(E,E..) with %d parametrs",number_param);

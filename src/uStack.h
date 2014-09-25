@@ -28,6 +28,8 @@ typedef struct {
  */
 #define uStack_init(name)	\
 	uStack_t* name = memset(_malloc(sizeof(uStack_t)), 0UL ,sizeof(unsigned long));
+#define uStack_init2(name)	\
+	name = memset(_malloc(sizeof(uStack_t)), 0UL ,sizeof(unsigned long));
 
 
 /**

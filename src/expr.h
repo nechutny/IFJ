@@ -46,17 +46,17 @@ typedef enum{
 } precedence_number;
 
 typedef enum{
-    context_if,
+    context_if,                 //0
     context_while,
     context_for_init,
     context_for_to,
     context_repeat,
-    context_args,
+    context_args,               //5
     context_case,
     context_assign,
     context_index,
     context_global,
-    context_function,
+    context_function,           //10
     context_write,
     context_readln,
 } parse_context;
