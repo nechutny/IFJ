@@ -205,7 +205,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 			pom = token_get(global.file);
 			if (pom->type == token_parenthesis_left)
 			{    
-				func = VariableExists(token->data->data)->ptr.function;
+				func = htab_lookup(global.global_symbol, token->data->data)->ptr.function;
 				token_return_token(pom);
 				return operator_func;
 			}
@@ -472,7 +472,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 						}
 						else if(func != NULL)
 						{                
+							print_debug(debug_generator, "type: %d", func->args);
 							htab_listitem *hitem = htab_lookup(func->local_symbol, func->args[i].name->data);
+							print_debug(debug_generator, "type: %d", hitem->type);
 							gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
 							i++;
 						}

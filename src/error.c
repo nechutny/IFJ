@@ -175,7 +175,23 @@ void throw_error(errors code)
 			fprintf(stderr,"Excpects: operator in expression");
 			return_code = 2;
 			break;
-			
+		case error_not_string:
+			fprintf(stderr, "one variable is not string" );
+			return_code = 4;
+			break;
+		case error_string:
+			fprintf(stderr, "one variable is string" );
+			return_code = 4;
+			break;
+		case error_incopatible_types:
+			fprintf(stderr, "incopatibile type in expresion" );
+			return_code = 4;
+			break;
+
+		case error_dividing_by_zero:
+			fprintf(stderr, "Semantic error dividing by 0\n");
+			return_code = 4;
+			break;
 
 		default:
 			fprintf(stderr, "Unkown error");
