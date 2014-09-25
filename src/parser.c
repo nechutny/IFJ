@@ -15,6 +15,7 @@
 #include "uStack.h"
 #include "generator.h"
 #include "debug.h"
+#include "symbol.h"
 
 parse_context local_context;
 

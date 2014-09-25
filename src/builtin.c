@@ -33,7 +33,7 @@ void pascal_write(uStack_t* args)
 				break;
 
 			case variable_integer:
-				printf("%ld", symbol->value.value_number);
+				printf("%d", symbol->value.value_number);
 				break;
 
 			case variable_double:
@@ -62,7 +62,7 @@ void pascal_readln(symbolVariable* var)
 			break;
 
 		case variable_integer:
-			readed = scanf("%ld", &(var->value.value_number));
+			readed = scanf("%d", &(var->value.value_number));
 			break;
 
 		case variable_double:

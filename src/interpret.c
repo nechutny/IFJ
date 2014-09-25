@@ -14,8 +14,8 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 	if(adr1->type == variable_string && adr2->type == variable_string && c == '+')
 	{
 		adr3->type = variable_string;
-		strcpy(adr3->value.value_string, adr2->value.value_string);
-		strcat(adr3->value.value_string, adr2->value.value_string);
+		strncpy(adr3->value.value_string, adr1->value.value_string,255);
+		strncat(adr3->value.value_string, adr2->value.value_string,255);
 		return;
 	}
 	else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+'){
@@ -232,6 +232,9 @@ void interpret(){
 	//	printf("ins type: %d\n",ins->type);
 		switch(ins->type)
 		{
+			case ins_assign:
+				copy_variable(ins->adr1, ins->adr3);
+				break;
 			case ins_add:
 				do_math('+', ins->adr1, ins->adr2, ins->adr3);
 				break;
@@ -276,9 +279,6 @@ void interpret(){
 					node = ins->adr3;
 					continue;
 				}
-				break;
-			case ins_assign:
-				copy_variable(ins->adr1, ins->adr3);
 				break;
 			case ins_uminus:
 				switch(((symbolVariable *)ins->adr1)->type)
