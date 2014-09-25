@@ -20,6 +20,6 @@ begin
 
 	ret := max(a, b);
 
-
+	write(ret);
 
 end.
