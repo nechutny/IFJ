@@ -9,6 +9,7 @@ function factorial(n : integer ) : integer;
 	begin
 		if n < 2 then
 		begin
+			write('Konec factorialu'#10'');
 			factorial := 1
 		end
 		else
@@ -17,6 +18,11 @@ function factorial(n : integer ) : integer;
 			temp_result := factorial(decremented_n);
 			factorial := n*temp_result
 		end
+
+		write('n je:', n,''#10'');
+		write('decremented je:', decremented_n,''#10'');
+		write('temp_result je:', temp_result,''#10'');
+		write('factorial je:', factorial,''#10'', ''#10'');
 	end;
 
 begin

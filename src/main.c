@@ -24,7 +24,5 @@ int main(int argc, char* argv[])
 
 	interpret();
 
-	//printf("***********\nvysledek: %lu\n***********\n", VariableExists("ret")->ptr.variable->value.value_number);
-
 	return 0;
 }

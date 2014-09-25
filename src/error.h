@@ -42,6 +42,10 @@ typedef enum{
 	error_left_parenthesis_precedence,
 	error_operator_precedence,
 	error_non_term_precedence,
+	error_not_string,
+	error_string,
+	error_incopatible_types,
+	error_dividing_by_zero,
 	error_unkown,
 } errors;
 

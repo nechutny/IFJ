@@ -7,8 +7,11 @@
 #include "list.h"
 #include "symbol.h"
 #include "builtin.h"
+#include "debug.h"
+#include "error.h"
 
-void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
+void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3)
+{
 	double a = 0, b = 0;
 
 	if(adr1->type == variable_string && adr2->type == variable_string && c == '+')
@@ -18,14 +21,13 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		strcat(adr3->value.value_string, adr2->value.value_string);
 		return;
 	}
-	else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+'){
-		fprintf(stderr, "one variable is not string\n" );
-		exit(4);
+	else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+')
+	{
+		throw_error(error_not_string);
 	}
 	else if(adr1->type == variable_string || adr2->type == variable_string)
 	{
-		fprintf(stderr, "string\n");
-		exit(4);
+		throw_error(error_string);
 	}
 
 	if(adr1->type == variable_double || adr2->type == variable_double)
@@ -39,19 +41,20 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		a = adr1->value.value_number;
 	else
 	{
-		fprintf(stderr," adr1 Semantic error incopatibile types in expresion\n");
-		exit(12);
+		throw_error(error_incopatible_types);
 	}
+
 	if(adr2->type == variable_double)
 		b = adr2->value.value_double;	
 	else if( adr2->type == variable_integer)
 		b = adr2->value.value_number;
 	else 
 	{
-		fprintf(stderr,"adr2 Semantic error incopatibile types in expresion\n");
-		exit(12);
+		throw_error(error_incopatible_types);
 	}
-	switch(c){
+	
+	switch(c)
+	{
 		case '+':
 			if(adr3->type == variable_double)
 				adr3->value.value_double = a+b;
@@ -74,20 +77,12 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 
 		case '/':
 			if(b == 0){
-				fprintf(stderr, "Semantic error dividing by 0\n");
-				exit(10);
+				throw_error(error_dividing_by_zero);
 			}
 			adr3->type = variable_double;
 			adr3->value.value_double = a/b;
 			break;
-	/*	case 'm':
-			if(adr3->type == variable_double)
-				adr3->value.value_double = fmod(a, b);
-			else
-				adr3->value.value_number = fmod(a, b);
-			break;*/
 	}
-	adr3->inicialized = 1;
 }
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
@@ -96,12 +91,13 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 
 	adr3->type = variable_boolean;
 
-	if(adr1->type != adr2->type){
-		fprintf(stderr, "incopatibile type\n" );
-		exit(4);
+	if(adr1->type != adr2->type)
+	{
+		throw_error(error_incopatible_types);
 	}
 
-	switch(adr1->type){
+	switch(adr1->type)
+	{
 		case variable_double:
 			a = adr1->value.value_double;
 			break;
@@ -112,11 +108,11 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 			a = adr1->value.value_boolean;
 			break;
 		default:
-			fprintf(stderr," adr1 Semantic error incopatibile types in expresion\n");
-			exit(12);
+			throw_error(error_incopatible_types);
 	}
 	
-	switch(adr2->type){
+	switch(adr2->type)
+	{
 		case variable_double:
 			b = adr2->value.value_double;
 			break;
@@ -127,8 +123,7 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 			b = adr2->value.value_boolean;
 			break;
 		default:
-			fprintf(stderr," adr2 Semantic error incopatibile types in expresion\n");
-			exit(12);
+			throw_error(error_incopatible_types);
 	}
 
 	if( adr1->type == variable_string)
@@ -144,8 +139,9 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 1;
 			}
 			else
-			adr3->value.value_boolean = (a == b);
+				adr3->value.value_boolean = (a == b);
 			break;
+
 		case ins_nequal:
 			if( adr1->type == variable_string)
 			{
@@ -155,8 +151,9 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 0;
 			}
 			else
-			adr3->value.value_boolean = (a != b);
+				adr3->value.value_boolean = (a != b);
 			break;
+
 		case ins_less:
 			if( adr1->type == variable_string)
 			{
@@ -166,8 +163,9 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 0;
 			}
 			else
-			adr3->value.value_boolean = (a < b);
+				adr3->value.value_boolean = (a < b);
 			break;
+
 		case ins_lesseq:
 			if( adr1->type == variable_string)
 			{
@@ -177,8 +175,9 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 0;
 			}
 			else
-			adr3->value.value_boolean = (a <= b);
+				adr3->value.value_boolean = (a <= b);
 			break;
+
 		case ins_greater:
 			if( adr1->type == variable_string)
 			{
@@ -188,8 +187,9 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 0;
 			}
 			else
-			adr3->value.value_boolean = (a > b);
+				adr3->value.value_boolean = (a > b);
 			break;
+
 		case ins_greateq:
 			if( adr1->type == variable_string)
 			{
@@ -199,19 +199,20 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 					adr3->value.value_boolean = 0;
 			}
 			else
-			adr3->value.value_boolean = (a >= b);
+				adr3->value.value_boolean = (a >= b);
 			break;
+
 		default:
-			fprintf(stderr, "internal error\n");
+			throw_error(error_unkown);
 	}
 	adr3->inicialized = 1;
 }
 
 void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	adr3->type = variable_boolean;
+	
 	if(adr1->type != variable_boolean || adr2->type != variable_boolean){
-		fprintf(stderr, "one variable is not bool\n");
-		exit(12);
+		throw_error(error_incopatible_types);
 	}
 		
 	if(c == 'a')
@@ -226,10 +227,11 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 void interpret(){
 	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
 	TIns *ins, *func_call = NULL;
+	
 	while(node != NULL)
 	{
 		ins = node->data;
-	//	printf("ins type: %d\n",ins->type);
+		print_debug(debug_interpret, "ins type: %d\n",ins->type);
 		switch(ins->type)
 		{
 			case ins_add:
@@ -296,7 +298,7 @@ void interpret(){
 							((symbolVariable *)ins->adr1)->value.value_boolean = 1;
 						break;
 					default:
-						fprintf(stderr, "unar minus\n");
+						throw_error(error_incopatible_types);
 						exit(4);
 				}
 			case ins_call:
@@ -315,16 +317,15 @@ void interpret(){
                 		pascal_readln(ins->adr2);
                 		break;
                     default:
-                    	printf("NOT yet %d\n",((int)ins->adr1));
+                    	print_debug(debug_interpret, "NOT yet %d\n",((int)ins->adr1));
                 }
 				break;
 			default:
-				printf("NOT YET\n");	
+				print_debug(debug_interpret, "NOT YET\n");	
 		}
 		node = node->n;
 		if(node == NULL && global.ins_list_stack->count > 1)
 		{
-
 			uStack_remove(global.ins_list_stack);
 			node = uStack_top(TList *,global.ins_list_stack)->act;
 
@@ -336,7 +337,7 @@ void interpret(){
 					copy_variable(func_call->adr3, hitem->ptr.variable);
 				}
 				else
-					printf("********without return*******\n");
+					print_debug(debug_interpret, "********without return*******\n");
 			}
 		}
 	}

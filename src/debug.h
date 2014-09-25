@@ -11,14 +11,18 @@
 #include <stdarg.h>
 
 #define DEBUG_MESSAGES		1
-#define DEBUG_MESSAGE_PARSER	1
-#define DEBUG_MESSAGE_PREC	1
-#define DEBUG_MESSAGE_SYMBOL	1
+#define DEBUG_MESSAGE_PARSER	0
+#define DEBUG_MESSAGE_PREC	0
+#define DEBUG_MESSAGE_SYMBOL	0
+#define DEBUG_MESSAGE_INTERPRET	1
+#define DEBUG_MESSAGE_GENERATOR 0
 
 typedef enum {
 	debug_parser,
 	debug_prec,
 	debug_symbol,
+	debug_interpret,
+	debug_generator,
 } debug_level;
 
 void print_debug(debug_level lvl, const char *fmt, ...);
