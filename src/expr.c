@@ -105,6 +105,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 
         case token_sub:
             //print_debug(debug_prec, "stack_top in ser %d \n", uStack_top(int,stack));
+            //this case solved unary minus ...
             if (((uStack_count(stack)) == 1) && (uStack_top(int,stack) == operator_dolar ))
             {
                 return operator_unary_minus;
@@ -195,7 +196,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
         case token_identifier:
             pom = token_get(global.file);
             if (pom->type == token_parenthesis_left)
-            {
+            {    
                 func = VariableExists(token->data->data)->ptr.function;
                 token_return_token(pom);
                 return operator_func;
@@ -220,6 +221,10 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
         case token_end:
         case token_invalid:
             return operator_dolar;
+            
+        case token_write:
+        case token_readln:
+            throw_error(error_syntax_in_precedence);
 
         default:
             return sign_fault;
@@ -455,10 +460,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                         }
                         else if(func != NULL)
                         {
-				// this is debug info for accessing func->args[ i ] out of scope
-				htab_foreach(func->local_symbol, printData);
-				printf("%d",i);
-				
+                // this is debug info for accessing func->args[ i ] out of scope
+                htab_foreach(func->local_symbol, printData);
+                printf("%d",i);
+                
                             htab_listitem *hitem = htab_lookup(func->local_symbol, func->args[i].name->data);
                             gen_code(ins_assign, hitem->ptr.variable, NULL, stack_top(var_stack));
                             i++;
