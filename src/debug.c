@@ -9,6 +9,9 @@
 #include "garbage.h"
 #include "uStack.h"
 
+#ifdef print_debug
+#undef print_debug
+#endif
 
 /**
  * Print properly indented message only if are debug messages enabled
