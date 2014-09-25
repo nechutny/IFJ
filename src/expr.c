@@ -520,7 +520,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             switch(Func_call)
                                             {
                                                 case context_write:
-                                                    printf("qqqqqqqqqqqqqqqqqqqqqqq\n");
                                                     gen_code(ins_incall, 0, uStack_pop(uStack_t *, func_args_stack),NULL);
                                                     uStack_init2(func_args);
                                                     uStack_push(uStack_t*, func_args_stack, func_args);

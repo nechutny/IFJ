@@ -229,7 +229,7 @@ void interpret(){
 	while(node != NULL)
 	{
 		ins = node->data;
-		printf("ins type: %d\n",ins->type);
+	//	printf("ins type: %d\n",ins->type);
 		switch(ins->type)
 		{
 			case ins_add:
@@ -313,8 +313,9 @@ void interpret(){
                 	    break;
                 	case 1:
                 		pascal_readln(ins->adr2);
+                		break;
                     default:
-                    	printf("NOT yet\n");
+                    	printf("NOT yet %d\n",((int)ins->adr1));
                 }
 				break;
 			default:
