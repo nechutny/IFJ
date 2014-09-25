@@ -442,7 +442,7 @@ TToken *token_get() {
 							}
 							else
 							{
-								ascii=(int)c;	//jednotky
+								ascii=(int)c-'0';	//jednotky
 								c = fgetc(file);
 								if (c == '\'')
 								{
@@ -456,7 +456,7 @@ TToken *token_get() {
 								}
 								else
 								{
-									ascii = (ascii * 10) + (int)c;	//desitky
+									ascii = (ascii * 10) + (int)c-'0';	//desitky
 									c = fgetc(file);
 									if (c == '\'')
 									{
@@ -470,8 +470,8 @@ TToken *token_get() {
 									}
 									else
 									{
-										ascii = (ascii * 10) + (int)c;		//stovky
-										c = tolower(fgetc(file));
+										ascii = (ascii * 10) + (int)c-'0';		//stovky
+										c = fgetc(file);
 										if (c != '\'' || ascii > 255)
 										{
 											token->type = token_invalid;
