@@ -2,6 +2,6 @@ program fooo;
 
 begin
 
-	write(100000000);
+	write('asdfadsfas');
 end.
 
