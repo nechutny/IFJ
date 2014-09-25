@@ -311,6 +311,8 @@ void interpret(){
                     case 0:
                 	    pascal_write(ins->adr2);
                 	    break;
+                	case 1:
+                		pascal_readln(ins->adr2);
                     default:
                     	printf("NOT yet\n");
                                             }

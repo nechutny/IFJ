@@ -8,7 +8,7 @@ begin
 	readln(a);
 	if a < 0 then
 	begin
-		write('Faktorial nelze spocitat'#10'')
+		write('Faktorial nelze spocitat')
 	end
 	else
 	begin
@@ -20,6 +20,6 @@ begin
 			a := a - 1
 		end;
 		
-		write('Vysledek je :', vysl,''#10'');
+		write('Vysledek je :', vysl);
 	end
 end.

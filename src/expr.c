@@ -512,6 +512,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             {
                                                 case context_write:
                                                     gen_code(ins_incall, 0, func_args,NULL);
+                                                    uStack_remove(func_args);
+                                                case context_readln:
+                                                    gen_code(ins_incall, 1, uStack_pop(*symbolVariable, func_args), NULL);
                                                 default:
                                                     printf("not yet\n");
                                             }
@@ -588,6 +591,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             {
                                                 case context_write:
                                                     gen_code(ins_incall, 0, func_args,NULL);
+                                                    uStack_clean;
                                                 default:
                                                     printf("not yet\n");
                                             }
