@@ -532,7 +532,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 													break;
 												case context_readln:
 													tmp = uStack_pop(uStack_t *, func_args_stack);
-													gen_code(ins_incall, 1, uStack_top(symbolVariable*, tmp), NULL);
+													gen_code(ins_incall, (void*)1ULL, uStack_top(symbolVariable*, tmp), NULL);
 													break;
 												default:
 													printf("not yet incall\n");
