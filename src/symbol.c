@@ -37,6 +37,11 @@ symbolVariable *symbol_variable_init2(variableType type)
 {
 	symbolVariable *var = _malloc(sizeof(symbolVariable));
 	var->type = type;
+
+	// Due to IEE 754 and memory structure we can use this speed tweak
+	var->value.value_double = 0.0;
+	
+	/*
 	switch(var->type)
 	{
 	case variable_integer:
@@ -56,7 +61,7 @@ symbolVariable *symbol_variable_init2(variableType type)
 		break;
 	default:
 		break;
-	}
+	}*/
 	var->inicialized = 0;
 	return var;
 }
