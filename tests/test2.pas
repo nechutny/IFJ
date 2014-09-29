@@ -16,13 +16,9 @@ function factorial(n : integer ) : integer;
 		begin
 			decremented_n := n - 1;
 			temp_result := factorial(decremented_n);
+			n := n + 1;
 			factorial := n*temp_result
 		end
-
-		write('n je:', n,''#10'');
-		write('decremented je:', decremented_n,''#10'');
-		write('temp_result je:', temp_result,''#10'');
-		write('factorial je:', factorial,''#10'', ''#10'');
 	end;
 
 begin

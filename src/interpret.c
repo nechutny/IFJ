@@ -12,7 +12,7 @@
 
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3)
 {
-	double a = 0, b = 0;
+	int a = 0, b = 0;
 
 	if(adr1->type == variable_string && adr2->type == variable_string && c == '+')
 	{
@@ -52,6 +52,9 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 	{
 		throw_error(error_incopatible_types);
 	}
+
+	print_debug(debug_interpret, "********%d*********%d******",a,b);
+
 	
 	switch(c)
 	{
@@ -61,6 +64,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			else
 				adr3->value.value_number = a+b;
 			break;
+
 		case '-':
 			if(adr3->type == variable_double)
 				adr3->value.value_double = a-b;
@@ -83,6 +87,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			adr3->value.value_double = a/b;
 			break;
 	}
+	adr3->inicialized = 1;
 }
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
@@ -231,7 +236,7 @@ void interpret(){
 	while(node != NULL)
 	{
 		ins = node->data;
-		print_debug(debug_interpret, "ins type: %d\n",ins->type);
+		//print_debug(debug_interpret, "ins type: %d\n",ins->type);
 		switch(ins->type)
 		{
 			case ins_assign:
@@ -244,6 +249,7 @@ void interpret(){
 				do_math('-', ins->adr1, ins->adr2, ins->adr3);
 				break;
 			case ins_mul:
+				print_debug(debug_interpret, "ad1 name: %s  adr3 name: %d", ((symbolVariable*)ins->adr1)->name->data, ((symbolVariable*)ins->adr2)->name->data);
 				do_math('*', ins->adr1, ins->adr2, ins->adr3);
 				break;
 			case ins_div:

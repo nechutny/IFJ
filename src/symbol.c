@@ -33,6 +33,33 @@ void symbol_variable_init(htab_listitem* var, char* name)
 	var->ptr.variable->name = string_add(var->ptr.variable->name, name);
 }
 
+symbolVariable *symbol_variable_init2(variableType type)
+{
+	symbolVariable *var = _malloc(sizeof(symbolVariable));
+	var->type = type;
+	switch(var->type)
+	{
+	case variable_integer:
+		var->value.value_number = 0;
+		break;
+	case variable_double:
+		var->value.value_double = 0.0;
+		break;
+	case variable_boolean:
+		var->value.value_boolean = 0;
+		break;
+	case variable_string:
+		var->value.value_string[0] = '\0';
+		break;
+	case variable_char:
+		var->value.value_char[0] = '\0';
+		break;
+	default:
+		break;
+	}
+	var->inicialized = 0;
+	return var;
+}
 
 
 void copy_variable(symbolVariable *var1, symbolVariable *var2)
