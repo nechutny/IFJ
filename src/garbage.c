@@ -168,8 +168,10 @@ void global_free()
 		free(tmp);
 	}
 	
-
-	fclose(global.file);
+	if(global.file != NULL)
+	{
+		fclose(global.file);
+	}
 	
 	//htab_free(global.global_symbol);
 }
