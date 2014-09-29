@@ -35,6 +35,7 @@ typedef struct {
 
 typedef struct TsymbolVariable {
 	TString* name;			// Variable name
+	int inicialized;		// Is inicialized
 	variableType type;		// Variable type
 	union {				// Variable value
 		double value_double;
@@ -43,7 +44,6 @@ typedef struct TsymbolVariable {
 		int value_boolean;
 		char value_char[1];
 	} value;
-	int inicialized;		// Is inicialized
 } symbolVariable;
 
 //#include "htable.h"
@@ -53,10 +53,10 @@ typedef struct TsymbolFunction {
 	variableType returnType;
 	unsigned int args_count;
 	functionArgs *args;
-	int defined;
 	unsigned long startOffset;
 	TList * ins;
 	htab_t* local_symbol;
+	int defined;
 } symbolFunction;
 
 

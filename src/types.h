@@ -12,12 +12,12 @@ typedef enum {
 }TVarType;
 
 typedef struct _TVar {
-	TVarType	type;
 	union {
 		int i;
 		double d;
 		TString *s;
-	}data;
+	} data;
+	TVarType	type;
 }TVar;
 
 /* types of tokes */
@@ -110,8 +110,8 @@ typedef enum {
 } TToken_type;
 
 typedef struct _TToken {
-	TToken_type type;
 	TString * data;
+	TToken_type type;
 } TToken;
 
 TVar *var_from_token(TToken *token);

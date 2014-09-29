@@ -32,10 +32,10 @@ typedef enum {
 
 typedef struct TIns
 {
-	TInsType type;
 	void *adr1;
 	void *adr2;
 	void *adr3;
+	TInsType type;
 }TIns;
 
 
