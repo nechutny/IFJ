@@ -40,6 +40,8 @@ unsigned hash_function(const char *str, unsigned htab_size);
 // Create and inicialize hash table
 htab_t *htab_init(unsigned size);
 
+htab_t *htab_copy(htab_t * source);
+
 // Searching in hash table
 htab_listitem *htab_lookup(htab_t *t, const char *key);
 
