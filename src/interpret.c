@@ -9,10 +9,52 @@
 #include "builtin.h"
 #include "debug.h"
 #include "error.h"
+#include "uStack.h"
+
+
+symbolVariable* get_var(TString *name)
+{
+//	print_debug(debug_interpret, "name: %s",name->data);
+	htab_listitem *hitem = htab_lookup(global.constant_symbol, name->data);
+	int i = uStack_count(global.local_symbols) - 1;
+	while(hitem == NULL && i >= 0)
+	{
+		hitem =  htab_lookup(uStack_offset(htab_t *, global.local_symbols, i), name->data);
+		i--;
+	}
+	if(hitem == NULL)
+	{
+		hitem = htab_lookup(global.global_symbol, name->data);
+	}
+	if(hitem == NULL)
+	{
+		print_debug(debug_interpret,"hitem null name: %s",name->data);
+	}
+	return hitem->ptr.variable;
+}
+
+uStack_t *get_var_in_stack(uStack_t *name_stack)
+{
+	symbolVariable *var;
+	uStack_init(var_stack);
+
+	for(int i = 0; i < uStack_count(name_stack); i++)
+	{
+		var = get_var(uStack_offset(TString *, name_stack, i));
+		uStack_push(symbolVariable *,var_stack,var);
+	}
+
+	return var_stack;
+}
 
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3)
 {
 	int a = 0, b = 0;
+
+	if(!adr1->inicialized || !adr2->inicialized)
+	{
+		throw_error(error_uninicialized);
+	}
 
 	if(adr1->type == variable_string && adr2->type == variable_string && c == '+')
 	{
@@ -54,7 +96,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 	}
 
 	print_debug(debug_interpret, "a: %d b: %d c:%c",a,b,c);
-
+	adr3->inicialized = 1;
 	
 	switch(c)
 	{
@@ -87,12 +129,16 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			adr3->value.value_double = a/b;
 			break;
 	}
-	adr3->inicialized = 1;
 }
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
 	int x = 0;
+
+	if(!adr1->inicialized || !adr2->inicialized)
+	{
+		throw_error(error_uninicialized);
+	}
 
 	adr3->type = variable_boolean;
 
@@ -240,67 +286,68 @@ void interpret(){
 		switch(ins->type)
 		{
 			case ins_assign:
-				copy_variable(ins->adr1, ins->adr3);
+				print_debug(debug_interpret, "assign where: %s what: %s", ((TString *)ins->adr1)->data, ((TString *)ins->adr3)->data);
+				copy_variable(get_var(ins->adr1), get_var(ins->adr3));
 				break;
 			case ins_add:
-				do_math('+', ins->adr1, ins->adr2, ins->adr3);
+				do_math('+', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_subb:
-				do_math('-', ins->adr1, ins->adr2, ins->adr3);
+				do_math('-', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_mul:
-				do_math('*', ins->adr1, ins->adr2, ins->adr3);
+				do_math('*', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_div:
-				do_math('/', ins->adr1, ins->adr2, ins->adr3);
+				do_math('/', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_equal:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_nequal:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_less:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_lesseq:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_greater:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_greateq:
-				compare(ins->type, ins->adr1, ins->adr2, ins->adr3);
+				compare(ins->type, get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_and:
-				logic('a', ins->adr1, ins->adr2, ins->adr3);
+				logic('a', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_or:
-				logic('o', ins->adr1, ins->adr2, ins->adr3);
+				logic('o', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
 			case ins_lab:
 				break;
 			case ins_jmp:
-				if(ins->adr1 == NULL || ((symbolVariable *)ins->adr1)->value.value_boolean == 0)
+				if(ins->adr1 == NULL || get_var(ins->adr1)->value.value_boolean == 0)
 				{
 					node = ins->adr3;
 					continue;
 				}
 				break;
 			case ins_uminus:
-				switch(((symbolVariable *)ins->adr1)->type)
+				switch(get_var(ins->adr1)->type)
 				{
 					case variable_integer:
-						((symbolVariable *)ins->adr1)->value.value_number = 0 - ((symbolVariable *)ins->adr1)->value.value_number;
+						get_var(ins->adr1)->value.value_number = 0 - get_var(ins->adr1)->value.value_number;
 						break;
 					case variable_double:
-						((symbolVariable *)ins->adr1)->value.value_double = 0 - ((symbolVariable *)ins->adr1)->value.value_double;
+						get_var(ins->adr1)->value.value_double = 0 - get_var(ins->adr1)->value.value_double;
 						break;
 					case variable_boolean:
-						if(((symbolVariable *)ins->adr1)->value.value_boolean)
-							((symbolVariable *)ins->adr1)->value.value_boolean = 0;
+						if(get_var(ins->adr1)->value.value_boolean)
+							get_var(ins->adr1)->value.value_boolean = 0;
 						else
-							((symbolVariable *)ins->adr1)->value.value_boolean = 1;
+							get_var(ins->adr1)->value.value_boolean = 1;
 						break;
 					default:
 						throw_error(error_incopatible_types);
@@ -316,15 +363,21 @@ void interpret(){
 				switch(((long long)ins->adr1))
                 {
                     case 0:
-                	    pascal_write(ins->adr2);
+                	    pascal_write(get_var_in_stack(ins->adr2));
                 	    break;
                 	case 1:
-                		pascal_readln(ins->adr2);
+                		pascal_readln(get_var(ins->adr2));
                 		break;
                     default:
                     	print_debug(debug_interpret, "NOT yet\n");
                 }
 				break;
+			case ins_push_htab:
+				//print_debug(debug_interpret,"local_symbols count before: %d", uStack_count(global.local_symbols));
+				uStack_push(htab_t *, global.local_symbols, ins->adr1);
+				print_debug(debug_interpret,"local_symbols count after: %d", uStack_count(global.local_symbols));
+				break;
+			
 			default:
 				print_debug(debug_interpret, "NOT YET\n");	
 		}
@@ -337,9 +390,10 @@ void interpret(){
 			if(func_call != NULL)
 			{
 				htab_listitem *hitem = htab_lookup(((symbolFunction*)func_call->adr1)->local_symbol,((symbolFunction*)func_call->adr1)->name->data);
+				uStack_remove(global.local_symbols);
 				if(hitem->type == type_variable)
 				{
-					copy_variable(func_call->adr3, hitem->ptr.variable);
+					copy_variable(get_var(func_call->adr3), hitem->ptr.variable);
 				}
 				else
 					print_debug(debug_interpret, "********without return*******\n");

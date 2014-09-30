@@ -49,7 +49,7 @@ struct TGlobal
 	uStack_t* ins_list_stack;
 
 	htab_t* global_symbol;
-
+	htab_t* constant_symbol;
 	uStack_t* local_symbols;
 };
 extern struct TGlobal global;

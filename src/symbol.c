@@ -14,6 +14,7 @@
 #include "error.h"
 #include "list.h"
 #include "debug.h"
+#include "error.h"
 
 
 /**
@@ -69,11 +70,10 @@ symbolVariable *symbol_variable_init2(variableType type)
 
 void copy_variable(symbolVariable *var1, symbolVariable *var2)
 {
-	
 	if(var2->type != var1->type)
 	{
-		fprintf(stderr, "incopatible type in function call\n");
-		exit(4);
+		print_debug(debug_symbol, "var1 type: %d, var2 type: %d",var1->type,var2->type);
+		throw_error(error_incopatible_types);
 	}
 
 	// Faster is switch
@@ -117,6 +117,10 @@ symbolVariable* create_const(TToken *token)
 	var->inicialized = 0;
 	
 	if(token == NULL)	return var;
+
+	htab_listitem *hitem = htab_create(global.constant_symbol, token->data->data);
+	hitem->type = type_variable;
+	hitem->ptr.variable = var;
 
 	switch(token->type)
 	{

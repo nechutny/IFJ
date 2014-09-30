@@ -47,6 +47,7 @@ const int precedence_table[table_size][table_size]=
 };
 
 symbolFunction *func = NULL;
+TString *partresult = NULL;
 
 int sem_check(TToken * token, seman check)
 {
@@ -70,7 +71,6 @@ int sem_check(TToken * token, seman check)
 	}
 	else if ((item->type == type_variable) && (check == check_func))
 	{
-		printf("\n123\n");
 		throw_error(error_type);
 	}
 
@@ -313,8 +313,7 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 **/
 int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 {
-	symbolVariable *tmp;
-	symbolVariable *new_var;
+	TString *tmp;
 	uStack_remove(stack);
 	if (uStack_top(int, stack) == operator_non_term)
 	{
@@ -330,10 +329,10 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 			uStack_remove(stack);
 			uStack_push(int, stack,operator_non_term);
 			print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-			tmp = uStack_pop(symbolVariable *,var_stack);
-			new_var = create_const(NULL);
-			gen_expr(rule, uStack_pop(symbolVariable *,var_stack), tmp, new_var);
-			uStack_push(symbolVariable *, var_stack, new_var);
+			tmp = uStack_pop(TString *,var_stack);
+			print_debug(debug_generator,"arg1: %s + arg2:%s",uStack_top(TString *,var_stack)->data,tmp->data);
+			gen_expr(rule, uStack_pop(TString *,var_stack), tmp, partresult);
+			uStack_push(TString *, var_stack, partresult);
 			return 0;
 		}
 		else
@@ -350,7 +349,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 			uStack_remove(stack);
 			uStack_push(int, stack,operator_non_term);
 			print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-			gen_expr(rule, uStack_top(symbolVariable *, var_stack), NULL, uStack_top(symbolVariable *,var_stack));
+			gen_expr(rule, uStack_top(TString *, var_stack), NULL, uStack_top(TString *,var_stack));
 			return 0;
 		}
 		else
@@ -377,9 +376,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 	token = token_init();
 	token = token_get();
 
+	partresult = string_add(string_new(), "partresult");
+
 	int i = 0;
 	uStack_init(var_stack);
-	symbolVariable *new_var = NULL;
+	uStack_push(TString *,var_stack, partresult);
+
+	//symbolVariable *new_var = NULL;
 
 	uStack_t *tmp = NULL;
 
@@ -438,13 +441,14 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 				if(token->type == token_int || token->type == token_double || token->type == token_string)
 				{
-					uStack_push(symbolVariable *,var_stack,create_const(token));
+					create_const(token);
+					uStack_push(TString *,var_stack,string_add(string_new(),token->data->data));
 				}
 				else if(token->type == token_identifier)
 				{
 					htab_listitem* hitem = VariableExists(token->data->data);
 					if(hitem->type == type_variable)
-						uStack_push(symbolVariable *, var_stack,hitem->ptr.variable);
+						uStack_push(TString *, var_stack,string_add(string_new(), hitem->ptr.variable->name->data));
 				}
 
 				token_free(token);
@@ -463,12 +467,17 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 						print_debug(debug_prec, "Precedence syntax used rule 1: E -> ID");
 						if(Func_call == context_write || Func_call == context_readln)
 						{
-							uStack_push(symbolVariable *, uStack_top(uStack_t*,func_args_stack), uStack_top(symbolVariable *, var_stack));
+							//if (Func_call == context_readln)print_debug(debug_generator, "qqqqqqqqqq read into: %s", uStack_top(TString *, var_stack)->data);
+							uStack_push(TString *, uStack_top(uStack_t*,func_args_stack), uStack_top(TString *, var_stack));
 						}
 						else if(func != NULL)
-						{                
-							htab_listitem *hitem = htab_lookup(func->local_symbol, func->args[i].name->data);
-							gen_code(ins_assign, hitem->ptr.variable, NULL, uStack_top(symbolVariable *,var_stack));
+						{
+							if(i == 0)
+							{
+								gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+								print_debug(debug_generator,"generuju volani funkce: %s",func->name->data);
+							}
+							gen_code(ins_assign, string_add(string_new(), func->args[i].name->data), NULL, uStack_top(TString *,var_stack));
 							i++;
 						}
 					}
@@ -508,9 +517,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 										if(Func_call != context_write && Func_call != context_readln)
 										{    
-											new_var = symbol_variable_init2(func->returnType);
-											uStack_push(symbolVariable *, var_stack, new_var);
-											gen_code(ins_call,func,NULL,new_var);
+											uStack_push(TString *, var_stack,partresult);
+											gen_code(ins_call,func,NULL,partresult);
 											func = NULL;
 											i = 0;
 										}
@@ -525,7 +533,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 													break;
 												case context_readln:
 													tmp = uStack_pop(uStack_t *, func_args_stack);
-													gen_code(ins_incall, (void*)1ULL, uStack_top(symbolVariable*, tmp), NULL);
+													gen_code(ins_incall, (void*)1ULL, uStack_top(TString *, tmp), NULL);
 													break;
 												default:
 													printf("not yet incall\n");
@@ -591,9 +599,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 										
 										if(Func_call != context_write && Func_call != context_readln)
 										{    
-											new_var = symbol_variable_init2(func->returnType);
-											uStack_push(symbolVariable *, var_stack, new_var);
-											gen_code(ins_call,func,NULL,new_var);
+											//new_var = symbol_variable_init2(func->returnType);
+											uStack_push(TString *, var_stack, partresult);
+											gen_code(ins_call,func,NULL,partresult);
 											func = NULL;
 											i = 0;
 										}
@@ -826,19 +834,20 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 	if(result != NULL && Func_call == context_assign)
 	{
-		gen_code(ins_assign, result, NULL, uStack_top(symbolVariable *, var_stack));
+		print_debug(debug_generator, "result name: %s", result->name->data);
+		gen_code(ins_assign, string_add(string_new(), result->name->data), NULL, uStack_top(TString *, var_stack));
 	}
-	else if(result != NULL)
+	else if(Func_call == context_if || Func_call == context_while || Func_call == context_repeat)
 	{
 		if(uStack_top(TList *,global.ins_list_stack)->last != NULL)
 		{
 			TIns *ins = uStack_top(TList *,global.ins_list_stack)->last->data;
-			ins->adr3 = result;
+			ins->adr3 = string_add(string_new(), "cond");
 		}
 		else
 		{
-			symbolVariable *var = uStack_top(symbolVariable *, var_stack);
-			if(var != NULL) gen_code(ins_assign,result,NULL,var);
+			TString *var = uStack_top(TString *, var_stack);
+			if(var != NULL) gen_code(ins_assign,string_add(string_new(), result->name->data),NULL,var);
 		}
 	}
 	//token_free(token);

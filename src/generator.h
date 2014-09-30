@@ -27,7 +27,8 @@ typedef enum {
 	ins_call,		//17
 	ins_uminus,		//18
 	ins_assign,		//19
-	ins_incall		//20
+	ins_incall,		//20
+	ins_push_htab	//21
 } TInsType;
 
 typedef struct TIns

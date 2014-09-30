@@ -80,5 +80,6 @@ void pascal_readln(symbolVariable* var)
 	{
 		throw_error(error_read_invalid);
 	}
+	var->inicialized = 1;
 }
 
