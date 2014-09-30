@@ -103,6 +103,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result);
 precedence_number get_stack();
 precedence_number enum_sign();
 precedence_number get_sign();
-int check_rule(uStack_t * stack, TRule rule, TStack *var_stack);
+int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack);
 
 #endif

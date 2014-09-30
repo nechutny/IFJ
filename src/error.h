@@ -47,6 +47,7 @@ typedef enum{
 	error_incopatible_types,
 	error_dividing_by_zero,
 	error_unkown,
+	error_uninicialized,
 } errors;
 
 
