@@ -53,7 +53,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		throw_error(error_incopatible_types);
 	}
 
-	print_debug(debug_interpret, "********%d*********%d******",a,b);
+	print_debug(debug_interpret, "a: %d b: %d c:%c",a,b,c);
 
 	
 	switch(c)
@@ -236,7 +236,7 @@ void interpret(){
 	while(node != NULL)
 	{
 		ins = node->data;
-		//print_debug(debug_interpret, "ins type: %d\n",ins->type);
+		print_debug(debug_interpret, "ins type: %d",ins->type);
 		switch(ins->type)
 		{
 			case ins_assign:
@@ -249,7 +249,6 @@ void interpret(){
 				do_math('-', ins->adr1, ins->adr2, ins->adr3);
 				break;
 			case ins_mul:
-				print_debug(debug_interpret, "ad1 name: %s  adr3 name: %d", ((symbolVariable*)ins->adr1)->name->data, ((symbolVariable*)ins->adr2)->name->data);
 				do_math('*', ins->adr1, ins->adr2, ins->adr3);
 				break;
 			case ins_div:
@@ -323,7 +322,7 @@ void interpret(){
                 		pascal_readln(ins->adr2);
                 		break;
                     default:
-                    	print_debug(debug_interpret, "NOT yet %d\n",((int)ins->adr1));
+                    	print_debug(debug_interpret, "NOT yet\n");
                 }
 				break;
 			default:

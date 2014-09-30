@@ -189,7 +189,12 @@ void throw_error(errors code)
 			break;
 
 		case error_dividing_by_zero:
-			fprintf(stderr, "Semantic error dividing by 0\n");
+			fprintf(stderr, "Semantic error dividing by 0");
+			return_code = 4;
+			break;
+
+		case error_uninicialized:
+			fprintf(stderr, "unicialized variable");
 			return_code = 4;
 			break;
 
