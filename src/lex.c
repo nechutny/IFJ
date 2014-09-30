@@ -17,17 +17,43 @@
 TToken * token_init() {
 	TToken * token;
 	
-	token = ( TToken * ) _malloc( sizeof( TToken ) );
+	token = ( TToken * ) _malloc( sizeof( TToken )+ sizeof(char)*16 );
 	if( token == NULL ) {
 		fprintf( stderr, "%s", strerror( errno ) );
 		return NULL;
 	}
 	
-	token->data = string_new();
-	if( !token->data )
-		return NULL;
-		
+	token->data[0] = '\0';
+	token->length = 0;
+	token->allocated = 16;
+	
 	token->type = token_invalid;
+	return token;
+}
+
+TToken * token_data_add( TToken * token, char * text )
+{
+
+	unsigned int len = strlen(text);
+	
+	unsigned int total_len = len+(token->length)+1;
+	
+	if( total_len > token->allocated )
+	{
+		token->allocated = total_len;
+		token = _realloc(token, sizeof(TToken) + (sizeof(char)*(token->allocated)));
+		if(token == NULL)
+		{
+			fprintf(stderr, "%s", strerror(errno));
+			return 0;
+		}
+	}
+	
+		
+	strncat(token->data, text, len);
+
+	token->length += len;
+	
 	return token;
 }
 
@@ -38,7 +64,7 @@ void token_return_token(TToken * token) {
 }
 
 void token_free( TToken * token ) {
-	string_free( token->data );
+	//string_free( token->data );
 	_free( token );
 }
 
@@ -65,7 +91,7 @@ void set_identifier(TToken *token){
  	token->type = token_identifier;
  	for (int i = 0; i <= 43; i++)
  	{
- 		if (strcmp(keywords[i],token->data->data)==0)
+ 		if (strcmp(keywords[i],token->data)==0)
  		{
  			token->type = tokens[i];
  		}
@@ -92,7 +118,7 @@ TToken *token_get() {
 	token_last = token;
 	TState state = state_init;
 	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
-	string_clear(token->data);
+	//string_clear(token->data);
 	char c;
 	//char sign='+';
 	int ascii=0;
@@ -199,7 +225,7 @@ TToken *token_get() {
 				else
 				{
 					ungetc(c, file);
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token, buffer);
 					set_identifier(token);
 					return token;
 				}
@@ -236,7 +262,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_int;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token, buffer);
 					return token;
 				}
 				else
@@ -284,7 +310,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else
@@ -306,13 +332,13 @@ TToken *token_get() {
 					if(number_state==state_int)
 					{
 						token->type=token_int;
-						token->data = string_add(token->data,buffer);
+						token = token_data_add(token,buffer);
 						return token;
 					}
 					else
 					{
 						token->type=token_double;
-						token->data = string_add(token->data,buffer);
+						token = token_data_add(token,buffer);
 						return token;
 					}
 				}
@@ -343,7 +369,7 @@ TToken *token_get() {
 				{
 					ungetc(c, file);
 					token->type=token_double;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else
@@ -362,48 +388,48 @@ TToken *token_get() {
 				if (c=='=')
 				{
 					token->type = token_assign;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_colon;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 			case state_greater:
 				if (c=='=')
 				{
 					token->type = token_greater_equal;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_greater;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 			case state_less:
 				if (c=='=')
 				{
 					token->type = token_less_equal;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else if (c=='>')
 				{
 					token->type = token_not_equal;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				else
 				{
 					ungetc(c, file);
 					token->type = token_less;
-					token->data = string_add(token->data,buffer);
+					token = token_data_add(token,buffer);
 					return token;
 				}
 			case state_apostrophe:
@@ -491,7 +517,7 @@ TToken *token_get() {
 					{
 						ungetc(c, file);
 						token->type = token_string;
-						token->data = string_add(token->data, buffer);
+						token = token_data_add(token, buffer);
 						return token;
 					}
 				}
@@ -505,7 +531,7 @@ TToken *token_get() {
 		
 		if(buff_i == 31)
 		{
-			token->data = string_add(token->data, buffer);
+			token = token_data_add(token, buffer);
 			buff_i = 0;
 			memset(&buffer, 0, 32);
 		}

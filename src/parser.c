@@ -46,7 +46,7 @@ void parser_file()
 	{
 		throw_error(error_identifier);
 	}
-	print_debug(debug_parser,"Program name %s", token->data->data);
+	print_debug(debug_parser,"Program name %s", token->data);
 	token_free(token);
 	
 	token = token_get();
@@ -138,18 +138,18 @@ void parser_var()
 			{
 				throw_error(error_identifier);
 			}
-			print_debug(debug_parser,"Variable %s",token->data->data);
+			print_debug(debug_parser,"Variable %s",token->data);
 
 			if(local_context == context_global)
 			{ /* Add variable to global symbol table */
-				var = htab_create(global.global_symbol, token->data->data);
-				symbol_variable_init(var, token->data->data);
+				var = htab_create(global.global_symbol, token->data);
+				symbol_variable_init(var, token->data);
 				uStack_push(htab_listitem*, varStack, var);
 			}
 			else
 			{ /* Add variable to local symbol table in stack */
-				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data->data);
-				symbol_variable_init(var, token->data->data);
+				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
+				symbol_variable_init(var, token->data);
 				uStack_push(htab_listitem*, varStack, var);
 			}
 			
@@ -223,21 +223,21 @@ void parser_function()
 		{ /* Identifier */
 			throw_error(error_identifier);
 		}
-		print_debug(debug_parser,"function %s:",token->data->data);
+		print_debug(debug_parser,"function %s:",token->data);
 		/* Add variable to global symbol table */
 
 		/* check if is only prototpy or nothing */
-		var = htab_lookup(global.global_symbol, token->data->data);
+		var = htab_lookup(global.global_symbol, token->data);
 		if(var != NULL && var->type == type_function && var->ptr.function->defined)
 		{
 			throw_error(error_function_already_defined);
 		}
 		else
 		{
-			var = htab_create(global.global_symbol, token->data->data);
+			var = htab_create(global.global_symbol, token->data);
 		}
 		
-		symbol_function_init(var, token->data->data, offset);
+		symbol_function_init(var, token->data, offset);
 		token_free(token);
 		
 		token = token_get();
@@ -375,10 +375,10 @@ void parser_args(symbolFunction* func)
 			token2 = token_get();
 			if(isVariableType(token2->type))
 			{ /* Datetype */
-				symbol_function_arg_add(func, token->data->data, token2->type);
+				symbol_function_arg_add(func, token->data, token2->type);
 				
-				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data->data);
-				symbol_variable_init(var, token->data->data);
+				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
+				symbol_variable_init(var, token->data);
 				symbol_variable_type_set(var->ptr.variable, token2->type);
 				var->ptr.variable->inicialized = 1;
 				
@@ -455,7 +455,7 @@ void parser_code()
 			token = token_get();
 			if(token->type == token_assign || token->type == token_bracket_left)
 			{ /* assign */
-				hitem = VariableExists(token2->data->data);
+				hitem = VariableExists(token2->data);
 				if(hitem == NULL || hitem->type != type_variable)
 				{ /* Not global variable */
 					throw_error(error_var_not_exists);
@@ -493,7 +493,7 @@ void parser_code()
 			}
 			else if(token->type == token_parenthesis_left)
 			{ /* function call */
-				hitem = htab_lookup(global.global_symbol, token2->data->data);
+				hitem = htab_lookup(global.global_symbol, token2->data);
 				print_debug(debug_parser,"function call");
 				if(hitem == NULL)
 				{
@@ -849,7 +849,7 @@ void parser_for()
 		throw_error(error_identifier);
 	}
 	
-	hitem = VariableExists(token->data->data);
+	hitem = VariableExists(token->data);
 	if(hitem == NULL || hitem->type != type_variable)
 	{ /* Not variable */
 		throw_error(error_var_not_exists);
@@ -923,7 +923,7 @@ void parser_switch()
 	{ /* Variable name for case */
 		throw_error(error_identifier);
 	}
-	htab_listitem* hitem = VariableExists(token->data->data);
+	htab_listitem* hitem = VariableExists(token->data);
 	if(hitem == NULL || hitem->type != type_variable)
 	{
 		throw_error(error_var_not_exists);

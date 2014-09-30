@@ -110,8 +110,10 @@ typedef enum {
 } TToken_type;
 
 typedef struct _TToken {
-	TString * data;
 	TToken_type type;
+	unsigned int allocated;
+	unsigned int length;
+	char data[];
 } TToken;
 
 TVar *var_from_token(TToken *token);

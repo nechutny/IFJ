@@ -53,11 +53,11 @@ int sem_check(TToken * token, seman check)
 	htab_listitem * item;
 	if(check == check_func)
 	{
-		item = htab_lookup(global.global_symbol,token->data->data);
+		item = htab_lookup(global.global_symbol,token->data);
 	}
 	else
 	{
-	item = VariableExists(token->data->data);
+	item = VariableExists(token->data);
 	}
 
 	if (item == NULL)
@@ -205,7 +205,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 			pom = token_get(global.file);
 			if (pom->type == token_parenthesis_left)
 			{    
-				func = htab_lookup(global.global_symbol, token->data->data)->ptr.function;
+				func = htab_lookup(global.global_symbol, token->data)->ptr.function;
 				token_return_token(pom);
 				return operator_func;
 			}
@@ -442,12 +442,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 				if(token->type == token_int || token->type == token_double || token->type == token_string)
 					{stack_push(var_stack,create_const(token));
-				//    printf("++++++++++%s   %d\n", token->data->data, Func_call);
+				//    printf("++++++++++%s   %d\n", token->data, Func_call);
 					}
 				else if(token->type == token_identifier)
 				{
-					//printf("++++++++++%s\n", token->data->data);
-					htab_listitem* hitem = VariableExists(token->data->data);
+					//printf("++++++++++%s\n", token->data);
+					htab_listitem* hitem = VariableExists(token->data);
 					if(hitem->type == type_variable)
 						stack_push(var_stack,hitem->ptr.variable);
 				}
