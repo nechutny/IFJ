@@ -204,7 +204,7 @@ void throw_error(errors code)
 			break;
 	}
 	
-	fprintf(stderr," on line %d. Readed '%s' (type id: %d).\n", file_line(), token_last->data->data, token_last->type);
+	fprintf(stderr," on line %d. Readed '%s' (type id: %d).\n", file_line(), token_last->data, token_last->type);
 	
 	exit(return_code);
 }

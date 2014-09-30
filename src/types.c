@@ -9,11 +9,11 @@ TVar *var_from_token(TToken *token)
 	{
 		case token_int:
 			var->type = var_int;
-			var->data.i = atoi(token->data->data);
+			var->data.i = atoi(token->data);
 			break;		
 		case token_double:
 			var->type = var_double;
-			var->data.d = atof(token->data->data);
+			var->data.d = atof(token->data);
 			break;
 		default:
 //			fprintf(stderr, "unknown token type: %d\n", token->type);

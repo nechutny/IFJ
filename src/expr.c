@@ -54,11 +54,11 @@ int sem_check(TToken * token, seman check)
 	htab_listitem * item;
 	if(check == check_func)
 	{
-		item = htab_lookup(global.global_symbol,token->data->data);
+		item = htab_lookup(global.global_symbol,token->data);
 	}
 	else
 	{
-	item = VariableExists(token->data->data);
+	item = VariableExists(token->data);
 	}
 
 	if (item == NULL)
@@ -205,7 +205,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
 			pom = token_get(global.file);
 			if (pom->type == token_parenthesis_left)
 			{    
-				func = htab_lookup(global.global_symbol, token->data->data)->ptr.function;
+				func = htab_lookup(global.global_symbol, token->data)->ptr.function;
 				token_return_token(pom);
 				return operator_func;
 			}
@@ -446,7 +446,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				}
 				else if(token->type == token_identifier)
 				{
-					htab_listitem* hitem = VariableExists(token->data->data);
+					htab_listitem* hitem = VariableExists(token->data);
 					if(hitem->type == type_variable)
 						uStack_push(TString *, var_stack,string_add(string_new(), hitem->ptr.variable->name->data));
 				}

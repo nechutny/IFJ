@@ -38,6 +38,7 @@ void set_identifier( TToken * token);
 void token_free( TToken * token );
 void token_return_token(TToken * token);
 TToken *token_get();
+TToken * token_data_add( TToken * token, char * text );
 TToken *token_last;
 
 #endif
