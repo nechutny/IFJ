@@ -106,6 +106,15 @@ void global_init()
 
 	// 42 is answer for anything!
 	global.global_symbol = htab_init(HASH_TABLE_SIZE);
+	global.constant_symbol = htab_init(HASH_TABLE_SIZE);
+
+	htab_listitem *hitem = htab_create(global.constant_symbol,"partresult");
+	hitem->type = type_variable;
+	hitem->ptr.variable = create_const(NULL);
+	
+	hitem = htab_create(global.constant_symbol,"cond");
+	hitem->type = type_variable;
+	hitem->ptr.variable = create_const(NULL);
 	
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);

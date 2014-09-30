@@ -591,7 +591,9 @@ void parser_if()
 {
 	print_debug(debug_parser,"If");
 	
-	symbolVariable *cond = _malloc(sizeof(symbolVariable));
+	TString *cond = string_add(string_new(), "cond");
+	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
+	
 	TIns *lab_else = _malloc(sizeof(TIns)), 
 		 *lab_end = _malloc(sizeof(TIns));
 
@@ -612,7 +614,7 @@ void parser_if()
 	n_end->data = lab_end;
 
 	/* Expresion */
-	if(precedence(global.file, context_if, cond))
+	if(precedence(global.file, context_if, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -726,8 +728,9 @@ void parser_label()
 void parser_while()
 {
 	print_debug(debug_parser,"while");
-	
-	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
+
+	TString *cond = string_add(string_new(), "cond");
+	//symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
 	TIns *start = _malloc(sizeof(TIns)),
 		 *end = _malloc(sizeof(TIns));
@@ -751,7 +754,7 @@ void parser_while()
 	/* Condition */
 	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_start);
 
-	if(precedence(global.file, context_while, cond))
+	if(precedence(global.file, context_while, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -791,7 +794,8 @@ void parser_repeat()
 {
 	print_debug(debug_parser,"repeat");
 
-	symbolVariable *cond = _malloc(sizeof(symbolVariable));	
+	TString *cond = string_add(string_new(), "cond");
+	//symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
 	TIns *start = _malloc(sizeof(TIns));
 
@@ -826,7 +830,7 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	if(precedence(global.file, context_repeat, cond))
+	if(precedence(global.file, context_repeat, NULL))
 	{
 		throw_error(error_expresion);
 	}
