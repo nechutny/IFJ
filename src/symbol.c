@@ -27,9 +27,11 @@ void symbol_variable_init(htab_listitem* var, char* name)
 {
 	var->type = type_variable;
 
-	var->ptr.variable = _malloc(sizeof(symbolVariable)+(sizeof(char)*strlen(name)+1));
+	unsigned int length = sizeof(char)*(strlen(name)+1);
 
-	memcpy(var->ptr.variable->name, name, (sizeof(char)*strlen(name)+1));
+	var->ptr.variable = _malloc(sizeof(symbolVariable)+length);
+
+	memcpy(var->ptr.variable->name, name, length);
 	var->ptr.variable->inicialized = 0;
 }
 
