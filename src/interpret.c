@@ -11,10 +11,21 @@
 #include "error.h"
 #include "uStack.h"
 
+int pushed = 0;
 
 symbolVariable* get_var(TString *name)
 {
-//	print_debug(debug_interpret, "name: %s",name->data);
+	if(pushed == 1)
+	{
+		global.local_symbols->count--;
+		pushed = 2;
+	}
+	else if(pushed == 2)
+	{
+		global.local_symbols->count++;
+	}
+
+	print_debug(debug_interpret, "name: %s",name->data);
 	htab_listitem *hitem = htab_lookup(global.constant_symbol, name->data);
 	int i = uStack_count(global.local_symbols) - 1;
 	while(hitem == NULL && i >= 0)
@@ -354,6 +365,7 @@ void interpret(){
 						exit(4);
 				}
 			case ins_call:
+				pushed = 0;
 				func_call = ins;
 				uStack_top(TList *,global.ins_list_stack)->act = node->n;
 				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
@@ -374,7 +386,8 @@ void interpret(){
 				break;
 			case ins_push_htab:
 				//print_debug(debug_interpret,"local_symbols count before: %d", uStack_count(global.local_symbols));
-				uStack_push(htab_t *, global.local_symbols, ins->adr1);
+				pushed = 1;
+				uStack_push(htab_t *, global.local_symbols, htab_copy(ins->adr1));
 				print_debug(debug_interpret,"local_symbols count after: %d", uStack_count(global.local_symbols));
 				break;
 			
@@ -389,7 +402,7 @@ void interpret(){
 
 			if(func_call != NULL)
 			{
-				htab_listitem *hitem = htab_lookup(((symbolFunction*)func_call->adr1)->local_symbol,((symbolFunction*)func_call->adr1)->name->data);
+				htab_listitem *hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), ((symbolFunction*)func_call->adr1)->name->data);
 				uStack_remove(global.local_symbols);
 				if(hitem->type == type_variable)
 				{
