@@ -448,7 +448,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 				{
 					htab_listitem* hitem = VariableExists(token->data);
 					if(hitem->type == type_variable)
-						uStack_push(TString *, var_stack,string_add(string_new(), hitem->ptr.variable->name->data));
+						uStack_push(TString *, var_stack,string_add(string_new(), hitem->ptr.variable->name));
 				}
 
 				token_free(token);
@@ -834,8 +834,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
 	if(result != NULL && Func_call == context_assign)
 	{
-		print_debug(debug_generator, "result name: %s", result->name->data);
-		gen_code(ins_assign, string_add(string_new(), result->name->data), NULL, uStack_top(TString *, var_stack));
+		print_debug(debug_generator, "result name: %s", result->name);
+		gen_code(ins_assign, string_add(string_new(), result->name), NULL, uStack_top(TString *, var_stack));
 	}
 	else if(Func_call == context_if || Func_call == context_while || Func_call == context_repeat)
 	{
@@ -847,7 +847,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		else
 		{
 			TString *var = uStack_top(TString *, var_stack);
-			if(var != NULL) gen_code(ins_assign,string_add(string_new(), result->name->data),NULL,var);
+			if(var != NULL) gen_code(ins_assign,string_add(string_new(), result->name),NULL,var);
 		}
 	}
 	//token_free(token);

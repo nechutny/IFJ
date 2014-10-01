@@ -25,13 +25,10 @@ htab_t* target;
 void htab_copy_foreach(char key[], item_type type, htab_listitem* item)
 {
 	htab_listitem* new = htab_create(target, key);
+	unsigned int size = sizeof(symbolVariable)+sizeof(char)*(strlen(key)+1);
 
 	// Copy symbolVariable
-	symbolVariable* sym_v = memcpy(_malloc(sizeof(symbolVariable)), item->ptr.variable, sizeof(symbolVariable));
-
-	// Copy name
-	sym_v->name = string_new();
-	sym_v->name = string_add(sym_v->name, item->ptr.variable->name->data);
+	symbolVariable* sym_v = memcpy(_malloc(size), item->ptr.variable, size);
 
 	// Copy htable item
 	memcpy(new, item, sizeof(htab_listitem));

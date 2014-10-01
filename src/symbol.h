@@ -34,7 +34,6 @@ typedef struct {
 } functionArgs;
 
 typedef struct TsymbolVariable {
-	TString* name;			// Variable name
 	int inicialized;		// Is inicialized
 	variableType type;		// Variable type
 	union {				// Variable value
@@ -44,6 +43,7 @@ typedef struct TsymbolVariable {
 		int value_boolean;
 		char value_char[1];
 	} value;
+	char name[];			// Variable name
 } symbolVariable;
 
 //#include "htable.h"
