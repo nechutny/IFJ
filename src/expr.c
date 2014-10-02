@@ -428,7 +428,8 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     uStack_push(int, stack, operator_dolar);
     
     if (((Func_call == context_args) || (Func_call == context_write) || (Func_call == context_readln)
-        ) && (token->type == token_parenthesis_left))
+        || (Func_call == context_sort) || (Func_call == context_length) || (Func_call == context_find)
+        || (Func_call == context_copy)) && (token->type == token_parenthesis_left))
     {
         uStack_push(int, stack, sign_less);
         uStack_push(int, stack, operator_func);
