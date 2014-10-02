@@ -6,9 +6,8 @@ var a : integer;
 begin
 	a := 5;
 	b := 10;
-	if (a > 1) xor (b<100) then
+	if not(b > a) then
 		write('TRUE'#10'');
 	else
-		write('FALSE'#10'')
+		write('FALSE'#10'');
 end.
-

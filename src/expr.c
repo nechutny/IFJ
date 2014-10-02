@@ -383,7 +383,10 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
             uStack_remove(stack);
             uStack_push(int, stack,operator_non_term);
             print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-            gen_expr(rule, uStack_top(TString *, var_stack), NULL, NULL);
+            if(rule == rule_24)
+            	gen_expr(rule, uStack_top(TString *, var_stack), NULL, NULL);
+            else
+            	gen_expr(rule, cond1_s, NULL, NULL);
             return 0;
         }
         else
@@ -449,11 +452,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
     do
     {
-        
-        fprintf(stderr,"stack_top: %d\n", uStack_top(int,stack));
-        fprintf(stderr,"token_type: %d\n", token->type);
-        fprintf(stderr,"uStack_count: %ld\n", uStack_count(stack));
-        
+        /*
+        print_debug(debug_prec,"stack_top: %d", uStack_top(int,stack));
+        print_debug(debug_prec,"token_type: %d", token->type);
+        print_debug(debug_prec,"uStack_count: %ld", uStack_count(stack));
+        */
+
         switch(get_sign(token,stack,Func_call)){
             case sign_equal:
                 uStack_push(int, stack , recon_sign(token,Func_call,stack));

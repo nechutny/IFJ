@@ -287,7 +287,8 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 	
 	if(adr2 == NULL && c == 'n')
 	{
-		if(adr1->type != variable_boolean);
+		print_debug(debug_interpret,"negace adr_type: %d %d",adr1->type, variable_boolean);
+		if(adr1->type != variable_boolean)
 		{
 			throw_error(error_incopatible_types);
 		}
