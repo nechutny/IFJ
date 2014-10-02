@@ -108,13 +108,9 @@ void global_init()
 	global.global_symbol = htab_init(HASH_TABLE_SIZE);
 	global.constant_symbol = htab_init(HASH_TABLE_SIZE);
 
-	htab_listitem *hitem = htab_create(global.constant_symbol,"partresult");
-	hitem->type = type_variable;
-	hitem->ptr.variable = create_const(NULL);
-	
-	hitem = htab_create(global.constant_symbol,"cond");
-	hitem->type = type_variable;
-	hitem->ptr.variable = create_const(NULL);
+	global.partresult = create_const(NULL);	
+	global.cond1 = create_const(NULL);
+	global.cond2 = create_const(NULL);
 	
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);

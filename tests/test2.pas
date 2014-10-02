@@ -20,8 +20,7 @@ function factorial(n : integer ) : integer;
 	end;
 
 begin
-	write('Zadejte cislo pro vypocet faktorialu: ');
-	readln(a);
+	a := 20;
 	if a < 0 then
 	begin
 		write('Faktorial nelze spocitat '#10'')

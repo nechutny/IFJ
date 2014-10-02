@@ -48,6 +48,8 @@ const int precedence_table[table_size][table_size]=
 
 symbolFunction *func = NULL;
 TString *partresult = NULL;
+int cond1 = 0;
+
 
 int sem_check(TToken * token, seman check)
 {
@@ -314,6 +316,8 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context conte
 int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 {
 	TString *tmp;
+	TString *cond1_s = string_add(string_new(), "cond1");
+	TString *cond2_s = string_add(string_new(), "cond2");
 	uStack_remove(stack);
 	if (uStack_top(int, stack) == operator_non_term)
 	{
@@ -329,10 +333,28 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 			uStack_remove(stack);
 			uStack_push(int, stack,operator_non_term);
 			print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-			tmp = uStack_pop(TString *,var_stack);
-			print_debug(debug_generator,"arg1: %s + arg2:%s",uStack_top(TString *,var_stack)->data,tmp->data);
-			gen_expr(rule, uStack_pop(TString *,var_stack), tmp, partresult);
-			uStack_push(TString *, var_stack, partresult);
+			
+			if(rule >= rule_12 && rule <= rule_17)
+			{
+				tmp = uStack_pop(TString *,var_stack);
+				print_debug(debug_generator,"arg1: %s + arg2:%s",uStack_top(TString *,var_stack)->data,tmp->data);
+				if(cond1)
+					gen_expr(rule, uStack_pop(TString *,var_stack), tmp, cond2_s);
+				else
+					gen_expr(rule, uStack_pop(TString *,var_stack), tmp, cond1_s);
+				cond1 = 1;
+			}
+			else if (rule == rule_8 || rule == rule_11 || rule == rule_23)
+			{
+				gen_expr(rule, cond1_s, cond2_s, cond1_s);
+			}
+			else{
+				tmp = uStack_pop(TString *,var_stack);
+				print_debug(debug_generator,"arg1: %s + arg2:%s",uStack_top(TString *,var_stack)->data,tmp->data);
+				gen_expr(rule, uStack_pop(TString *,var_stack), tmp, partresult);
+				uStack_push(TString *, var_stack, partresult);
+			}
+		
 			return 0;
 		}
 		else
@@ -349,7 +371,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 			uStack_remove(stack);
 			uStack_push(int, stack,operator_non_term);
 			print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-			gen_expr(rule, uStack_top(TString *, var_stack), NULL, uStack_top(TString *,var_stack));
+			gen_expr(rule, uStack_top(TString *, var_stack), NULL, NULL);
 			return 0;
 		}
 		else
@@ -842,7 +864,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 		if(uStack_top(TList *,global.ins_list_stack)->last != NULL)
 		{
 			TIns *ins = uStack_top(TList *,global.ins_list_stack)->last->data;
-			ins->adr3 = string_add(string_new(), "cond");
+			ins->adr3 = string_add(string_new(), "cond1");
 		}
 		else
 		{

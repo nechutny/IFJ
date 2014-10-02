@@ -51,6 +51,10 @@ struct TGlobal
 	htab_t* global_symbol;
 	htab_t* constant_symbol;
 	uStack_t* local_symbols;
+
+	symbolVariable *partresult;
+	symbolVariable *cond1;
+	symbolVariable *cond2;
 };
 extern struct TGlobal global;
 

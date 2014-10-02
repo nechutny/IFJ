@@ -591,7 +591,7 @@ void parser_if()
 {
 	print_debug(debug_parser,"If");
 	
-	TString *cond = string_add(string_new(), "cond");
+	TString *cond = string_add(string_new(), "cond1");
 	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
 	
 	TIns *lab_else = _malloc(sizeof(TIns)), 
@@ -729,7 +729,7 @@ void parser_while()
 {
 	print_debug(debug_parser,"while");
 
-	TString *cond = string_add(string_new(), "cond");
+	TString *cond = string_add(string_new(), "cond1");
 	//symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
 	TIns *start = _malloc(sizeof(TIns)),
@@ -794,7 +794,7 @@ void parser_repeat()
 {
 	print_debug(debug_parser,"repeat");
 
-	TString *cond = string_add(string_new(), "cond");
+	TString *cond = string_add(string_new(), "cond1");
 	//symbolVariable *cond = _malloc(sizeof(symbolVariable));	
 
 	TIns *start = _malloc(sizeof(TIns));

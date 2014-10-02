@@ -1,3 +1,10 @@
+/**
+ *	@project	IFJ 2014/2015
+ *	@file		generator.c
+ *
+ *	@author		Petr Lukeš - xlukes06
+ */
+
 #include <stdio.h>
 
 #include "generator.h"
@@ -66,6 +73,9 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 			break;
 		case rule_24:
 			ins->type = ins_uminus;
+			break;
+		case rule_23:
+			ins->type = ins_xor;
 			break;
 		default:
 			printf("not yet\n");

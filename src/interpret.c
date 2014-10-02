@@ -1,3 +1,10 @@
+/**
+ *	@project	IFJ 2014/2015
+ *	@file		interpret.c
+ *
+ *	@author		Petr Lukeš - xlukes06
+ */
+
 #include <stdio.h>
 #include <math.h>
 
@@ -15,6 +22,11 @@ int pushed = 0;
 
 symbolVariable* get_var(TString *name)
 {
+	if(!strcmp(name->data, "cond1")) return global.cond1;
+	if(!strcmp(name->data, "cond2")) return global.cond2;
+	if(!strcmp(name->data, "partresult")) return global.partresult;
+
+
 	if(pushed == 1)
 	{
 		global.local_symbols->count--;
@@ -273,15 +285,37 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	adr3->type = variable_boolean;
 	
-	if(adr1->type != variable_boolean || adr2->type != variable_boolean){
-		throw_error(error_incopatible_types);
+	if(adr2 == NULL && c == 'n')
+	{
+		if(adr1->type != variable_boolean);
+		{
+			throw_error(error_incopatible_types);
+		}
 	}
+	else
+		if(adr1->type != variable_boolean || adr2->type != variable_boolean)
+		{
+			throw_error(error_incopatible_types);
+		}
 		
-	if(c == 'a')
-		adr3->value.value_boolean = adr1->value.value_boolean && adr2->value.value_boolean;
-	else if(c == 'o')
-		adr3->value.value_boolean = adr1->value.value_boolean || adr2->value.value_boolean;
-
+	switch(c)
+	{
+		case 'a':
+			adr3->value.value_boolean = adr1->value.value_boolean && adr2->value.value_boolean;
+			break;
+		case 'o':
+			adr3->value.value_boolean = adr1->value.value_boolean || adr2->value.value_boolean;
+			break;
+		case 'x':
+			adr3->value.value_boolean = adr1->value.value_boolean ^ adr2->value.value_boolean;
+			break;
+		case 'n':
+			if(adr1->value.value_boolean)
+				adr3->value.value_boolean = 0;
+			else
+				adr3->value.value_boolean = 1;
+			break;
+	}
 	adr3->inicialized = 1;
 
 }
@@ -336,6 +370,12 @@ void interpret(){
 			case ins_or:
 				logic('o', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
 				break;
+			case ins_xor:
+				logic('x', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
+				break;			
+			case ins_not:
+				logic('n', get_var(ins->adr1), NULL, get_var(ins->adr3));
+				break;
 			case ins_lab:
 				break;
 			case ins_jmp:
@@ -364,6 +404,7 @@ void interpret(){
 						throw_error(error_incopatible_types);
 						exit(4);
 				}
+				break;
 			case ins_call:
 				pushed = 0;
 				func_call = ins;
@@ -379,6 +420,16 @@ void interpret(){
                 	    break;
                 	case 1:
                 		pascal_readln(get_var(ins->adr2));
+                		break;
+                	case 2:
+                		pascal_length(get_var(ins->adr2));
+                		break;
+                	case 3:
+						//pascal_copy
+                	case 4:
+						//pascal_find
+                	case 5:
+						//pascal_sort
                 		break;
                     default:
                     	print_debug(debug_interpret, "NOT yet\n");
