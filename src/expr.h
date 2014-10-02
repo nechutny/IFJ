@@ -59,6 +59,10 @@ typedef enum{
     context_function,           //10
     context_write,
     context_readln,
+    context_sort,
+    context_find,
+    context_copy,               //15
+    context_length
 } parse_context;
 
 typedef enum
