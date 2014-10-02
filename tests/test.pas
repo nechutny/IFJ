@@ -4,10 +4,12 @@ var a : integer;
 	b : integer;
 
 begin
-	a := 5;
-	b := 10;
-	if not(b > a) then
-		write('TRUE'#10'');
-	else
-		write('FALSE'#10'');
+
+	readln(a);
+	write(a,''#10'');
+	find('es','test');
+	sort('test');
+	copy('test', 1, 3);
+	length('test');
+
 end.

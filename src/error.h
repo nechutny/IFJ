@@ -49,6 +49,8 @@ typedef enum{
     error_dividing_by_zero,
     error_unkown,
     error_uninicialized,
+    error_to_many_args,
+    error_need_more_args
 } errors;
 
 

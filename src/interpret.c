@@ -423,14 +423,24 @@ void interpret(){
                 		pascal_readln(get_var(ins->adr2));
                 		break;
                 	case 2:
-                		pascal_length(get_var(ins->adr2));
+                		printf("pascal sort\n");
+                		//get_var(ins->adr3) = pascal_sort(get_var(ins->adr2));
                 		break;
                 	case 3:
-						//pascal_copy
+						if(((uStack_t *)ins->adr2)->count > 2) throw_error(error_to_many_args);
+						if(((uStack_t *)ins->adr2)->count < 2) throw_error(error_need_more_args);
+					//	get_var(ins->adr3) = pascal_find(uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 0), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 1));
+                		printf("pascal find\n");
+                		break;
                 	case 4:
-						//pascal_find
+                		if(((uStack_t *)ins->adr2)->count > 3) throw_error(error_to_many_args);
+						if(((uStack_t *)ins->adr2)->count < 3) throw_error(error_need_more_args);
+					//	get_var(ins->adr3) = pascal_copy(uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 0), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 1), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 2));
+                		printf("pascal copy\n");
+                		break;
                 	case 5:
-						//pascal_sort
+                		printf("pascal_length\n");
+                		pascal_length(get_var(ins->adr2));
                 		break;
                     default:
                     	print_debug(debug_interpret, "NOT yet\n");
