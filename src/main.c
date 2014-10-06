@@ -8,6 +8,7 @@
 #include "uStack.h"
 #include "interpret.h"
 
+
 int main(int argc, char* argv[])
 {
 	if(argc  != 2)
@@ -23,6 +24,4 @@ int main(int argc, char* argv[])
 	parser_file();
 
 	interpret();
-
-	return 0;
 }
