@@ -37,7 +37,12 @@ void symbol_variable_init(htab_listitem* var, char* name)
 
 symbolVariable *symbol_variable_init2(variableType type)
 {
-	symbolVariable *var = _malloc(sizeof(symbolVariable));
+	char part[] = "help";
+	unsigned int length = sizeof(char)*(strlen(part)+1);
+	symbolVariable* var = _malloc(sizeof(symbolVariable)+length);
+
+	memcpy(var->name, part, length);
+
 	var->type = type;
 
 	// Due to IEE 754 and memory structure we can use this speed tweak
@@ -71,6 +76,11 @@ symbolVariable *symbol_variable_init2(variableType type)
 
 void copy_variable(symbolVariable *var1, symbolVariable *var2)
 {
+	if(var1->name != NULL && !strcmp(var1->name, "partresult"))
+	{
+		var1->type = var2->type;
+	}
+
 	if(var2->type != var1->type)
 	{
 		print_debug(debug_symbol, "var1 type: %d, var2 type: %d",var1->type,var2->type);
@@ -93,6 +103,7 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
 			break;
 		case variable_string:
 			strcpy(var1->value.value_string, var2->value.value_string);
+			print_debug(debug_symbol,"copy string: %s \n", var2->value.value_string);
 			break;
 		case variable_char:
 			strcpy(var1->value.value_char, var2->value.value_char);
@@ -113,9 +124,12 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
  */
 symbolVariable* create_const(TToken *token)
 {	
-	symbolVariable* var = _malloc(sizeof(symbolVariable));
-	var->inicialized = 0;
-	
+	char part[] = "partresult";
+	unsigned int length = sizeof(char)*(strlen(part)+1);
+	symbolVariable* var = _malloc(sizeof(symbolVariable)+length);
+
+	memcpy(var->name, part, length);
+
 	if(token == NULL)	return var;
 
 	htab_listitem *hitem = htab_create(global.constant_symbol, token->data);

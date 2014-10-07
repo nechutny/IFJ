@@ -1,15 +1,13 @@
 program fooo;
 
-var a : integer;
+var a : string;
 	b : integer;
-
+	c : integer;
+	result : integer;
 begin
-
-	readln(a);
-	write(a,''#10'');
-	find('es','test');
-	sort('test');
-	copy('test', 1, 3);
-	length('test');
-
+	a := 'hokuspokus';
+	b := 3;
+	c := 6;
+	result := find(a, 'kusp');
+	write(result);
 end.

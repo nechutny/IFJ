@@ -102,7 +102,7 @@ typedef enum
 }seman;
 
 int sem_check(TToken * , seman );
-operator_number recon_sign(TToken * token, parse_context context, uStack_t * stack);
+operator_number recon_sign(TToken * token, parse_context *context, uStack_t * stack);
 int precedence(FILE *filename,parse_context Func_call, symbolVariable *result);
 precedence_number get_stack();
 precedence_number enum_sign();

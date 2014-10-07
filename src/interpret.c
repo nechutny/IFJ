@@ -17,6 +17,7 @@
 #include "debug.h"
 #include "error.h"
 #include "uStack.h"
+#include "ial.h"
 
 int pushed = 0;
 
@@ -324,7 +325,8 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 void interpret(){
 	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
 	TIns *ins, *func_call = NULL;
-	
+	symbolVariable *tmp1, *tmp2, *var;
+
 	while(node != NULL)
 	{
 		ins = node->data;
@@ -423,24 +425,28 @@ void interpret(){
                 		pascal_readln(get_var(ins->adr2));
                 		break;
                 	case 2:
-                		printf("pascal sort\n");
-                		//get_var(ins->adr3) = pascal_sort(get_var(ins->adr2));
+                		var = sort(get_var(ins->adr2));
+                		copy_variable(get_var(ins->adr3), var);
                 		break;
                 	case 3:
 						if(((uStack_t *)ins->adr2)->count > 2) throw_error(error_to_many_args);
 						if(((uStack_t *)ins->adr2)->count < 2) throw_error(error_need_more_args);
-					//	get_var(ins->adr3) = pascal_find(uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 0), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 1));
-                		printf("pascal find\n");
+						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
+						var = find(tmp1, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 1)));
+						copy_variable(get_var(ins->adr3), var);
                 		break;
                 	case 4:
                 		if(((uStack_t *)ins->adr2)->count > 3) throw_error(error_to_many_args);
 						if(((uStack_t *)ins->adr2)->count < 3) throw_error(error_need_more_args);
-					//	get_var(ins->adr3) = pascal_copy(uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 0), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 1), uStack_offset(symbolVariable *, (uStack_t *(ins->adr2)), 2));
-                		printf("pascal copy\n");
+						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
+						tmp2 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),1));
+						var = copy(tmp1, tmp2, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 2)));
+						copy_variable(get_var(ins->adr3), var);
                 		break;
                 	case 5:
-                		printf("pascal_length\n");
-                		pascal_length(get_var(ins->adr2));
+                		var = get_var(ins->adr3);
+                		var->type = variable_integer;
+                		var->value.value_number = pascal_length(get_var(ins->adr2));
                 		break;
                     default:
                     	print_debug(debug_interpret, "NOT yet\n");

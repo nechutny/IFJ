@@ -85,7 +85,7 @@ int sem_check(TToken * token, seman check)
 * @param token token
 * @return operator_number
 **/
-operator_number recon_sign(TToken * token, parse_context context, uStack_t * stack)
+operator_number recon_sign(TToken * token, parse_context *context, uStack_t * stack)
 {
     TToken * pom;
     pom = token_init();
@@ -156,7 +156,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
             return operator_or;
 
         case token_equal:
-            if(context ==  context_index)
+            if(*context ==  context_index)
             {
                 return operator_dolar;
             }
@@ -191,7 +191,7 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
             return operator_comma;
 
         case token_assign:
-            if (context == context_index)
+            if (*context == context_index)
                 return operator_dolar;
 
             return sign_fault;
@@ -228,8 +228,25 @@ operator_number recon_sign(TToken * token, parse_context context, uStack_t * sta
             pom = token_get(global.file);
             if (pom->type == token_parenthesis_left)
             {    
-                func = htab_lookup(global.global_symbol, token->data)->ptr.function;
+                func = NULL;
                 token_return_token(pom);
+                switch(token->type)
+                {
+                    case token_f_find:
+                        *context = context_find;
+                        break;
+                    case token_f_copy:
+                        *context = context_copy;
+                        break;
+                    case token_f_length:
+                        *context = context_length;
+                        break;
+                    case token_f_sort:
+                        *context = context_sort;
+                        break;
+                    default:
+                        break;
+                }
                 return operator_func;
             }
             throw_error(error_not_a_function_precedence);
@@ -288,7 +305,7 @@ precedence_number enum_sign(int sign)
 * @param stack stack with operation_number
 * @return operator_number
 **/
-precedence_number get_sign(TToken * token, uStack_t * stack, parse_context context)
+precedence_number get_sign(TToken * token, uStack_t * stack, parse_context *context)
 {
     int pom = 0;
     //fprintf(stderr,"Stack_top %d \n", uStack_top(int,stack));
@@ -458,9 +475,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         print_debug(debug_prec,"uStack_count: %ld", uStack_count(stack));
         */
 
-        switch(get_sign(token,stack,Func_call)){
+        switch(get_sign(token,stack,&Func_call)){
             case sign_equal:
-                uStack_push(int, stack , recon_sign(token,Func_call,stack));
+                uStack_push(int, stack , recon_sign(token,&Func_call,stack));
                 
                 token_free(token);
                 token = token_get();
@@ -470,13 +487,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                 if (uStack_top(int , stack) != operator_non_term)
                 {
                     uStack_push(int, stack, sign_less);
-                    uStack_push(int,stack,recon_sign(token,Func_call,stack));
+                    uStack_push(int,stack,recon_sign(token,&Func_call,stack));
                 }
                 else{
                     uStack_remove(stack);
                     uStack_push(int,stack,sign_less);
                     uStack_push(int,stack,operator_non_term);
-                    uStack_push(int, stack,recon_sign(token,Func_call,stack));
+                    uStack_push(int, stack,recon_sign(token,&Func_call,stack));
                 }
 
                 if(token->type == token_int || token->type == token_double || token->type == token_string)
@@ -577,11 +594,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                                     break;
                                                 case context_sort:
                                                 	tmp = uStack_pop(uStack_t *, func_args_stack);
-                                                    gen_code(ins_incall, (void*)2ULL, uStack_top(TString *, tmp), NULL);
+                                                    gen_code(ins_incall, (void*)2ULL, uStack_top(TString *, tmp), partresult);
                                                 	break;
                                                 case context_length:
                                                 	tmp = uStack_pop(uStack_t *, func_args_stack);
-                                                    gen_code(ins_incall, (void*)5ULL, uStack_top(TString *, tmp), NULL);
+                                                    gen_code(ins_incall, (void*)5ULL, uStack_top(TString *, tmp), partresult);
                                                 	break;
                                                 case context_find:
                                                 case context_copy:
@@ -662,17 +679,17 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             switch(Func_call)
                                             {
                                                 case context_write:
-                                                    gen_code(ins_incall, 0, uStack_pop(uStack_t *, func_args_stack),NULL);
+                                                    gen_code(ins_incall, 0, uStack_pop(uStack_t *, func_args_stack),partresult);
                                                     uStack_init2(func_args);
                                                     uStack_push(uStack_t*, func_args_stack, func_args);
                                                     break;
                                                 case context_find:
-                                                    gen_code(ins_incall, (void*)3ULL, uStack_pop(uStack_t *, func_args_stack),NULL);
+                                                    gen_code(ins_incall, (void*)3ULL, uStack_pop(uStack_t *, func_args_stack),partresult);
                                                     uStack_init2(func_args);
                                                     uStack_push(uStack_t*, func_args_stack, func_args);
                                                     break;
                                                 case context_copy:
-                                                    gen_code(ins_incall, (void*)4ULL, uStack_pop(uStack_t *, func_args_stack),NULL);
+                                                    gen_code(ins_incall, (void*)4ULL, uStack_pop(uStack_t *, func_args_stack),partresult);
                                                     uStack_init2(func_args);
                                                     uStack_push(uStack_t*, func_args_stack, func_args);
                                                     break;
@@ -884,7 +901,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                 throw_error(error_sign_fault);
         }
 
-    }while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,Func_call,stack)) == operator_dolar )) );
+    }while( !((uStack_count(stack) == 2) && (uStack_top(int,stack) == operator_non_term ) && ((recon_sign(token,&Func_call,stack)) == operator_dolar )) );
 
     print_debug(debug_prec, "Precedence syntax analysis OK! ");
     //fprintf(stderr, " token_type END: %d\n",token->type );
@@ -899,10 +916,19 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         token_free(token);
     }
 
-    if(result != NULL && Func_call == context_assign)
+    if(result != NULL && (Func_call == context_assign || Func_call == context_sort || Func_call == context_find || Func_call == context_copy || Func_call == context_length))
     {
-        print_debug(debug_generator, "result name: %s", result->name);
-        gen_code(ins_assign, string_add(string_new(), result->name), NULL, uStack_top(TString *, var_stack));
+        if(Func_call == context_assign)
+        {    
+            print_debug(debug_generator, "result name: %s", result->name);
+            gen_code(ins_assign, string_add(string_new(), result->name), NULL, uStack_top(TString *, var_stack));
+        }
+        else
+        {
+            print_debug(debug_generator, "result name: %s", result->name);
+            gen_code(ins_assign, string_add(string_new(), result->name), NULL, partresult);
+        
+        }
     }
     else if(Func_call == context_if || Func_call == context_while || Func_call == context_repeat)
     {
