@@ -8,12 +8,13 @@
 #include "error.h"
 
 
-//vraci pozici nebo 0 pri nenalezeni a -1 pri chybe
-int find(symbolVariable *text,symbolVariable *word)
+//vraci pozici nebo 0 pri nenalezeni a NULL pri chybe
+symbolVariable * find(symbolVariable *text,symbolVariable *word)
 {
 	if (text->type != variable_string || word->type != variable_string)
-		return -1;
+		return NULL;
 
+	symbolVariable * var;
 	int text_length=strlen(text->value.value_string);
 	int word_length=strlen(word->value.value_string);
 	int fail[text_length - 1];
@@ -44,9 +45,19 @@ int find(symbolVariable *text,symbolVariable *word)
 		}
 	}
 		if (wind > word_length)
-			return tind - word_length;
+		{
+			var=symbol_variable_init2(variable_integer);
+			var->value.value_number = tind - word_length;
+			var->inicialized = 1;
+			return var;
+		}
 		else
-			return 0;
+		{
+			var=symbol_variable_init2(variable_integer);
+			var->value.value_number = 0;
+			var->inicialized = 1;
+			return var;
+		}
 }
 
 void merge(char VstupPole[], char PomPole[], int Leva, int Stred, int Prava){
@@ -81,33 +92,35 @@ void merge_sort(char VstupPole[], char PomPole[], int Leva, int Prava){
     }
 }
 
-//vraci 0 nebo -1 pri chybe
-int sort(symbolVariable *text)
+//vraci 0 nebo NULL pri chybe
+symbolVariable * sort(symbolVariable *text)
 {	
 	if (text->type != variable_string)
-		return -1;
+		return NULL;
 
 	int text_length=strlen	(text->value.value_string);
 	int Leva = 0;
 	int Prava = text_length-1;
 	char PomPole[text_length];
+	symbolVariable * text2=symbol_variable_init2(variable_string);
+	copy_variable(text2, text);
 	
-	merge_sort(text->value.value_string, PomPole, Leva, Prava);
-	return 0;
+	merge_sort(text2->value.value_string, PomPole, Leva, Prava);
+	return text2;
 }
 
 //vrati prekopirovany symbolVariable nebo pri chybe null
-symbolVariable * copy(symbolVariable *text,int start, int end)
+symbolVariable * copy(symbolVariable *text,symbolVariable *start,symbolVariable *end)
 {
-	if (text->type!=variable_string || start>end || start>255 || end>255)
+	if (text->type!=variable_string || start->value.value_number>end || start->value.value_number>255 || end->value.value_number>255)
 		return NULL;
-	symbolVariable * copied=_malloc(sizeof(symbolVariable));
-	copied->type=text->type;
-	for (int i=start; i<=end+1; i++)
+	symbolVariable * copied=symbol_variable_init2(variable_string);
+	copied->inicialized = 1;
+	for (int i=start->value.value_number; i<=end->value.value_number+1; i++)
 	{
 		copied->value.value_string[i-1]=text->value.value_string[i-1];
 	}
-	if (text->value.value_string[end+1]!='\0')
-		copied->value.value_string[end+1]='\0';
+	if (text->value.value_string[end->value.value_number+1]!='\0')
+		copied->value.value_string[end->value.value_number+1]='\0';
 	return copied;
 }
