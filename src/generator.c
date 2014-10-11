@@ -13,6 +13,14 @@
 #include "expr.h"
 #include "types.h"
 
+/**
+ * create instructon for expresion
+ *
+ * @param	rule	rule that was used
+ * @param	adr1	addres of variable
+ * @param 	adr2	adress of variable
+ * @paeam	adr3	adress of variable where store result
+ */
 void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 {
 	TIns *ins = _malloc(sizeof(TIns));
@@ -32,9 +40,6 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 		case rule_5:
 			ins->type = ins_div;
 			break;
-//		case rule_6:
-//			ins->type = ins_div;
-//			break;
 		case rule_7:
 			ins->type = ins_mod;
 			break;
@@ -80,10 +85,19 @@ void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3)
 		default:
 			printf("not yet\n");
 	}
+	/*insert into instruction list*/
 	list_insert(uStack_top(TList *,global.ins_list_stack), ins);
 	return;
 }
 
+/**
+ * create instructon for control(jmp,lab,...)
+ *
+ * @param	type	type of instruction
+ * @param	adr1	addres of variable
+ * @param 	adr2	adress of variable
+ * @paeam	adr3	adress of variable where store result
+ */
 void gen_code(TInsType type, void *adr1, void *adr2, void *adr3){
 	TIns *ins = _malloc(sizeof(TIns));
 	ins->type = type;

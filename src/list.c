@@ -5,6 +5,11 @@
 #include "list.h"
 #include "garbage.h"
 
+/**
+ * crete new list
+ *
+ * @return			pointer to list
+ */
 TList* list_init()
 {
 	TList *list = _malloc(sizeof(TList));
@@ -20,6 +25,12 @@ TList* list_init()
 	return list;
 }
 
+/**
+ * insert new element into list
+ *
+ * @param	list	list intto insert
+ * @param	node	node to insert
+ */
 void list_insert_node(TList *list, TNode *node){
 	if(list->last != NULL)	list->last->n = node;
 	if(list->first == NULL)	list->first = node;
@@ -28,6 +39,12 @@ void list_insert_node(TList *list, TNode *node){
 	return;
 }
 
+/**
+ * insert new element into list
+ *
+ * @param	list	list into insert
+ * @param	data	data to insert
+ */
 void list_insert(TList *list, void *data)
 {
 	TNode *tmp  = _malloc(sizeof(TNode));

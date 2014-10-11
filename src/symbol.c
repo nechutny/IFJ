@@ -35,6 +35,12 @@ void symbol_variable_init(htab_listitem* var, char* name)
 	var->ptr.variable->inicialized = 0;
 }
 
+/**
+ * crate new variable acording type
+ *
+ * @param	type	variable type
+ * @return			pointer to variable
+ */
 symbolVariable *symbol_variable_init2(variableType type)
 {
 	char part[] = "help";
@@ -73,7 +79,12 @@ symbolVariable *symbol_variable_init2(variableType type)
 	return var;
 }
 
-
+/**
+ * copy variable
+ *
+ * @param	var1	destination variable
+ * @param	var2	source variable
+ */
 void copy_variable(symbolVariable *var1, symbolVariable *var2)
 {
 	if(var1->name != NULL && !strcmp(var1->name, "partresult"))

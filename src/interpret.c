@@ -21,6 +21,12 @@
 
 int pushed = 0;
 
+/**
+ * get varible from variable name
+ *
+ * @param	name	variable name
+ * @return			pointer on variable
+ */
 symbolVariable* get_var(TString *name)
 {
 	if(!strcmp(name->data, "cond1")) return global.cond1;
@@ -57,6 +63,12 @@ symbolVariable* get_var(TString *name)
 	return hitem->ptr.variable;
 }
 
+/**
+ * get varible from variable name
+ *
+ * @param	name	stack of variable names
+ * @return			stack of pointers om variable
+ */
 uStack_t *get_var_in_stack(uStack_t *name_stack)
 {
 	symbolVariable *var;
@@ -71,6 +83,13 @@ uStack_t *get_var_in_stack(uStack_t *name_stack)
 	return var_stack;
 }
 
+/**
+ * use mathematical instruction
+ *
+ * @param	adr1	operand1
+ * @param	adr2	operand2
+ * @param	adr3	result
+ */
 void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3)
 {
 	int a = 0, b = 0;
@@ -154,6 +173,13 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 			break;
 	}
 }
+/**
+ * use comparative instruction
+ *
+ * @param	adr1	operand1
+ * @param	adr2	operand2
+ * @param	adr3	result
+ */
 
 void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	double a = 0, b = 0;
@@ -163,6 +189,7 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 	{
 		throw_error(error_uninicialized);
 	}
+
 
 	adr3->type = variable_boolean;
 
@@ -182,6 +209,8 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 		case variable_boolean:
 			a = adr1->value.value_boolean;
 			break;
+		case variable_string:
+			break;
 		default:
 			throw_error(error_incopatible_types);
 	}
@@ -196,6 +225,8 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 			break;
 		case variable_boolean:
 			b = adr2->value.value_boolean;
+			break;
+		case variable_string:
 			break;
 		default:
 			throw_error(error_incopatible_types);
@@ -283,6 +314,13 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 	adr3->inicialized = 1;
 }
 
+/**
+ * use logical instruction
+ *
+ * @param	adr1	operand1
+ * @param	adr2	operand2
+ * @param	adr3	result
+ */
 void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	adr3->type = variable_boolean;
 	
@@ -322,6 +360,9 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 
 }
 
+/**
+ * start intert code
+ */
 void interpret(){
 	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
 	TIns *ins, *func_call = NULL;

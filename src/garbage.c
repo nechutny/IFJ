@@ -108,6 +108,7 @@ void global_init()
 	global.global_symbol = htab_init(HASH_TABLE_SIZE);
 	global.constant_symbol = htab_init(HASH_TABLE_SIZE);
 
+	// init variable for partresult and condition
 	global.partresult = create_const(NULL);
 	global.cond1 = create_const(NULL);
 	global.cond2 = create_const(NULL);

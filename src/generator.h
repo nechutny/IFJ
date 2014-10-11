@@ -32,6 +32,7 @@ typedef enum {
 	ins_xor			//22
 } TInsType;
 
+//structure for instruction
 typedef struct TIns
 {
 	void *adr1;
@@ -40,8 +41,9 @@ typedef struct TIns
 	TInsType type;
 }TIns;
 
-
+//create instruction fox expresion
 void gen_expr(TRule rule, void *adr1, void *adr2, void *adr3);
+//create instuction for control
 void gen_code(TInsType type, void *adr1, void *adr2, void *adr3);
 
 #endif

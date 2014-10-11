@@ -106,6 +106,7 @@ symbolVariable * sort(symbolVariable *text)
 	copy_variable(text2, text);
 	
 	merge_sort(text2->value.value_string, PomPole, Leva, Prava);
+	text2->inicialized = 1;
 	return text2;
 }
 
