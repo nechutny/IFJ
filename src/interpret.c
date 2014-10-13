@@ -42,9 +42,10 @@ symbolVariable* get_var(TString *name)
 	else if(pushed == 2)
 	{
 		global.local_symbols->count++;
+		pushed = 1;
 	}
 
-	print_debug(debug_interpret, "name: %s",name->data);
+	//print_debug(debug_interpret, "name: %s",name->data);
 	htab_listitem *hitem = htab_lookup(global.constant_symbol, name->data);
 	int i = uStack_count(global.local_symbols) - 1;
 	while(hitem == NULL && i >= 0)
@@ -375,7 +376,7 @@ void interpret(){
 		switch(ins->type)
 		{
 			case ins_assign:
-				print_debug(debug_interpret, "assign where: %s what: %s", ((TString *)ins->adr1)->data, ((TString *)ins->adr3)->data);
+			//	print_debug(debug_interpret, "assign where: %s what: %s", ((TString *)ins->adr1)->data, ((TString *)ins->adr3)->data);
 				copy_variable(get_var(ins->adr1), get_var(ins->adr3));
 				break;
 			case ins_add:
@@ -458,46 +459,46 @@ void interpret(){
 				continue;
 			case ins_incall:
 				switch(((long long)ins->adr1))
-                {
-                    case 0:
-                	    pascal_write(get_var_in_stack(ins->adr2));
-                	    break;
-                	case 1:
-                		pascal_readln(get_var(ins->adr2));
-                		break;
-                	case 2:
-                		var = sort(get_var(ins->adr2));
-                		copy_variable(get_var(ins->adr3), var);
-                		break;
-                	case 3:
+				{
+					case 0:
+						pascal_write(get_var_in_stack(ins->adr2));
+						break;
+					case 1:
+						pascal_readln(get_var(ins->adr2));
+						break;
+					case 2:
+						var = sort(get_var(ins->adr2));
+						copy_variable(get_var(ins->adr3), var);
+						break;
+					case 3:
 						if(((uStack_t *)ins->adr2)->count > 2) throw_error(error_to_many_args);
 						if(((uStack_t *)ins->adr2)->count < 2) throw_error(error_need_more_args);
 						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
 						var = find(tmp1, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 1)));
 						copy_variable(get_var(ins->adr3), var);
-                		break;
-                	case 4:
-                		if(((uStack_t *)ins->adr2)->count > 3) throw_error(error_to_many_args);
+						break;
+					case 4:
+						if(((uStack_t *)ins->adr2)->count > 3) throw_error(error_to_many_args);
 						if(((uStack_t *)ins->adr2)->count < 3) throw_error(error_need_more_args);
 						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
 						tmp2 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),1));
 						var = copy(tmp1, tmp2, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 2)));
 						copy_variable(get_var(ins->adr3), var);
-                		break;
-                	case 5:
-                		var = get_var(ins->adr3);
-                		var->type = variable_integer;
-                		var->value.value_number = pascal_length(get_var(ins->adr2));
-                		break;
-                    default:
-                    	print_debug(debug_interpret, "NOT yet\n");
-                }
+						break;
+					case 5:
+						var = get_var(ins->adr3);
+						var->type = variable_integer;
+						var->value.value_number = pascal_length(get_var(ins->adr2));
+							break;
+					default:
+						print_debug(debug_interpret, "NOT yet\n");
+				}
 				break;
 			case ins_push_htab:
-				//print_debug(debug_interpret,"local_symbols count before: %d", uStack_count(global.local_symbols));
+			//	print_debug(debug_interpret,"local_symbols count before: %d", uStack_count(global.local_symbols));
 				pushed = 1;
 				uStack_push(htab_t *, global.local_symbols, htab_copy(ins->adr1));
-				print_debug(debug_interpret,"local_symbols count after: %d", uStack_count(global.local_symbols));
+			//	print_debug(debug_interpret,"local_symbols count after: %d", uStack_count(global.local_symbols));
 				break;
 			
 			default:

@@ -20,7 +20,7 @@ function factorial(n : integer ) : integer;
 	end;
 
 begin
-	a := 20;
+	readln(a);
 	if a < 0 then
 	begin
 		write('Faktorial nelze spocitat '#10'')
