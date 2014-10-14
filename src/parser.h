@@ -24,10 +24,8 @@ void parser_if();
 void parser_while();
 void parser_repeat();
 void parser_for();
-void parser_goto();
-void parser_label();
 void parser_switch();
 
-#define HASH_TABLE_SIZE	42
+#define HASH_TABLE_SIZE	16
 
 #endif 

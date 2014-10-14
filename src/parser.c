@@ -32,29 +32,7 @@ static int isVariableType(int type);
  **/
 void parser_file()
 {
-	TToken * token = token_get();
-	
-	/* Program name */
-	if(token->type != token_program)
-	{
-		throw_error(error_program);
-	}
-	token_free(token);
-	
-	token = token_get();
-	if(token->type != token_identifier)
-	{
-		throw_error(error_identifier);
-	}
-	print_debug(debug_parser,"Program name %s", token->data);
-	token_free(token);
-	
-	token = token_get();
-	if(token->type != token_semicolon)
-	{
-		throw_error(error_semicolon);
-	}
-	token_free(token);
+	TToken * token;
 	
 	/* Global variables */
 	local_context = context_global;
@@ -111,6 +89,7 @@ void parser_vars()
 	}
 	else
 	{
+		printf("%d ", token->type);
 		token_return_token(token);
 	}
 }
@@ -124,39 +103,30 @@ void parser_var()
 {
 	TToken * token = token_get();
 	htab_listitem* var;
-	uStack_init(varStack);
-	
-	
 	
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
 		token_return_token(token);
 		
-		do { /* ID [, ID] */
-			token = token_get();
-			if(token->type != token_identifier)
-			{
-				throw_error(error_identifier);
-			}
-			print_debug(debug_parser,"Variable %s",token->data);
+		token = token_get();
+		if(token->type != token_identifier)
+		{
+			throw_error(error_identifier);
+		}
+		print_debug(debug_parser,"Variable %s",token->data);
 
-			if(local_context == context_global)
-			{ /* Add variable to global symbol table */
-				var = htab_create(global.global_symbol, token->data);
-				symbol_variable_init(var, token->data);
-				uStack_push(htab_listitem*, varStack, var);
-			}
-			else
-			{ /* Add variable to local symbol table in stack */
-				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
-				symbol_variable_init(var, token->data);
-				uStack_push(htab_listitem*, varStack, var);
-			}
-			
-			token_free(token);
-
-			token = token_get();
-		} while(token->type == token_comma);
+		if(local_context == context_global)
+		{ /* Add variable to global symbol table */
+			var = htab_create(global.global_symbol, token->data);
+			symbol_variable_init(var, token->data);
+		}
+		else
+		{ /* Add variable to local symbol table in stack */
+			var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
+			symbol_variable_init(var, token->data);
+		}
+		token_free(token);
+		token = token_get();
 
 		if(token->type != token_colon)
 		{
@@ -168,28 +138,14 @@ void parser_var()
 		if(isVariableType(token->type) )
 		{ /* var type */
 			
-			/* Set variable type to global symbol table */
-			while(uStack_count(varStack) > 0)
-			{
-				var = uStack_pop(htab_listitem*, varStack);
-				symbol_variable_type_set(var->ptr.variable, token->type);
-			}
+			symbol_variable_type_set(var->ptr.variable, token->type);
 			token_free(token);
 			token = token_get();
-
-			if(token->type == token_equal)
-			{ /* Inicialize value */
-				token_free(token);
-				if(precedence(global.file, context_assign, NULL))
-				{
-					throw_error(error_expresion);
-				}
-				
+			if(token->type != token_semicolon)
+			{ /* Missing ;*/
+				throw_error(error_semicolon);
 			}
-			else if(token->type == token_semicolon)
-			{ /* Unicialized */
-				token_free(token);
-			}
+			token_free(token);
 
 			/* Check for more variables */
 			parser_var();
@@ -541,18 +497,6 @@ void parser_code()
 			parser_for();
 			break;
 			
-		case token_label:
-			/* label */
-			token_free(token);
-			parser_label();
-			break;
-			
-		case token_goto:
-			/* goto */
-			token_free(token);
-			parser_goto();
-			break;
-			
 		case token_case:
 			/* switch */
 			token_free(token);
@@ -687,54 +631,6 @@ void parser_if()
 
 	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_end);
 	print_debug(debug_parser,"end if");
-}
-
-
-/**
- * Parse goto statement
- */
-void parser_goto()
-{
-	TToken *token = token_get();
-	if(token->type == token_identifier)
-	{ /* Identifier ? */
-		token_free(token);
-		token = token_get();
-		if(token->type != token_semicolon)
-		{ /* End with ';' ? */
-			throw_error(error_semicolon);
-		}
-		print_debug(debug_parser,"goto");
-		token_free(token);
-	}
-	else
-	{
-		throw_error(error_identifier);
-	}
-}
-
-
-/** 
- * Parse label - goto jump target
- */
-void parser_label()
-{
-	TToken *token = token_get();
-	if(token->type == token_identifier)
-	{
-		token_free(token);
-		token = token_get();
-		if(token->type != token_semicolon)
-		{
-			throw_error(error_semicolon);
-		}
-		print_debug(debug_parser,"label");
-		token_free(token);
-	}
-	else
-	{
-		throw_error(error_identifier);
-	}
 }
 
 

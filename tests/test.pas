@@ -1,5 +1,3 @@
-program fooo;
-
 var a : string;
 	b : integer;
 	c : integer;

@@ -1,5 +1,3 @@
-program test1;
-
 var a : integer;
 vysl : integer;
 

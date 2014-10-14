@@ -1,6 +1,6 @@
-program fooo;
-var	cislo, cislo2 : integer = 5;
-	desetine : real = 12.5;
+var	cislo : integer;
+	cislo2 : integer;
+	desetine : real;
 	text : string;
 	znak : char;
 
@@ -10,7 +10,7 @@ function funkce2() : integer; forward;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
 begin
-	write( arg1, cislo, 15-2 );
+	write( arg1, cislo);
 	
 	for cislo := 1 to 15 do
 		funkce1 := 2;
@@ -25,17 +25,17 @@ begin
 		funkce2( );
 		desetine := desetine - 15;
 	end;
-	funkce1( 1234,5, cislo);
+	funkce1( 1234, 5, cislo);
 end;
 function funkce3( arg1 : integer ) : integer;
-var var1 : integer = 10;
+var var1 : integer;
 begin
 	write( arg1 );
 	if arg1 = 5 then begin
 		arg1 := 5+var1;
 		funkce2();
 		repeat
-			var1 := (arg1 +  5) * funkce1(1.2, funkce1(1.2, var1));
+			var1 := (arg1 +  5) * funkce1(1.2, 123);
 		until False;
 	end else begin
 		arg1 := -arg1*5;

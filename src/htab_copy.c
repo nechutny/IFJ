@@ -31,7 +31,7 @@ void htab_copy_foreach(char key[], item_type type, htab_listitem* item)
 	symbolVariable* sym_v = memcpy(_malloc(size), item->ptr.variable, size);
 
 	// Copy htable item
-	memcpy(new, item, sizeof(htab_listitem));
+	memcpy(new, item, sizeof(htab_listitem)+sizeof(char)*(strlen(key)+1));
 	new->next = NULL;
 
 	// Set new pointer

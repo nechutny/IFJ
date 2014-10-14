@@ -1,6 +1,6 @@
-program exFunction;
-
-var a, b, ret : integer;
+var	a : integer;
+	b : integer;
+	ret : integer;
 
 function max(num1 : integer, num2: integer): integer;
 var result: integer;
