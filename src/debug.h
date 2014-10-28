@@ -1,9 +1,10 @@
-/**
- *	@project	IFJ 2014/2015
- *	@file		debug.h
- *
- *	@author		Stanislav Nechutny - xnechu01
- */
+/********************************************************************/
+/*Projekt:Implementace interpretu imperativního jazyka IFJ14		*/
+/*Jména řešitelů: Stanislav Nechutný, Jiří Kulda, Petr Lukeš, 		*/
+/*                Michchal Jásenský,								*/
+/*Loginy řešitelů: xnechu01, xkulda00, xlukes06, xjasen00 			*/
+/********************************************************************/
+
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 

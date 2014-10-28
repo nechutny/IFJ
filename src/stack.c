@@ -1,8 +1,8 @@
 /********************************************************************/
-/*Projekt:Implementace interpretu imperativního jazyka IFJ13		*/
-/*Jména řešitelů: Michal Jásenský, Jiří Kulda ,Martin Filípek,      */
-/*                Ondřej Vlk, Pet Lukeš								*/
-/*Loginy řešitelů: xjasen00, xkulda00, xfilip32, xlukes06, xvlkon00 */
+/*Projekt:Implementace interpretu imperativního jazyka IFJ14        */
+/*Jména řešitelů: Stanislav Nechutný, Jiří Kulda, Petr Lukeš,       */
+/*                Michchal Jásenský,                                */
+/*Loginy řešitelů: xnechu01, xkulda00, xlukes06, xjasen00           */
 /********************************************************************/
 
 #include <stdlib.h>

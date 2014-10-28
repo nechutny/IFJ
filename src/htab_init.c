@@ -1,9 +1,10 @@
-/**
- *	@project	IFJ 2014/2015
- *	@file		htab_init.c
- *
- *	@author		Stanislav Nechutny - xnechu01
- */
+/********************************************************************/
+/*Projekt:Implementace interpretu imperativního jazyka IFJ14		*/
+/*Jména řešitelů: Stanislav Nechutný, Jiří Kulda, Petr Lukeš, 		*/
+/*                Michchal Jásenský,								*/
+/*Loginy řešitelů: xnechu01, xkulda00, xlukes06, xjasen00 			*/
+/********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
