@@ -77,26 +77,25 @@ void token_free( TToken * token ) {
 
 //set correct type of token (is it keyword or indentifier?)
 void set_identifier(TToken *token){
- 	char * keywords[]={"var","in","do","repeat","until","label","goto","case",
- 						"of","to","program","id","mod","div","not","and","or",
+ 	char * keywords[]={"var","in","do","repeat","until","case",
+ 						"of","to","id","mod","div","not","and","or",
  						"begin","end","while","for","if","then","else",
- 						"porcedure","function","return","true","false","null",
+ 						"function","true","false","null",
  						"integer","real","char","boolean","string","array",
  						"xor","forward","find","readln","write","sort",
  						"length","copy"};
  	TToken_type tokens[]={token_var,token_in,token_do,token_repeat,token_until,
- 						token_label,token_goto,token_case,token_of,token_to,
- 						token_program,token_id,token_mod,token_div,token_not,
+ 		token_case,token_of,token_to,token_id,token_mod,token_div,token_not,
  						token_and,token_or,token_begin,token_end,token_while,
  						token_for,token_if,token_then,token_else,
- 						token_procedure,token_function,token_return,token_true,
+ 						token_function,token_true,
  						token_false,token_null,token_integer,token_real,
  						token_char,token_boolean,token_string_var,token_array,
  						token_xor,token_forward,token_f_find,token_readln,
  						token_write,token_f_sort,token_f_length,token_f_copy};
 
  	token->type = token_identifier;
- 	for (int i = 0; i <= 43; i++)
+ 	for (int i = 0; i <= 38; i++)
  	{
  		if (strcmp(keywords[i],token->data)==0)
  		{
