@@ -78,6 +78,8 @@ uStack_t *get_var_in_stack(uStack_t *name_stack)
 	for(int i = 0; i < uStack_count(name_stack); i++)
 	{
 		var = get_var(uStack_offset(TString *, name_stack, i));
+		if(!var->inicialized)	throw_error(error_uninicialized);
+
 		uStack_push(symbolVariable *,var_stack,var);
 	}
 
@@ -105,6 +107,7 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		adr3->type = variable_string;
 		strncpy(adr3->value.value_string, adr1->value.value_string,255);
 		strncat(adr3->value.value_string, adr2->value.value_string,255);
+		adr3->inicialized = 1;
 		return;
 	}
 	else if((adr1->type == variable_string || adr2->type == variable_string) && c == '+')
@@ -367,7 +370,7 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 void interpret(){
 	TNode *node = uStack_top(TList *,global.ins_list_stack)->first;
 	TIns *ins, *func_call = NULL;
-	symbolVariable *tmp1, *tmp2, *var;
+	symbolVariable *tmp1, *tmp2, *tmp3, *var;
 
 	while(node != NULL)
 	{
@@ -467,14 +470,19 @@ void interpret(){
 						pascal_readln(get_var(ins->adr2));
 						break;
 					case 2:
+						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
 						var = sort(get_var(ins->adr2));
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 3:
 						if(((uStack_t *)ins->adr2)->count > 2) throw_error(error_to_many_args);
 						if(((uStack_t *)ins->adr2)->count < 2) throw_error(error_need_more_args);
-						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
-						var = find(tmp1, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 1)));
+						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 0));
+						tmp2 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 1));
+						if(!tmp1->inicialized)	throw_error(error_uninicialized);
+						if(!tmp2->inicialized)	throw_error(error_uninicialized);
+
+						var = find(tmp1, tmp2);
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 4:
@@ -482,11 +490,17 @@ void interpret(){
 						if(((uStack_t *)ins->adr2)->count < 3) throw_error(error_need_more_args);
 						tmp1 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),0));
 						tmp2 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),1));
-						var = copy(tmp1, tmp2, get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 2)));
+						tmp3 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2),2));
+						if(!tmp1->inicialized)	throw_error(error_uninicialized);
+						if(!tmp2->inicialized)	throw_error(error_uninicialized);
+						if(!tmp3->inicialized)	throw_error(error_uninicialized);
+
+						var = copy(tmp1, tmp2, tmp3);
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 5:
 						var = get_var(ins->adr3);
+						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
 						var->type = variable_integer;
 						var->value.value_number = pascal_length(get_var(ins->adr2));
 							break;

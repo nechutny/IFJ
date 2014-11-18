@@ -196,11 +196,21 @@ void throw_error(errors code)
 
         case error_dividing_by_zero:
             fprintf(stderr, "Semantic error dividing by 0");
-            return_code = 4;
+            return_code = 8;
             break;
 
         case error_uninicialized:
             fprintf(stderr, "unicialized variable");
+            return_code = 7;
+            break;
+
+        case error_to_many_args:
+            fprintf(stderr, "To many arguments");
+            return_code = 4;
+            break;
+
+        case error_need_more_args:
+            fprintf(stderr, "Need more arguments");
             return_code = 4;
             break;
 

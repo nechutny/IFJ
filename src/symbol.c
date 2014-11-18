@@ -87,6 +87,8 @@ symbolVariable *symbol_variable_init2(variableType type)
  */
 void copy_variable(symbolVariable *var1, symbolVariable *var2)
 {
+	if(!var2->inicialized)	throw_error(error_uninicialized);
+
 	if(var1->name != NULL && !strcmp(var1->name, "partresult"))
 	{
 		var1->type = var2->type;

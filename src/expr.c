@@ -543,6 +543,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                             }
                             gen_code(ins_assign, string_add(string_new(), func->args[i].name->data), NULL, uStack_top(TString *,var_stack));
                             i++;
+                            if(i > func->args_count)   throw_error(error_to_many_args);
                         }
                     }
                     else{
@@ -583,6 +584,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         {    
                                             uStack_push(TString *, var_stack,partresult);
                                             gen_code(ins_call,func,NULL,partresult);
+                                            if(i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
                                             i = 0;
                                         }
@@ -612,7 +614,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                                     throw_error(error_need_more_args);
                                                     break;
                                                 default:
-                                                    print_debug(debug_generator,"PRUSER INCALL");
+                                                    print_debug(debug_generator,"ERROR INCALL");
                                             }
                                         }
                                     }
@@ -678,6 +680,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                             //new_var = symbol_variable_init2(func->returnType);
                                             uStack_push(TString *, var_stack, partresult);
                                             gen_code(ins_call,func,NULL,partresult);
+                                            if(i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
                                             i = 0;
                                         }
@@ -744,6 +747,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     uStack_push(int, stack,operator_non_term);
 
                                     gen_code(ins_call,func, NULL, partresult);
+                                    if(i < func->args_count )   throw_error(error_need_more_args);
                                     func = NULL;
                                     i = 0;
                                     print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() ");
