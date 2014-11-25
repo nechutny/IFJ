@@ -20,6 +20,4 @@ begin
 
 	ret := max(a, b);
 
-	write('vysledek je: ', ret, ''#10'');
-
 end.

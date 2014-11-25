@@ -214,6 +214,11 @@ void throw_error(errors code)
             return_code = 4;
             break;
 
+        case error_uninicialized_return_func:
+            fprintf(stderr, "Function return unicialized");
+            return_code = 7;
+            break;
+
         default:
             fprintf(stderr, "Unkown error");
             return_code = 9;

@@ -527,10 +527,21 @@ void interpret(){
 			if(func_call != NULL)
 			{
 				htab_listitem *hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), ((symbolFunction*)func_call->adr1)->name->data);
+				
+
 				uStack_remove(global.local_symbols);
 				if(hitem->type == type_variable)
 				{
-					copy_variable(get_var(func_call->adr3), hitem->ptr.variable);
+					if(!hitem->ptr.variable->inicialized)
+					{
+						throw_error(error_uninicialized_return_func);
+					}
+
+					if(func_call->adr3 != NULL)
+					{	
+						copy_variable(get_var(func_call->adr3), hitem->ptr.variable);
+					}
+
 				}
 				else
 					print_debug(debug_interpret, "********without return*******\n");

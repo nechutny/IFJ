@@ -51,7 +51,8 @@ typedef enum{
     error_unkown,
     error_uninicialized,
     error_to_many_args,
-    error_need_more_args
+    error_need_more_args,
+    error_uninicialized_return_func
 } errors;
 
 
