@@ -215,6 +215,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
             if (pom->type == token_parenthesis_left)
             {    
                 func = htab_lookup(global.global_symbol, token->data)->ptr.function;
+                print_debug(debug_generator,"finding func");
                 token_return_token(pom);
                 return operator_func;
             }
@@ -583,6 +584,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
                                         {    
                                             uStack_push(TString *, var_stack,partresult);
+                                            if(func->args_count == 0)
+                                            {
+                                                gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                            }
+
                                             gen_code(ins_call,func,NULL,partresult);
                                             if(i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
@@ -679,6 +685,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         {    
                                             //new_var = symbol_variable_init2(func->returnType);
                                             uStack_push(TString *, var_stack, partresult);
+                                            if(func->args_count == 0)
+                                            {
+                                                gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                            }
+
                                             gen_code(ins_call,func,NULL,partresult);
                                             if(i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
@@ -745,6 +756,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 {
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
+                                    if(func->args_count == 0)
+                                    {
+                                        gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                    }
 
                                     gen_code(ins_call,func, NULL, partresult);
                                     if(i < func->args_count )   throw_error(error_need_more_args);
