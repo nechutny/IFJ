@@ -18,7 +18,7 @@ build/%.c.o: src/%.c
 
 # Clean compiled files
 clean:
-	rm -rf build/* ifj IFJ.zip tests/*.out.run doc/dokumentace.pdf doc/dokumentace.aux doc/dokumentace.log
+	rm -rf build/* ifj IFJ.zip tests/*.out.run doc/dokumentace.pdf doc/dokumentace.aux doc/dokumentace.log xlogin.zip
 
 # Commit changes
 commit: clean
@@ -27,8 +27,18 @@ commit: clean
 	git push
 
 # Create zip file for submitting
-zip: clean
-	zip IFJ.zip src build doc Makefile
+zip:
+	rm -rf tmp
+	mkdir tmp
+	cp src/*.c tmp/
+	cp src/*.h tmp/
+	cp rozsireni tmp/
+	cp rozdeleni tmp/
+	mv tmp/uStack.h tmp/ustack.h
+	for i in tmp/*; do sed -i 's/uStack.h/ustack.h/g' $$i; done
+	echo -e 'all: ifj\n\nifj: *.c\n\tgcc -O2 -std=c99 -lm -Wall -pedantic *.c -o ifj' > tmp/Makefile
+	zip -j xlogin00.zip tmp/*
+	rm -rf tmp
 
 # Test
 tests: ifj $(TESTFILES)

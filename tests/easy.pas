@@ -10,8 +10,8 @@ begin
 		result := num1;
 	else
 		result := num2;
-		
-	max := result;
+
+	{max := result;}
 end;
 
 begin
