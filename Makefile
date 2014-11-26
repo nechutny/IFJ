@@ -45,7 +45,7 @@ tests: ifj $(TESTFILES)
 	# Done
 
 tests/%: tests/%.pas
-	-$(shell ./ifj $< > $@.stdout.real 2> $@.stderr.real < $@.stdin; diff $@.stdout.real $@.stdout.correct > /dev/null; if [ "$$?" = "0" ]; then diff $@.stderr.real $@.stderr.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@.stdout.real $@.stderr.real; else echo "# ERROR ... $<"; fi; else echo "# ERROR ... $<"; fi)
+	-$(shell ./ifj $< > $@.stdout.real 2> $@.stderr.real < $@.stdin; diff $@.stdout.real $@.stdout.correct > /dev/null; if [ "$$?" = "0" ]; then diff $@.stderr.real $@.stderr.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $@"; rm $@.stdout.real $@.stderr.real; else echo "# ERROR ... $@"; fi; else echo "# ERROR ... $@"; fi)
 
 # Documentation
 documentation: doc/dokumentace.tex
