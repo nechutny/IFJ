@@ -42,7 +42,6 @@ begin
 		arg1 := -arg1*5;
 	end;
 	funkce3 := 2;
-	funkce3( arg1);
 end;
 
 begin
@@ -56,7 +55,7 @@ begin
 
 	cislo := text[1];
 
-	case cislo of
+	{case cislo of
 		1 : funkce2( );
 		4 : begin
 			cislo2 := 15;
@@ -65,5 +64,5 @@ begin
 		5 : funkce3(cislo2);
 		else
 			funkce2();
-	end;
+	end;}
 end.

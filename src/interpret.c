@@ -134,17 +134,17 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 	}
 
 	if(adr2->type == variable_double)
-		b = adr2->value.value_double;	
+		b = adr2->value.value_double;
 	else if( adr2->type == variable_integer)
 		b = adr2->value.value_number;
-	else 
+	else
 	{
 		throw_error(error_incopatible_types);
 	}
 
 	print_debug(debug_interpret, "a: %d b: %d c:%c",a,b,c);
 	adr3->inicialized = 1;
-	
+
 	switch(c)
 	{
 		case '+':
@@ -218,7 +218,7 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 		default:
 			throw_error(error_incopatible_types);
 	}
-	
+
 	switch(adr2->type)
 	{
 		case variable_double:
@@ -327,7 +327,7 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
  */
 void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *adr3){
 	adr3->type = variable_boolean;
-	
+
 	if(adr2 == NULL && c == 'n')
 	{
 		print_debug(debug_interpret,"negace adr_type: %d %d",adr1->type, variable_boolean);
@@ -341,7 +341,7 @@ void logic(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable *a
 		{
 			throw_error(error_incopatible_types);
 		}
-		
+
 	switch(c)
 	{
 		case 'a':
@@ -420,7 +420,7 @@ void interpret(){
 				break;
 			case ins_xor:
 				logic('x', get_var(ins->adr1), get_var(ins->adr2), get_var(ins->adr3));
-				break;			
+				break;
 			case ins_not:
 				logic('n', get_var(ins->adr1), NULL, get_var(ins->adr3));
 				break;
@@ -457,7 +457,10 @@ void interpret(){
 				pushed = 0;
 				func_call = ins;
 				uStack_top(TList *,global.ins_list_stack)->act = node->n;
-				uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
+				if((symbolFunction*)ins->adr1 != NULL)
+				{
+					uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
+				}
 				node = uStack_top(TList *,global.ins_list_stack)->first;
 				continue;
 			case ins_incall:
@@ -514,9 +517,9 @@ void interpret(){
 				uStack_push(htab_t *, global.local_symbols, htab_copy(ins->adr1));
 			//	print_debug(debug_interpret,"local_symbols count after: %d", uStack_count(global.local_symbols));
 				break;
-			
+
 			default:
-				print_debug(debug_interpret, "NOT YET\n");	
+				print_debug(debug_interpret, "NOT YET\n");
 		}
 		node = node->n;
 		if(node == NULL && global.ins_list_stack->count > 1)
@@ -527,7 +530,7 @@ void interpret(){
 			if(func_call != NULL)
 			{
 				htab_listitem *hitem = htab_lookup(uStack_top(htab_t*, global.local_symbols), ((symbolFunction*)func_call->adr1)->name->data);
-				
+
 
 				uStack_remove(global.local_symbols);
 				if(hitem->type == type_variable)
@@ -538,7 +541,7 @@ void interpret(){
 					}
 
 					if(func_call->adr3 != NULL)
-					{	
+					{
 						copy_variable(get_var(func_call->adr3), hitem->ptr.variable);
 					}
 

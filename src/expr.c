@@ -32,7 +32,7 @@ const int precedence_table[table_size][table_size]=
     { '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // /
     { '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // div
     { '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // mod
-    { '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // and 
+    { '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // and
     { '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // +
     { '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // -
     { '<' , '<' , '<' , '<' , '<' , '<' , '<' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '>' , '<' , '>' , '<' , '<' , '<' , '>' , '>' }, // or
@@ -135,7 +135,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
             {
                 pom_operand = uStack_top(int, stack);
                 uStack_remove(stack);
-                if (((uStack_top(int,stack)) <= operator_left_parenthesis) || (uStack_top(int,stack) == operator_comma) || (uStack_top(int,stack) == operator_dolar )) 
+                if (((uStack_top(int,stack)) <= operator_left_parenthesis) || (uStack_top(int,stack) == operator_comma) || (uStack_top(int,stack) == operator_dolar ))
                 {
                     uStack_push(int,stack ,pom_operand );
                     return operator_unary_minus;
@@ -145,17 +145,17 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
                     uStack_push(int,stack ,pom_operand );
                     return operator_minus;
                 }
-                
+
             }
             else if (((uStack_top(int,stack)) <= operator_left_parenthesis))
             {
                 return operator_unary_minus;
             }
             else
-            {   
+            {
                 return operator_minus;
             }
-            
+
         case token_xor:
             return operator_xor;
 
@@ -213,7 +213,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
         case token_identifier:
             pom = token_get(global.file);
             if (pom->type == token_parenthesis_left)
-            {    
+            {
                 func = htab_lookup(global.global_symbol, token->data)->ptr.function;
                 print_debug(debug_generator,"finding func");
                 token_return_token(pom);
@@ -228,14 +228,14 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
                 token_return_token(pom);
                 return operator_ID;
             }
-            
+
         case token_f_find:
         case token_f_copy:
         case token_f_length:
         case token_f_sort:
             pom = token_get(global.file);
             if (pom->type == token_parenthesis_left)
-            {    
+            {
                 func = NULL;
                 token_return_token(pom);
                 switch(token->type)
@@ -268,7 +268,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
         case token_end:
         case token_invalid:
             return operator_dolar;
-            
+
         case token_write:
         case token_readln:
             throw_error(error_syntax_in_precedence);
@@ -289,14 +289,14 @@ precedence_number enum_sign(int sign)
     switch(sign){
         case '=':
             return sign_equal;
-        
+
         case '<':
             return sign_less;
 
         case '>':
             return sign_greater;
 
-        case '#': 
+        case '#':
             return sign_fault;
 
         default:
@@ -332,14 +332,14 @@ precedence_number get_sign(TToken * token, uStack_t * stack, parse_context *cont
     //print_debug(debug_prec, "recon %d ", recon_sign(token,context,stack));
     if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_ID ))
     {
-        
+
         sem_check(token, check_var);
     }
     else if ((token->type == token_identifier) && ((recon_sign(token,context,stack)) == operator_func ))
     {
         sem_check(token, check_func);
     }
-    
+
     //print_debug(debug_prec, "znak %c", pom );
     return enum_sign(pom);
 }
@@ -370,7 +370,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
             uStack_remove(stack);
             uStack_push(int, stack,operator_non_term);
             print_debug(debug_prec, "Precedence syntax used rule %d",rule);
-            
+
             if(rule >= rule_12 && rule <= rule_17)
             {
                 tmp = uStack_pop(TString *,var_stack);
@@ -391,7 +391,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
                 gen_expr(rule, uStack_pop(TString *,var_stack), tmp, partresult);
                 uStack_push(TString *, var_stack, partresult);
             }
-        
+
             return 0;
         }
         else
@@ -402,7 +402,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
     }
     else if (rule == rule_24 || rule == rule_3)
     {
-    
+
         if (uStack_top(int, stack) == sign_less)
         {
             uStack_remove(stack);
@@ -417,8 +417,8 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
         else
         {
             throw_error(error_sign_less_precedence);
-        }       
-    }   
+        }
+    }
     else
     {
         throw_error(error_syntax_in_precedence);
@@ -454,7 +454,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
     uStack_init(stack);
     uStack_push(int, stack, operator_dolar);
-    
+
     if (((Func_call == context_args) || (Func_call == context_write) || (Func_call == context_readln)
         || (Func_call == context_sort) || (Func_call == context_length) || (Func_call == context_find)
         || (Func_call == context_copy)) && (token->type == token_parenthesis_left))
@@ -467,7 +467,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     {
         uStack_push(int, stack, sign_less);
         uStack_push(int, stack, operator_array);
-    
+
     }
 
     if (token->type == token_semicolon)
@@ -486,7 +486,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         switch(get_sign(token,stack,&Func_call)){
             case sign_equal:
                 uStack_push(int, stack , recon_sign(token,&Func_call,stack));
-                
+
                 token_free(token);
                 token = token_get();
                 break;
@@ -518,7 +518,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
                 token_free(token);
                 token = token_get();
-                break;  
+                break;
 
             case sign_greater:
                 //print_debug(debug_prec, "aasdasd");
@@ -555,7 +555,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                 else if(uStack_top(int,stack) == operator_right_parenthesis)
                 {
                     uStack_remove(stack);
-            
+
                     switch (uStack_top(int, stack))
                     {
 
@@ -582,15 +582,15 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                         print_debug(debug_prec, "Precedence syntax used rule 20: E -> func(E)");
 
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
-                                        {    
+                                        {
                                             uStack_push(TString *, var_stack,partresult);
-                                            if(func->args_count == 0)
+                                            if(func != NULL && func->args_count == 0)
                                             {
                                                 gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
                                             }
 
                                             gen_code(ins_call,func,NULL,partresult);
-                                            if(i < func->args_count )   throw_error(error_need_more_args);
+                                            if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
                                             i = 0;
                                         }
@@ -680,18 +680,18 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
-                                        
+
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
-                                        {    
+                                        {
                                             //new_var = symbol_variable_init2(func->returnType);
                                             uStack_push(TString *, var_stack, partresult);
-                                            if(func->args_count == 0)
+                                            if(func != NULL && func->args_count == 0)
                                             {
                                                 gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
                                             }
 
                                             gen_code(ins_call,func,NULL,partresult);
-                                            if(i < func->args_count )   throw_error(error_need_more_args);
+                                            if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
                                             func = NULL;
                                             i = 0;
                                         }
@@ -729,7 +729,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                     {
                                         throw_error(error_sign_less_precedence);
                                     }
-                                }   
+                                }
                                 else
                                 {
                                     throw_error(error_missing_func_precedence);
@@ -756,13 +756,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 {
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
-                                    if(func->args_count == 0)
+                                    if(func != NULL && func->args_count == 0)
                                     {
                                         gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
                                     }
 
                                     gen_code(ins_call,func, NULL, partresult);
-                                    if(i < func->args_count )   throw_error(error_need_more_args);
+                                    if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
                                     func = NULL;
                                     i = 0;
                                     print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() ");
@@ -898,14 +898,14 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 return 1;
                             }
                             break;
-                            
+
                         case operator_xor:
                             if ((check_rule(stack,rule_23, var_stack)) == 1 )
                             {
                                 return 1;
                             }
                             break;
-                            
+
                         case operator_unary_minus:
                             if ((check_rule(stack,rule_24, var_stack)) == 1 )
                             {
@@ -945,7 +945,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
     if(result != NULL && (Func_call == context_assign || Func_call == context_sort || Func_call == context_find || Func_call == context_copy || Func_call == context_length))
     {
         if(Func_call == context_assign)
-        {    
+        {
             print_debug(debug_generator, "result name: %s", result->name);
             gen_code(ins_assign, string_add(string_new(), result->name), NULL, uStack_top(TString *, var_stack));
         }
@@ -953,7 +953,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         {
             print_debug(debug_generator, "result name: %s", result->name);
             gen_code(ins_assign, string_add(string_new(), result->name), NULL, partresult);
-        
+
         }
     }
     else if(Func_call == context_if || Func_call == context_while || Func_call == context_repeat)
@@ -970,6 +970,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
         }
     }
     //token_free(token);
-    
+
     return 0;
 }
