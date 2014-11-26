@@ -11,7 +11,7 @@ function funkce2() : integer; forward;
 function funkce1( arg1 : real, arg2 : integer ) : integer;
 begin
 	write( arg1, cislo);
-	
+
 	for cislo := 1 to 15 do
 		funkce1 := 2;
 end;
@@ -19,6 +19,7 @@ end;
 function funkce2() : integer;
 var xyz : real;
 begin
+	funkce2 := 1;
 	text[1] := 'A';
 	write( -7-4 );
 	while False do begin

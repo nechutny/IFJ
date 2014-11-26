@@ -5,7 +5,7 @@
 CC=gcc
 CFLAGS=-O2 -std=c99 -lm -Wall -pedantic -g -rdynamic
 OBJFILES=$(patsubst src/%.c, build/%.c.o, $(shell ls src/*.c))
-TESTFILES=$(patsubst tests/%.pas, tests/%.out, $(shell ls tests/*.pas));
+TESTFILES=$(patsubst tests/%.pas, tests/%, $(shell ls tests/*.pas));
 
 # build
 all: ifj
@@ -44,8 +44,8 @@ zip:
 tests: ifj $(TESTFILES)
 	# Done
 
-tests/%.out: tests/%.pas
-	-$(shell ./ifj $< > $@.run; diff $@.run $@.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@.run; else echo "# ERROR ... $<"; fi)
+tests/%: tests/%.pas
+	-$(shell ./ifj $< > $@.stdout.real 2> $@.stderr.real < $@.stdin; diff $@.stdout.real $@.stdout.correct > /dev/null; if [ "$$?" = "0" ]; then diff $@.stderr.real $@.stderr.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $<"; rm $@.stdout.real $@.stderr.real; else echo "# ERROR ... $<"; fi; else echo "# ERROR ... $<"; fi)
 
 # Documentation
 documentation: doc/dokumentace.tex
