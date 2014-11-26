@@ -432,7 +432,7 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
 * @param filename is file to translate
 * @return number of failiure or correct
 **/
-int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
+int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, symbolFunction *function)
 {
     TToken * token;
     token = token_init();
@@ -546,6 +546,17 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                             i++;
                             if(i > func->args_count)   throw_error(error_to_many_args);
                         }
+                        else if(function != NULL)
+                        {
+                            if(i == 0)
+                            {
+                                gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
+                                print_debug(debug_generator,"generuju volani funkce: %s",function->name->data);
+                            }
+                            gen_code(ins_assign, string_add(string_new(), function->args[i].name->data), NULL, uStack_top(TString *,var_stack));
+                            i++;
+                            if(i > function->args_count)   throw_error(error_to_many_args);
+                        }
                     }
                     else{
                         throw_error(error_sign_less_precedence);
@@ -583,15 +594,29 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
                                         {
-                                            uStack_push(TString *, var_stack,partresult);
-                                            if(func != NULL && func->args_count == 0)
+                                            if(func != NULL)
                                             {
-                                                gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
-                                            }
+                                                uStack_push(TString *, var_stack,partresult);
+                                                if(func->args_count == 0)
+                                                {
+                                                    gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                                }
 
-                                            gen_code(ins_call,func,NULL,partresult);
-                                            if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
-                                            func = NULL;
+                                                gen_code(ins_call,func,NULL,partresult);
+                                                if(i < func->args_count )   throw_error(error_need_more_args);
+                                                func = NULL;
+                                            }
+                                            else if(function != NULL)
+                                            {
+                                                uStack_push(TString *, var_stack,partresult);
+                                                if(function->args_count == 0)
+                                                {
+                                                    gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
+                                                }
+
+                                                gen_code(ins_call,function,NULL,partresult);
+                                                if(i < function->args_count )   throw_error(error_need_more_args);
+                                            }
                                             i = 0;
                                         }
                                         else
@@ -683,16 +708,29 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
 
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
                                         {
-                                            //new_var = symbol_variable_init2(func->returnType);
-                                            uStack_push(TString *, var_stack, partresult);
-                                            if(func != NULL && func->args_count == 0)
+                                            if(func != NULL)
                                             {
-                                                gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
-                                            }
+                                                uStack_push(TString *, var_stack, partresult);
+                                                if(func != NULL && func->args_count == 0)
+                                                {
+                                                    gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                                }
 
-                                            gen_code(ins_call,func,NULL,partresult);
-                                            if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
-                                            func = NULL;
+                                                gen_code(ins_call,func,NULL,partresult);
+                                                if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
+                                                func = NULL;
+                                            }
+                                            else if(function != NULL)
+                                            {
+                                                uStack_push(TString *, var_stack, partresult);
+                                                if(function->args_count == 0)
+                                                {
+                                                    gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
+                                                }
+
+                                                gen_code(ins_call,function,NULL,partresult);
+                                                if(i < function->args_count )   throw_error(error_need_more_args);
+                                            }
                                             i = 0;
                                         }
                                         else
@@ -756,14 +794,27 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result)
                                 {
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
-                                    if(func != NULL && func->args_count == 0)
+                                    if(func != NULL)
                                     {
-                                        gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
-                                    }
+                                        if(func->args_count == 0)
+                                        {
+                                            gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
+                                        }
 
-                                    gen_code(ins_call,func, NULL, partresult);
-                                    if(func != NULL && i < func->args_count )   throw_error(error_need_more_args);
-                                    func = NULL;
+                                        gen_code(ins_call,func, NULL, partresult);
+                                        if(i < func->args_count )   throw_error(error_need_more_args);
+                                        func = NULL;
+                                    }
+                                    else if(function != NULL)
+                                    {
+                                        if(function->args_count == 0)
+                                        {
+                                            gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
+                                        }
+
+                                        gen_code(ins_call,function, NULL, partresult);
+                                        if(i < function->args_count )   throw_error(error_need_more_args);
+                                    }
                                     i = 0;
                                     print_debug(debug_prec, "Precedence syntax used rule 19: E -> func() ");
 

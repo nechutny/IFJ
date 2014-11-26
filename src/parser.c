@@ -422,7 +422,7 @@ void parser_code()
 				{ /* Array index? */
 					token_return_token(token);
 					
-					if(precedence(global.file, context_index, NULL))
+					if(precedence(global.file, context_index, NULL, NULL))
 					{
 						throw_error(error_expresion);
 					}
@@ -438,7 +438,7 @@ void parser_code()
 
 				if(hitem != NULL)
 				{
-					if(precedence(global.file, context_assign, hitem->ptr.variable))
+					if(precedence(global.file, context_assign, hitem->ptr.variable, NULL))
 					{
 						throw_error(error_expresion);
 					}
@@ -461,12 +461,12 @@ void parser_code()
 					throw_error(error_function_is_var);
 				}
 				token_return_token(token);
-				if(precedence(global.file, context_args, NULL))
+				if(precedence(global.file, context_args, NULL, hitem->ptr.function))
 				{
 					throw_error(error_expresion);
 				}
-
-				gen_code(ins_call, hitem->ptr.function, NULL, NULL);
+				//gen_code(ins_push_htab, hitem->ptr.function->local_symbol, NULL, NULL);
+				//gen_code(ins_call, hitem->ptr.function, NULL, NULL);
 			}
 			else
 			{
@@ -509,27 +509,27 @@ void parser_code()
 			break;
 
 		case token_write:
-			precedence(global.file, context_write, NULL);
+			precedence(global.file, context_write, NULL, NULL);
 			break;
 			
 		case token_readln:
-			precedence(global.file, context_readln, NULL);
+			precedence(global.file, context_readln, NULL, NULL);
 			break;
 			
 		case token_f_find:
-			precedence(global.file, context_find, NULL);
+			precedence(global.file, context_find, NULL, NULL);
 			break;
 		
 		case token_f_copy:
-			precedence(global.file, context_copy, NULL);
+			precedence(global.file, context_copy, NULL, NULL);
 			break;
 			
 		case token_f_length:
-			precedence(global.file, context_length, NULL);
+			precedence(global.file, context_length, NULL, NULL);
 			break;
 			
 		case token_f_sort:
-			precedence(global.file, context_sort, NULL);
+			precedence(global.file, context_sort, NULL, NULL);
 			break;
 			
 		default:
@@ -575,7 +575,7 @@ void parser_if()
 	n_end->data = lab_end;
 
 	/* Expresion */
-	if(precedence(global.file, context_if, NULL))
+	if(precedence(global.file, context_if, NULL, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -667,7 +667,7 @@ void parser_while()
 	/* Condition */
 	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_start);
 
-	if(precedence(global.file, context_while, NULL))
+	if(precedence(global.file, context_while, NULL, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -743,7 +743,7 @@ void parser_repeat()
 	}
 	
 	/* Condition */
-	if(precedence(global.file, context_repeat, NULL))
+	if(precedence(global.file, context_repeat, NULL, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -782,7 +782,7 @@ void parser_for()
 	token_free(token);
 
 	/* Inicial. value */
-	if(precedence(global.file, context_for_init, NULL))
+	if(precedence(global.file, context_for_init, NULL, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -795,7 +795,7 @@ void parser_for()
 	token_free(token);
 
 	/* Target value */
-	if(precedence(global.file, context_for_to, NULL))
+	if(precedence(global.file, context_for_to, NULL, NULL))
 	{
 		throw_error(error_expresion);
 	}
@@ -859,7 +859,7 @@ void parser_switch()
 	{ /* Cases */
 		print_debug(debug_parser,"case");
 		token_return_token(token);
-		if(precedence(global.file, context_case, NULL))
+		if(precedence(global.file, context_case, NULL, NULL))
 		{
 			throw_error(error_expresion);
 		}
