@@ -27,15 +27,15 @@ typedef enum {
 	ins_nequal,		//10
 	ins_less,		//11
 	ins_lesseq,		//12
-	ins_greater,	//13
-	ins_greateq,	//14
+	ins_greater,		//13
+	ins_greateq,		//14
 	ins_in,			//15
 	ins_jmp,		//16
 	ins_call,		//17
 	ins_uminus,		//18
 	ins_assign,		//19
 	ins_incall,		//20
-	ins_push_htab,	//21
+	ins_push_htab,		//21
 	ins_xor			//22
 } TInsType;
 

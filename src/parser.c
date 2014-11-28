@@ -34,32 +34,32 @@ static int isVariableType(int type);
 void parser_file()
 {
 	TToken * token;
-	
+
 	/* Global variables */
 	local_context = context_global;
 	parser_vars();
-	
+
 	/* Functions */
 	local_context = context_function;
 	parser_function();
-	
+
 	token = token_get();
 	if(token->type != token_begin)
 	{ /* Main body */
 		throw_error(error_begin);
 	}
 	token_free(token);
-	
+
 	print_debug(debug_parser,"Main body");
 	parser_main();
-	
+
 	token = token_get();
 	if(token->type != token_end)
 	{
 		throw_error(error_end);
 	}
 	token_free(token);
-	
+
 	token = token_get();
 	if(token->type != token_dot)
 	{
@@ -82,7 +82,7 @@ void parser_file()
 void parser_vars()
 {
 	TToken * token = token_get();
-	
+
 	if(token->type == token_var)
 	{ /* Found variable delcaration(s) */
 		token_free(token);
@@ -90,7 +90,7 @@ void parser_vars()
 	}
 	else
 	{
-		printf("%d ", token->type);
+		//printf("%d ", token->type);
 		token_return_token(token);
 	}
 }
@@ -104,11 +104,11 @@ void parser_var()
 {
 	TToken * token = token_get();
 	htab_listitem* var;
-	
+
 	if(token->type == token_identifier)
 	{ /* Variable identifier */
 		token_return_token(token);
-		
+
 		token = token_get();
 		if(token->type != token_identifier)
 		{
@@ -134,11 +134,11 @@ void parser_var()
 			throw_error(error_colon);
 		}
 		token_free(token);
-		
+
 		token = token_get();
 		if(isVariableType(token->type) )
 		{ /* var type */
-			
+
 			symbol_variable_type_set(var->ptr.variable, token->type);
 			token_free(token);
 			token = token_get();
@@ -171,7 +171,7 @@ void parser_function()
 	TToken * token = token_get();
 	htab_listitem* var, *var2;
 	unsigned long offset = ftell(global.file);
-	
+
 	if(token->type == token_function)
 	{ /* Function keywords? */
 		token_free(token);
@@ -193,10 +193,10 @@ void parser_function()
 		{
 			var = htab_create(global.global_symbol, token->data);
 		}
-		
+
 		symbol_function_init(var, token->data, offset);
 		token_free(token);
-		
+
 		token = token_get();
 		if(token->type != token_parenthesis_left)
 		{
@@ -207,37 +207,37 @@ void parser_function()
 		htab_t* table = htab_init(HASH_TABLE_SIZE);
 		var->ptr.function->local_symbol = table;
 		uStack_push(htab_t*, global.local_symbols, table);
-		
+
 		/* Function arguments */
 		parser_args(var->ptr.function);
-		
+
 		token = token_get();
 		if(token->type != token_parenthesis_right)
 		{
 			throw_error(error_parenthesis_right);
 		}
 		token_free(token);
-		
+
 		token = token_get();
 		if(token->type != token_colon)
 		{
 			throw_error(error_colon);
 		}
 		token_free(token);
-		
+
 		token = token_get();
 		if(!isVariableType(token->type))
 		{ /* Return type */
 			throw_error(error_type);
 		}
 		symbol_function_type_set(var->ptr.function, token->type);
-		
+
 		var2 = htab_create(uStack_top(htab_t*, global.local_symbols), var->key);
 		symbol_variable_init(var2, var->key);
 		symbol_variable_type_set(var2->ptr.variable, token->type);
-		
+
 		token_free(token);
-		
+
 		token = token_get();
 		if(token->type != token_semicolon)
 		{
@@ -262,7 +262,7 @@ void parser_function()
 				throw_error(error_begin);
 			}
 			token_free(token);
-			
+
 			uStack_push(TList *, global.ins_list_stack ,var->ptr.function->ins);
 
 			do
@@ -272,13 +272,13 @@ void parser_function()
 			} while(token->type != token_end);
 
 			uStack_remove(global.local_symbols);
-			
+
 			if(token->type != token_end)
 			{ /* Function code block end */
 				throw_error(error_end);
 			}
 			token_free(token);
-			
+
 			uStack_remove(global.ins_list_stack);
 
 			token = token_get();
@@ -303,7 +303,7 @@ void parser_function()
 			parser_function();
 		}
 
-		
+
 	}
 	else
 	{
@@ -333,12 +333,12 @@ void parser_args(symbolFunction* func)
 			if(isVariableType(token2->type))
 			{ /* Datetype */
 				symbol_function_arg_add(func, token->data, token2->type);
-				
+
 				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
 				symbol_variable_init(var, token->data);
 				symbol_variable_type_set(var->ptr.variable, token2->type);
 				var->ptr.variable->inicialized = 1;
-				
+
 				token_free(token);
 				token_free(token2);
 				token = token_get();
@@ -400,10 +400,10 @@ void parser_code()
 {
 	htab_listitem* hitem;
 	print_debug(debug_parser,"One command: ");
-	
+
 	TToken * token = token_get();
 	TToken *token2;
-	
+
 	switch(token->type)
 	{
 		case token_identifier:
@@ -417,11 +417,11 @@ void parser_code()
 				{ /* Not global variable */
 					throw_error(error_var_not_exists);
 				}
-				
+
 				if(token->type == token_bracket_left)
 				{ /* Array index? */
 					token_return_token(token);
-					
+
 					if(precedence(global.file, context_index, NULL))
 					{
 						throw_error(error_expresion);
@@ -473,37 +473,37 @@ void parser_code()
 				throw_error(error_unkown);
 			}
 			break;
-			
+
 		case token_if:
 			/* if */
 			token_free(token);
 			parser_if();
 			break;
-			
+
 		case token_while:
 			/* while */
 			token_free(token);
 			parser_while();
 			break;
-			
+
 		case token_repeat:
 			/* repeat */
 			token_free(token);
 			parser_repeat();
 			break;
-			
+
 		case token_for:
 			/* for */
 			token_free(token);
 			parser_for();
 			break;
-			
+
 		case token_case:
 			/* switch */
 			token_free(token);
 			parser_switch();
 			break;
-			
+
 		case token_semicolon:
 			/* empty command */
 			break;
@@ -511,27 +511,27 @@ void parser_code()
 		case token_write:
 			precedence(global.file, context_write, NULL);
 			break;
-			
+
 		case token_readln:
 			precedence(global.file, context_readln, NULL);
 			break;
-			
+
 		case token_f_find:
 			precedence(global.file, context_find, NULL);
 			break;
-		
+
 		case token_f_copy:
 			precedence(global.file, context_copy, NULL);
 			break;
-			
+
 		case token_f_length:
 			precedence(global.file, context_length, NULL);
 			break;
-			
+
 		case token_f_sort:
 			precedence(global.file, context_sort, NULL);
 			break;
-			
+
 		default:
 			/* Unkown command */
 			throw_error(error_unkown);
@@ -542,7 +542,7 @@ void parser_code()
 
 /**
  * Parse IF
- * 
+ *
  * if <expr> then <block> <else>
  *
  * <block> can be one command or more in begin end
@@ -551,11 +551,11 @@ void parser_code()
 void parser_if()
 {
 	print_debug(debug_parser,"If");
-	
+
 	TString *cond = string_add(string_new(), "cond1");
 	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
-	
-	TIns *lab_else = _malloc(sizeof(TIns)), 
+
+	TIns *lab_else = _malloc(sizeof(TIns)),
 		 *lab_end = _malloc(sizeof(TIns));
 
 	TNode   *n_else = _malloc(sizeof(TNode)),
@@ -563,14 +563,14 @@ void parser_if()
 
 	lab_else->type = ins_lab;
 	lab_else->adr1 = NULL;
-	lab_else->adr2 = NULL;  
+	lab_else->adr2 = NULL;
 	lab_else->adr3 = NULL;
 
 	lab_end->type = ins_lab;
 	lab_end->adr1 = NULL;
-	lab_end->adr2 = NULL;   
+	lab_end->adr2 = NULL;
 	lab_end->adr3 = NULL;
-	
+
 	n_else->data = lab_else;
 	n_end->data = lab_end;
 
@@ -579,7 +579,7 @@ void parser_if()
 	{
 		throw_error(error_expresion);
 	}
-	
+
 	TToken * token = token_get();
 	if(token->type != token_then)
 	{ /* then? */
@@ -643,7 +643,7 @@ void parser_while()
 	print_debug(debug_parser,"while");
 
 	TString *cond = string_add(string_new(), "cond1");
-	//symbolVariable *cond = _malloc(sizeof(symbolVariable));   
+	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
 
 	TIns *start = _malloc(sizeof(TIns)),
 		 *end = _malloc(sizeof(TIns));
@@ -652,7 +652,7 @@ void parser_while()
 			*n_end = _malloc(sizeof(TNode));
 
 	start->type = ins_lab;
-	start->adr1 = NULL; 
+	start->adr1 = NULL;
 	start->adr2 = NULL;
 	start->adr3 = NULL;
 
@@ -708,14 +708,14 @@ void parser_repeat()
 	print_debug(debug_parser,"repeat");
 
 	TString *cond = string_add(string_new(), "cond1");
-	//symbolVariable *cond = _malloc(sizeof(symbolVariable));   
+	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
 
 	TIns *start = _malloc(sizeof(TIns));
 
 	TNode   *n_start = _malloc(sizeof(TNode));
 
 	start->type = ins_lab;
-	start->adr1 = NULL; 
+	start->adr1 = NULL;
 	start->adr2 = NULL;
 	start->adr3 = NULL;
 
@@ -741,7 +741,7 @@ void parser_repeat()
 	{
 		throw_error(error_until);
 	}
-	
+
 	/* Condition */
 	if(precedence(global.file, context_repeat, NULL))
 	{
@@ -765,13 +765,13 @@ void parser_for()
 	{
 		throw_error(error_identifier);
 	}
-	
+
 	hitem = VariableExists(token->data);
 	if(hitem == NULL || hitem->type != type_variable)
 	{ /* Not variable */
 		throw_error(error_var_not_exists);
 	}
-	
+
 	token_free(token);
 
 	token = token_get();
@@ -825,11 +825,11 @@ void parser_for()
 
 /**
  * Switch statement
- * 
+ *
  * case ID of <cases> <else> end;
  *
  * <cases>  ... <expr> : <block>
- * <else>   ... else <block> 
+ * <else>   ... else <block>
  */
 void parser_switch()
 {
