@@ -460,8 +460,12 @@ void interpret(){
 				if((symbolFunction*)ins->adr1 != NULL)
 				{
 					uStack_push(TList *, global.ins_list_stack, ((symbolFunction*)ins->adr1)->ins);
+					node = uStack_top(TList *,global.ins_list_stack)->first;
 				}
-				node = uStack_top(TList *,global.ins_list_stack)->first;
+				else
+				{
+					node = node->n;
+				}
 				continue;
 			case ins_incall:
 				switch(((long long)ins->adr1))
