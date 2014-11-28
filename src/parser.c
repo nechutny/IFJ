@@ -421,13 +421,8 @@ void parser_code()
 				if(token->type == token_bracket_left)
 				{ /* Array index? */
 					token_return_token(token);
-<<<<<<< HEAD
 
-					if(precedence(global.file, context_index, NULL))
-=======
-					
 					if(precedence(global.file, context_index, NULL, NULL))
->>>>>>> e2ebe828d219980d3f5a2e952d5729fcead324fd
 					{
 						throw_error(error_expresion);
 					}
