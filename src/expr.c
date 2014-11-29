@@ -555,9 +555,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
                                 print_debug(debug_generator,"generuju volani funkce: %s",function->name->data);
                             }
+                            if(i >= function->args_count)   throw_error(error_to_many_args);
+
                             gen_code(ins_assign, string_add(string_new(), function->args[i].name->data), NULL, uStack_top(TString *,var_stack));
                             i++;
-                            if(i > function->args_count)   throw_error(error_to_many_args);
+                            //if(i > function->args_count)   throw_error(error_to_many_args);
                         }
                     }
                     else{
