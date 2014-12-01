@@ -478,7 +478,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 					{
 						ascii = 0;
 						c = fgetc(file);
-						if (c == '\'')
+						if (!isdigit(c))	//stara podminka c == '\''
 						{
 							token->type = token_invalid;
 							return token;
@@ -487,7 +487,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 						{
 							c = fgetc(file);
 						}
-						if (c == '\'')	//napr #00 
+						if (c == '\'' || !isdigit(c))	//napr #00 
 						{
 							token->type = token_invalid;
 							return token;
@@ -554,6 +554,11 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 						return token;
 					}
 				}
+				else if(c==EOF || c=='\n')
+					{
+						token->type = token_invalid;
+						return token;
+					}
 				//string_add_chr(token->data, c);
 				buffer[buff_i] = c; buff_i++;
 				break;
