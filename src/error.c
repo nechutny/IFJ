@@ -14,7 +14,7 @@
 void throw_error(errors code)
 {
     int return_code = 1;
-    
+
     fprintf(stderr,"Error: ");
     switch(code)
     {
@@ -22,14 +22,19 @@ void throw_error(errors code)
             fprintf(stderr, "Expected 'program'");
             return_code = 2;
             break;
-            
+
         case error_identifier:
             fprintf(stderr, "Expected identifier");
             return_code = 2;
             break;
-            
+
         case error_semicolon:
             fprintf(stderr, "Expected ';'");
+            return_code = 2;
+            break;
+
+        case error_semicolon_unexpected:
+            fprintf(stderr, "Unexpected ';'");
             return_code = 2;
             break;
 
@@ -141,17 +146,17 @@ void throw_error(errors code)
             fprintf(stderr,"Read to boolean variable");
             return_code = 4;
             break;
-            
+
         case error_syntax_in_precedence:
             fprintf(stderr,"Wrong syntax in expression");
             return_code = 2;
             break;
-            
+
         case error_sign_fault:
             fprintf(stderr,"Got error sign from precedence table");
             return_code = 2;
             break;
-            
+
         case error_sign_less_precedence:
             fprintf(stderr,"Excpects: < in expression");
             return_code = 2;
@@ -161,22 +166,26 @@ void throw_error(errors code)
             fprintf(stderr,"Wrong function argument in expression");
             return_code = 2;
             break;
-            
+
         case error_missing_func_precedence:
             fprintf(stderr,"Missing function name in expression");
             return_code = 2;
             break;
-            
+
         case error_not_a_function_precedence:
             fprintf(stderr,"Not a function in expression");
             return_code = 2;
             break;
-            
+
         case error_left_parenthesis_precedence:
             fprintf(stderr,"Excpects: ( in expression");
             return_code = 2;
             break;
             
+        case error_semicolon_before_end:
+            fprintf(stderr,"Semicolon before end");
+            return_code = 2;
+            break;
         case error_operator_precedence:
             fprintf(stderr,"Excpects: operator in expression");
             return_code = 2;
@@ -224,16 +233,16 @@ void throw_error(errors code)
             return_code = 9;
             break;
     }
-    
+
     fprintf(stderr," on line %d. Readed '%s' (type id: %d).\n", file_line(), token_last->data, token_last->type);
-    
+
     exit(return_code);
 }
 
 int file_line()
 {
     long pos = ftell(global.file);
-    
+
     long line = 1;
     long readed = 0;
     int character;
@@ -248,6 +257,6 @@ int file_line()
         }
         readed++;
     }
-    
+
     return line;
 }

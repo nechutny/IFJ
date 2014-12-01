@@ -262,6 +262,14 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
             throw_error(error_not_a_function_precedence);
 
         case token_semicolon:
+            pom = token_get(global.file);
+            if (pom->type == token_end)
+            {
+                throw_error(error_semicolon_before_end);
+            }
+            else{
+               token_return_token(pom); 
+            }
         case token_then:
         case token_do:
         case token_colon:
@@ -270,7 +278,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
         case token_end:
         case token_invalid:
             return operator_dolar;
-
+            
         case token_write:
         case token_readln:
             throw_error(error_syntax_in_precedence);
@@ -411,9 +419,9 @@ int check_rule(uStack_t * stack, TRule rule, uStack_t *var_stack)
             uStack_push(int, stack,operator_non_term);
             print_debug(debug_prec, "Precedence syntax used rule %d",rule);
             if(rule == rule_24)
-            	gen_expr(rule, uStack_top(TString *, var_stack), NULL, NULL);
+                gen_expr(rule, uStack_top(TString *, var_stack), NULL, NULL);
             else
-            	gen_expr(rule, cond1_s, NULL, NULL);
+                gen_expr(rule, cond1_s, NULL, NULL);
             return 0;
         }
         else
@@ -637,13 +645,13 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                                     gen_code(ins_incall, (void*)1ULL, uStack_top(TString *, tmp), NULL);
                                                     break;
                                                 case context_sort:
-                                                	tmp = uStack_pop(uStack_t *, func_args_stack);
+                                                    tmp = uStack_pop(uStack_t *, func_args_stack);
                                                     gen_code(ins_incall, (void*)2ULL, uStack_top(TString *, tmp), partresult);
-                                                	break;
+                                                    break;
                                                 case context_length:
-                                                	tmp = uStack_pop(uStack_t *, func_args_stack);
+                                                    tmp = uStack_pop(uStack_t *, func_args_stack);
                                                     gen_code(ins_incall, (void*)5ULL, uStack_top(TString *, tmp), partresult);
-                                                	break;
+                                                    break;
                                                 case context_find:
                                                 case context_copy:
                                                     throw_error(error_need_more_args);
