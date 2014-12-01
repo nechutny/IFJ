@@ -123,7 +123,7 @@ TToken *token_get() {
 	unsigned int buff_i = 0;
 	token_last = token;
 	TState state = state_init;
-	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
+//	TState number_state = state_int;			//it goes from int or double to _double_sign_e?
 	//string_clear(token->data);
 	char c;
 	//char sign='+';
@@ -205,7 +205,7 @@ TToken *token_get() {
 						else if (isdigit(c))
 						{
 							state = state_int;
-							number_state = state_int;
+							//number_state = state_int;
 							//string_add_chr(token->data, c);
 							buffer[buff_i] = c; buff_i++;
 							break;
@@ -248,13 +248,13 @@ TToken *token_get() {
 					buffer[buff_i] = c; buff_i++;
 					state = state__double_dot;
 				}
-				else if (c=='+' || c=='-')
+				/*else if (c=='+' || c=='-')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c; buff_i++;
+stare					buffer[buff_i] = c; buff_i++;
 					//sign = c;
 					state = state__double_sign_e;
-				}
+				}*/
 				else if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
@@ -283,7 +283,7 @@ TToken *token_get() {
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
 					state = state_double;
-					number_state = state_double;
+//					number_state = state_double;
 				}
 				else
 				{
@@ -297,12 +297,12 @@ TToken *token_get() {
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
 				}
-				else if (c=='+' || c=='-')
+				/*else if (c=='+' || c=='-')
 				{
 					//string_add_chr(token->data, c);
-					buffer[buff_i] = c; buff_i++;
+stare					buffer[buff_i] = c; buff_i++;
 					state = state__double_sign_e;
-				}
+				}*/
 				else if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
@@ -326,7 +326,7 @@ TToken *token_get() {
 				}
 				break;
 			case state__double_sign_e:
-				if (c=='e' || c=='E')
+				/*if (c=='e' || c=='E')
 				{
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
@@ -338,7 +338,7 @@ TToken *token_get() {
 					if(number_state==state_int)
 					{
 						token->type=token_int;
-						token = token_data_add(token,buffer);
+stare						token = token_data_add(token,buffer);
 						return token;
 					}
 					else
@@ -347,6 +347,17 @@ TToken *token_get() {
 						token = token_data_add(token,buffer);
 						return token;
 					}
+				}*/
+				if(isdigit(c))
+				{
+					//string_add_chr(token->data, c);
+					buffer[buff_i] = c; buff_i++;
+					state = state_double_e;
+				}
+				else
+				{
+					token->type=token_invalid;
+					return token;
 				}
 				break;
 			case state__double_e:
@@ -355,6 +366,11 @@ TToken *token_get() {
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
 					state = state_double_e;
+				}
+				else if (c=='+' || c=='-')
+				{
+					buffer[buff_i] = c; buff_i++;
+					state = state__double_sign_e;
 				}
 				else
 				{
