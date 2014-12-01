@@ -181,16 +181,11 @@ void throw_error(errors code)
             fprintf(stderr,"Excpects: ( in expression");
             return_code = 2;
             break;
-<<<<<<< HEAD
             
         case error_semicolon_before_end:
             fprintf(stderr,"Semicolon before end");
             return_code = 2;
             break;
-            
-=======
-
->>>>>>> 826a5f22f865cc231e464521ee7628c843df110a
         case error_operator_precedence:
             fprintf(stderr,"Excpects: operator in expression");
             return_code = 2;
