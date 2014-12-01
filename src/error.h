@@ -53,7 +53,11 @@ typedef enum{
     error_to_many_args,
     error_need_more_args,
     error_uninicialized_return_func,
+<<<<<<< HEAD
     error_semicolon_before_end
+=======
+    error_semicolon_unexpected,
+>>>>>>> 826a5f22f865cc231e464521ee7628c843df110a
 } errors;
 
 

@@ -1,7 +1,7 @@
 var	cislo : integer;
 	cislo2 : integer;
 	desetine : real;
-	text : string;
+	text : stRIng;
 	znak : char;
 
 { foo }
@@ -13,7 +13,7 @@ begin
 	write( arg1, cislo);
 
 	for cislo := 1 to 15 do
-		funkce1 := 2;
+		fUnkce1 := 2;
 end;
 
 function funkce2() : integer;
@@ -22,18 +22,18 @@ begin
 	funkce2 := 1;
 	text[1] := 'A';
 	write( -7-4 );
-	while False do begin
+	wHIle False do begin
 		funkce2( );
 		desetine := desetine - 15;
 	end;
 	funkce1( 1234, 5);
 end;
-function funkce3( arg1 : integer ) : integer;
+fuNctIon funkce3( arg1 : integer ) : inTEger;
 var var1 : integer;
 begin
 	write( arg1 );
 	if arg1 = 5 then begin
-		arg1 := 5+var1;
+		arG1 := 5+var1;
 		funkce2();
 		repeat
 			var1 := (arg1 +  5) * funkce1(1.2, 123);
@@ -41,7 +41,7 @@ begin
 	end else begin
 		arg1 := -arg1*5;
 	end;
-	funkce3 := 2;
+	FUNKCE3 := 2;
 end;
 
 begin
@@ -51,9 +51,9 @@ begin
 		cislo := 3;
 		desetine := 1.25;
 	end;
-	text := 'foo fooo bar s hooooooooooooooooooooooooooooooooooooooooooodne dlooooooooooooooooooooooooooooooooooohym texteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeem';
+	tExT := 'foo fooo bar s hooooooooooooooooooooooooooooooooooooooooooodne dlooooooooooooooooooooooooooooooooooohym texteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeem';
 
-	cislo := text[1];
+	cislo := teXt[1];
 
 	{case cislo of
 		1 : funkce2( );

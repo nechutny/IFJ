@@ -214,7 +214,9 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
             pom = token_get(global.file);
             if (pom->type == token_parenthesis_left)
             {
-                func = htab_lookup(global.global_symbol, token->data)->ptr.function;
+                htab_listitem* hitem = htab_lookup(global.global_symbol, token->data);
+                if(hitem == NULL) throw_error(error_function_not_exists);
+                func = hitem->ptr.function;
                 print_debug(debug_generator,"finding func");
                 token_return_token(pom);
                 return operator_func;
@@ -561,9 +563,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 gen_code(ins_push_htab, function->local_symbol, NULL, NULL);
                                 print_debug(debug_generator,"generuju volani funkce: %s",function->name->data);
                             }
+                            if(i >= function->args_count)   throw_error(error_to_many_args);
+
                             gen_code(ins_assign, string_add(string_new(), function->args[i].name->data), NULL, uStack_top(TString *,var_stack));
                             i++;
-                            if(i > function->args_count)   throw_error(error_to_many_args);
+                            //if(i > function->args_count)   throw_error(error_to_many_args);
                         }
                     }
                     else{

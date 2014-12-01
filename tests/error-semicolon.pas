@@ -45,7 +45,7 @@ begin
 end;
 
 begin
-	cislo := 7;
+	cislo := 7;;;;
 	cislo := funkce1( 1.25, 6);
 	if cislo = 2 then begin
 		cislo := 3;
