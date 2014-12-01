@@ -177,6 +177,11 @@ void throw_error(errors code)
             return_code = 2;
             break;
             
+        case error_semicolon_before_end:
+            fprintf(stderr,"Semicolon before end");
+            return_code = 2;
+            break;
+            
         case error_operator_precedence:
             fprintf(stderr,"Excpects: operator in expression");
             return_code = 2;
