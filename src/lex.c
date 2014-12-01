@@ -411,6 +411,11 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					state = state_init;
 				}
+				else if (c==EOF)
+				{
+					token->type=token_invalid;
+					return token;
+				}
 				break;
 			case state_colon:
 				if (c=='=')
