@@ -52,7 +52,8 @@ typedef enum{
     error_uninicialized,
     error_to_many_args,
     error_need_more_args,
-    error_uninicialized_return_func
+    error_uninicialized_return_func,
+    error_semicolon_unexpected,
 } errors;
 
 
