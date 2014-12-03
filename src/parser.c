@@ -568,6 +568,7 @@ void parser_if()
 	n_end->data = lab_end;
 
 	/* Expresion */
+	gen_code(ins_lab, NULL, NULL,NULL);
 	if(precedence(global.file, context_if, NULL, NULL))
 	{
 		throw_error(error_expresion);

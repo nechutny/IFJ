@@ -169,6 +169,17 @@ symbolVariable* create_const(TToken *token)
 			print_debug(debug_symbol,"Constant: %s",var->value.value_string);
 			var->inicialized = 1;
 			return var;
+
+		case token_true:
+			var->type = variable_integer;
+			var->value.value_number = 1;
+			var->inicialized = 1;
+			return var;
+		case token_false:
+			var->type = variable_integer;
+			var->value.value_number = 0;
+			var->inicialized = 1;
+			return var;
 		default:
 			return var;
 	}
