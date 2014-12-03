@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include "symbol.h"
 
-void parser();
 void parser_file();
 void parser_vars();
 void parser_var();

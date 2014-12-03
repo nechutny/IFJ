@@ -380,9 +380,7 @@ void parser_main()
 		token = token_get();
 	}
 
-
 	print_debug(debug_parser,"Code block end");
-	//token_return_token(token);
 }
 
 
@@ -482,26 +480,32 @@ void parser_code()
 			break;
 
 		case token_write:
+			print_debug(debug_parser,"write");
 			precedence(global.file, context_write, NULL, NULL);
 			break;
 
 		case token_readln:
+			print_debug(debug_parser,"readln");
 			precedence(global.file, context_readln, NULL, NULL);
 			break;
 
 		case token_f_find:
+			print_debug(debug_parser,"find");
 			precedence(global.file, context_find, NULL, NULL);
 			break;
 
 		case token_f_copy:
+			print_debug(debug_parser,"copy");
 			precedence(global.file, context_copy, NULL, NULL);
 			break;
 
 		case token_f_length:
+			print_debug(debug_parser,"length");
 			precedence(global.file, context_length, NULL, NULL);
 			break;
 
 		case token_f_sort:
+			print_debug(debug_parser,"sort");
 			precedence(global.file, context_sort, NULL, NULL);
 			break;
 
@@ -526,8 +530,6 @@ void parser_if()
 	print_debug(debug_parser,"If");
 
 	TString *cond = string_add(string_new(), "cond1");
-	//symbolVariable *cond = _malloc(sizeof(symbolVariable));
-
 	TIns *lab_else = _malloc(sizeof(TIns)),
 		 *lab_end = _malloc(sizeof(TIns));
 

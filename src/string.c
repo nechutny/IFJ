@@ -27,18 +27,18 @@
 TString * string_new()
 {
 	TString * string;
-	
+
 	string = _malloc(sizeof(TString) + sizeof(char)*ALLOC_SIZE);
 	if( string == NULL )
 	{
 		fprintf(stderr, "%s", strerror(errno));
 		return NULL;
 	}
-	
+
 	string->data[0] = '\0';
 	string->allocated = ALLOC_SIZE;
 	string->length = 0;
-	
+
 	return string;
 }
 
@@ -56,7 +56,7 @@ int string_add_chr( TString * string, char c )
 	{
 		string->allocated += ALLOC_SIZE;
 		string = _realloc(string, sizeof(TString) + (sizeof(char)*(string->allocated)));
-		
+
 		if(string == NULL)
 		{
 			fprintf(stderr, "%s", strerror(errno));
@@ -66,8 +66,8 @@ int string_add_chr( TString * string, char c )
 
 	string->data[ string->length ] = c;
 	string->length++;
-	string->data[ string->length ] = '\0'; 
-	
+	string->data[ string->length ] = '\0';
+
 	return 1;
 }
 
@@ -82,9 +82,9 @@ TString* string_add( TString * string, char * text )
 {
 
 	unsigned int len = strlen(text);
-	
+
 	unsigned int total_len = len+(string->length)+1;
-	
+
 	if( total_len > string->allocated )
 	{
 		string->allocated = total_len;
@@ -95,14 +95,14 @@ TString* string_add( TString * string, char * text )
 			return 0;
 		}
 	}
-	
-		
+
+
 	strncat(string->data, text, len);
 
 	string->length += len;
-	
+
 	return string;
-}	
+}
 
 
 /**
@@ -127,7 +127,7 @@ TString* string_rewrite( TString * string, char * text ) {
 	string_clear( string );
 	return string_add( string, text );
 }
-	
+
 
 /**
  * Unallocate string
@@ -140,6 +140,6 @@ void string_free( TString * string ) {
 
 	//_free( string->data );
 	_free( string );
-	
+
 	//string = NULL;
 }

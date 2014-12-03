@@ -50,7 +50,7 @@ do {											\
 	}										\
 	else if(stack->allocated <= stack->count)					\
 	{										\
-		stack->allocated += 2;							\
+		stack->allocated <<= 1;							\
 		stack->data = _realloc(stack->data, sizeof(type)*stack->allocated);	\
 	}										\
 	((type *)stack->data)[stack->count] = _data;					\
@@ -60,10 +60,10 @@ do {											\
 
 /**
  * Remove data from top of stack
- * 
+ *
  * @param	stack	pointer to stack for remove data
  * @return	new number of items in stack
- **/	
+ **/
 #define uStack_remove(stack)								\
 	--(stack->count)
 
@@ -87,7 +87,7 @@ do {											\
  * 			poped values to stack. eg. double, long
  * @param	stack	pointer to stack for data
  * @param	offset	integer with offset for data (from 0 to n-1)
- * @return	Value from stack 
+ * @return	Value from stack
  */
 #define uStack_offset(type, stack,offset)						\
 	((type *)stack->data)[offset]
@@ -117,7 +117,7 @@ do {											\
 
 /**
  * Free all allocated memory for stack and data
- * 
+ *
  * @param	stack	pointer to stack
  */
 #define uStack_free(stack)								\
@@ -128,7 +128,7 @@ do {											\
 
 /**
  * Remove all elements fro stack
- * 
+ *
  * @param	stack	pointer to stack
  */
 #define uStack_clean(stack)								\
