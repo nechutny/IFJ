@@ -21,6 +21,7 @@
 parse_context local_context;
 
 static int isVariableType(int type);
+void static check_semicolon();
 
 
 /**
@@ -882,7 +883,7 @@ void parser_switch()
 	}
 }
 
-void check_semicolon()
+void static inline check_semicolon()
 {
 	TToken *token = token_get();
 	if(token->type == token_semicolon)

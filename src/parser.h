@@ -27,7 +27,6 @@ void parser_repeat();
 void parser_for();
 void parser_switch();
 
-void check_semicolon();
 
 #define HASH_TABLE_SIZE	16
 
