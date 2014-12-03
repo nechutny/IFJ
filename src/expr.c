@@ -268,7 +268,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
                 throw_error(error_semicolon_before_end);
             }
             else{
-               token_return_token(pom); 
+               token_return_token(pom);
             }
         case token_then:
         case token_do:
@@ -278,7 +278,7 @@ operator_number recon_sign(TToken * token, parse_context *context, uStack_t * st
         case token_end:
         case token_invalid:
             return operator_dolar;
-            
+
         case token_write:
         case token_readln:
             throw_error(error_syntax_in_precedence);
@@ -552,9 +552,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 gen_code(ins_push_htab, func->local_symbol, NULL, NULL);
                                 print_debug(debug_generator,"generuju volani funkce: %s",func->name->data);
                             }
+
+				if(i >= func->args_count)   throw_error(error_to_many_args);
+
                             gen_code(ins_assign, string_add(string_new(), func->args[i].name->data), NULL, uStack_top(TString *,var_stack));
                             i++;
-                            if(i > func->args_count)   throw_error(error_to_many_args);
+
                         }
                         else if(function != NULL)
                         {

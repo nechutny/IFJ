@@ -13,7 +13,7 @@ begin
 	write( arg1, cislo);
 
 	for cislo := 1 to 15 do
-		funkce1 := 2;
+		funkce1 := 2
 end;
 
 function funkce2() : integer;
@@ -23,10 +23,10 @@ begin
 	text[1] := 'A';
 	write( -7-4 );
 	while False do begin
-		funkce2( );
-		desetine := desetine - 15;
+		funkce2 := funkce2( );
+		desetine := desetine - 15
 	end;
-	funkce1( 1234, 5);
+	funkce2 := funkce1( 1234, 5)
 end;
 function funkce3( arg1 : integer ) : integer;
 var var1 : integer;
@@ -34,14 +34,14 @@ begin
 	write( arg1 );
 	if arg1 = 5 then begin
 		arg1 := 5+var1;
-		funkce2();
+		var1 := funkce2();
 		repeat
 			var1 := (arg1 +  5) * funkce1(1.2, 123);
-		until False;
+		until False
 	end else begin
-		arg1 := -arg1*5;
+		arg1 := -arg1*5
 	end;
-	funkce3 := 2;
+	funkce3 := 2
 end;
 
 begin

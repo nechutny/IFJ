@@ -17,6 +17,6 @@ begin
 			a := a - 1
 		end;
 
-		write('Vysledek je :', vysl);
+		write('Vysledek je :', vysl)
 	end
 end.

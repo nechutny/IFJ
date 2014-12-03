@@ -11,7 +11,7 @@ begin
 	else
 		result := num2;
 
-	max := result;
+	max := result
 end;
 
 begin
@@ -20,6 +20,6 @@ begin
 
 	ret := max(a, b);
 
-	write(ret);
+	write(ret)
 
 end.

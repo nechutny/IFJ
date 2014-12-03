@@ -8,11 +8,11 @@ var	cislo : integer;
 
 function funkce1( arg1 : real, arg2 : integer ) : integer;
 begin
-	write(arg1, arg2);
+	write(arg1, arg2)
 end;
 
 
 
 begin
-	funkce1(1.5, 5);
+	cislo := funkce1(1.5, 5)
 end.

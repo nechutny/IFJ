@@ -53,12 +53,12 @@ void parser_file()
 	print_debug(debug_parser,"Main body");
 	parser_main();
 
-	token = token_get();
+	/*token = token_get();
 	if(token->type != token_end)
 	{
 		throw_error(error_end);
 	}
-	token_free(token);
+	token_free(token);*/
 
 	token = token_get();
 	if(token->type != token_dot)
@@ -265,19 +265,9 @@ void parser_function()
 
 			uStack_push(TList *, global.ins_list_stack ,var->ptr.function->ins);
 
-			do
-			{
-				parser_main();
-				token = token_get();
-			} while(token->type != token_end);
+			parser_main();
 
 			uStack_remove(global.local_symbols);
-
-			if(token->type != token_end)
-			{ /* Function code block end */
-				throw_error(error_end);
-			}
-			token_free(token);
 
 			uStack_remove(global.ins_list_stack);
 
@@ -388,8 +378,10 @@ void parser_main()
 		parser_code();
 		token = token_get();
 	}
+
+
 	print_debug(debug_parser,"Code block end");
-	token_return_token(token);
+	//token_return_token(token);
 }
 
 
@@ -448,26 +440,6 @@ void parser_code()
 					throw_error(error_type);
 				}
 			}
-			else if(token->type == token_parenthesis_left)
-			{ /* function call */
-				hitem = htab_lookup(global.global_symbol, token2->data);
-				print_debug(debug_parser,"function call");
-				if(hitem == NULL)
-				{
-					throw_error(error_function_not_exists);
-				}
-				else if(hitem->type != type_function)
-				{
-					throw_error(error_function_is_var);
-				}
-				token_return_token(token);
-				if(precedence(global.file, context_args, NULL, hitem->ptr.function))
-				{
-					throw_error(error_expresion);
-				}
-				//gen_code(ins_push_htab, hitem->ptr.function->local_symbol, NULL, NULL);
-				//gen_code(ins_call, hitem->ptr.function, NULL, NULL);
-			}
 			else
 			{
 				throw_error(error_unkown);
@@ -505,7 +477,7 @@ void parser_code()
 			break;
 
 		case token_semicolon:
-			/* empty command */
+			throw_error(error_semicolon_unexpected);
 			break;
 
 		case token_write:
@@ -594,7 +566,7 @@ void parser_if()
 	{ /* Code block */
 		token_free(token);
 		parser_main();
-		token = token_get();
+		check_semicolon();
 	}
 	else
 	{ /* Only one command without begin/end */
@@ -617,7 +589,7 @@ void parser_if()
 		{ /* else block */
 			token_free(token);
 			parser_main();
-			token = token_get();
+			check_semicolon();
 		}
 		else
 		{ /* only one command */
@@ -687,7 +659,7 @@ void parser_while()
 	{ /* Code block */
 		token_free(token);
 		parser_main();
-		token = token_get();
+		check_semicolon();
 	}
 	else
 	{ /* Only one command */
@@ -907,6 +879,28 @@ void parser_switch()
 	if(token->type != token_end)
 	{
 		throw_error(error_end);
+	}
+}
+
+void check_semicolon()
+{
+	TToken *token = token_get();
+	if(token->type == token_semicolon)
+	{
+		token = token_get();
+		if(token->type == token_end)
+		{
+			throw_error(error_semicolon_unexpected);
+		}
+		token_return_token(token);
+	}
+	else if(token->type != token_end && token->type != token_else)
+	{
+		throw_error(error_semicolon);
+	}
+	else
+	{
+		token_return_token(token);
 	}
 }
 

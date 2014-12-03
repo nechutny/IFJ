@@ -7,5 +7,5 @@ begin
 	b := 3;
 	c := 6;
 	result := find(a, 'kusp');
-	write(result);
+	write(result)
 end.

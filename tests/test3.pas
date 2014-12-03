@@ -14,6 +14,6 @@ begin
 	begin
 		write('Spatne zadana posloupnost, zkuste znovu:'#10'');
 		readln(str1);
-		str2 := sort(str1);
+		str2 := sort(str1)
 	end
 end.
