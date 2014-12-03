@@ -117,19 +117,26 @@ void parser_var()
 		}
 		print_debug(debug_parser,"Variable %s",token->data);
 
-		if(htab_lookup(global.global_symbol, token->data) != NULL)
-		{
-			throw_error(error_var_already_defined);
-		}
+
 
 		if(local_context == context_global)
 		{ /* Add variable to global symbol table */
+
+			if(htab_lookup(global.global_symbol, token->data) != NULL)
+			{
+				throw_error(error_var_already_defined);
+			}
 
 			var = htab_create(global.global_symbol, token->data);
 			symbol_variable_init(var, token->data);
 		}
 		else
 		{ /* Add variable to local symbol table in stack */
+			if(htab_lookup(uStack_top(htab_t*, global.local_symbols), token->data) != NULL)
+			{
+				throw_error(error_var_already_defined);
+			}
+
 			var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
 			symbol_variable_init(var, token->data);
 		}
