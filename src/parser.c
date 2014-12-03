@@ -452,7 +452,7 @@ void parser_code()
 			}
 			else
 			{
-				throw_error(error_unkown);
+				throw_error(error_unkown_command);
 			}
 			break;
 
@@ -478,6 +478,13 @@ void parser_code()
 			/* for */
 			token_free(token);
 			parser_for();
+			break;
+
+		case token_begin:
+			/* for */
+			token_free(token);
+			parser_main();
+			check_semicolon();
 			break;
 
 		case token_case:
@@ -522,7 +529,7 @@ void parser_code()
 
 		default:
 			/* Unkown command */
-			throw_error(error_unkown);
+			throw_error(error_unkown_command);
 			break;
 	}
 }

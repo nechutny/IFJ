@@ -51,6 +51,7 @@ typedef enum{
     error_incopatible_types,
     error_dividing_by_zero,
     error_unkown,
+    error_unkown_command,
     error_uninicialized,
     error_to_many_args,
     error_need_more_args,

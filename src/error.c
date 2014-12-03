@@ -48,6 +48,11 @@ void throw_error(errors code)
             return_code = 2;
             break;
 
+        case error_unkown_command:
+            fprintf(stderr,"Unkown command ");
+            return_code = 2;
+            break;
+
         case error_dot:
             fprintf(stderr,"Expected '.'");
             return_code = 2;
