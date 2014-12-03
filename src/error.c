@@ -178,24 +178,24 @@ void throw_error(errors code)
             break;
 
         case error_left_parenthesis_precedence:
-            fprintf(stderr,"Excpects: ( in expression");
+            fprintf(stderr,"Expects: ( in expression");
             return_code = 2;
             break;
-            
+
         case error_semicolon_before_end:
             fprintf(stderr,"Semicolon before end");
             return_code = 2;
             break;
         case error_operator_precedence:
-            fprintf(stderr,"Excpects: operator in expression");
+            fprintf(stderr,"Expects: operator in expression");
             return_code = 2;
             break;
         case error_not_string:
-            fprintf(stderr, "one variable is not string" );
+            fprintf(stderr, "First variable is not string" );
             return_code = 4;
             break;
         case error_string:
-            fprintf(stderr, "one variable is string" );
+            fprintf(stderr, "First variable is string" );
             return_code = 4;
             break;
         case error_incopatible_types:
@@ -209,7 +209,7 @@ void throw_error(errors code)
             break;
 
         case error_uninicialized:
-            fprintf(stderr, "unicialized variable");
+            fprintf(stderr, "Unicialized variable");
             return_code = 7;
             break;
 
