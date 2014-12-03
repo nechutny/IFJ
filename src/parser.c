@@ -176,7 +176,7 @@ void parser_var()
 void parser_function()
 {
 	TToken * token = token_get();
-	htab_listitem* var, *var2;
+	htab_listitem* var, *var2, *var3 = NULL;
 	unsigned long offset = ftell(global.file);
 
 	if(token->type == token_function)
@@ -198,6 +198,7 @@ void parser_function()
 		}
 		else
 		{
+			var3 = var;
 			var = htab_create(global.global_symbol, token->data);
 		}
 
@@ -291,6 +292,10 @@ void parser_function()
 		}
 		else
 		{
+			if(var3 != NULL)
+			{
+				throw_error(error_function_second_forward);
+			}
 			uStack_remove(global.local_symbols);
 			token = token_get();
 			if(token->type != token_semicolon)
