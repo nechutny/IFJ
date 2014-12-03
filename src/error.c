@@ -142,6 +142,11 @@ void throw_error(errors code)
             return_code = 3;
             break;
 
+        case error_prototype_mismatch:
+            fprintf(stderr,"Function forward declaration doesn't match definition");
+            return_code = 3;
+            break;
+
         case error_var_already_defined:
             fprintf(stderr,"Variable already defined");
             return_code = 3;

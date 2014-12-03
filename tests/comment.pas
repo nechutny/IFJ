@@ -18,9 +18,7 @@ begin
 	a := 400;
 	b := 200;
 
-	ret := max(a, b);
-
-	write(ret)
+	ret := max(a, b)
 
 end.
 

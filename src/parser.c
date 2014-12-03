@@ -177,6 +177,7 @@ void parser_function()
 {
 	TToken * token = token_get();
 	htab_listitem* var, *var2, *var3 = NULL;
+	functionArgs* tmp = NULL;
 	unsigned long offset = ftell(global.file);
 
 	if(token->type == token_function)
@@ -199,6 +200,11 @@ void parser_function()
 		else
 		{
 			var3 = var;
+			if(var3 != NULL && var3->type == type_function)
+			{
+				tmp = _malloc(sizeof(functionArgs)*var3->ptr.function->args_count);
+				memcpy(tmp, var3->ptr.function->args, sizeof(functionArgs)*var3->ptr.function->args_count);
+			}
 			var = htab_create(global.global_symbol, token->data);
 		}
 
@@ -217,7 +223,7 @@ void parser_function()
 		uStack_push(htab_t*, global.local_symbols, table);
 
 		/* Function arguments */
-		parser_args(var->ptr.function);
+		parser_args(var->ptr.function, tmp, var3 == NULL ? 0 : var3->ptr.function->args_count);
 
 		token = token_get();
 		if(token->type != token_parenthesis_right)
@@ -318,7 +324,7 @@ void parser_function()
  * Parse function arguments
  * ID : type [, args]
  */
-void parser_args(symbolFunction* func)
+void parser_args(symbolFunction* func, functionArgs* prototype, int count)
 {
 	htab_listitem* var;
 	TToken * token2;
@@ -336,6 +342,15 @@ void parser_args(symbolFunction* func)
 			{ /* Datetype */
 				symbol_function_arg_add(func, token->data, token2->type);
 
+				/* Check if prototype corespond */
+				if(prototype != NULL && count >= func->args_count)
+				{
+					if(prototype[func->args_count-1].type != func->args[func->args_count-1].type || strcmp(prototype[func->args_count-1].name->data, func->args[func->args_count-1].name->data) != 0 )
+					{
+						throw_error(error_prototype_mismatch);
+					}
+				}
+
 				var = htab_create(uStack_top(htab_t*, global.local_symbols), token->data);
 				symbol_variable_init(var, token->data);
 				symbol_variable_type_set(var->ptr.variable, token2->type);
@@ -347,7 +362,7 @@ void parser_args(symbolFunction* func)
 				if(token->type == token_comma)
 				{ /* Comma, so check for more arguments? */
 					token_free(token);
-					parser_args(func);
+					parser_args(func, prototype, count);
 				}
 				else
 				{ /* No more arguments */
@@ -373,6 +388,11 @@ void parser_args(symbolFunction* func)
 	else
 	{
 		throw_error(error_identifier);
+	}
+
+	if(prototype != NULL && func->args_count != count)
+	{
+		throw_error(error_prototype_mismatch);
 	}
 }
 

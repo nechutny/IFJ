@@ -16,7 +16,7 @@ void parser_file();
 void parser_vars();
 void parser_var();
 void parser_function();
-void parser_args(symbolFunction* func);
+void parser_args(symbolFunction* func, functionArgs* prototype, int count);
 void parser_body();
 void parser_main();
 void parser_code();
