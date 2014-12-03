@@ -58,7 +58,8 @@ typedef enum{
     error_need_more_args,
     error_uninicialized_return_func,
     error_semicolon_before_end,
-    error_semicolon_unexpected
+    error_semicolon_unexpected,
+    error_readln_without_argument
 } errors;
 
 
