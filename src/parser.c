@@ -345,7 +345,7 @@ void parser_args(symbolFunction* func, functionArgs* prototype, int count)
 				/* Check if prototype corespond */
 				if(prototype != NULL && count >= func->args_count)
 				{
-					if(prototype[func->args_count-1].type != func->args[func->args_count-1].type)
+					if(prototype[func->args_count-1].type != func->args[func->args_count-1].type || strcmp(prototype[func->args_count-1].name->data, func->args[func->args_count-1].name->data) != 0 )
 					{
 						throw_error(error_prototype_mismatch);
 					}
