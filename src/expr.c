@@ -519,6 +519,20 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                     create_const(token);
                     uStack_push(TString *,var_stack,string_add(string_new(),token->data));
                 }
+                else if(token->type == token_true)
+                {
+                    htab_listitem * hitem = htab_lookup(global.constant_symbol, token->data);
+                    if(hitem == NULL) create_const(token);
+
+                    uStack_push(TString *,var_stack,string_add(string_new(),token->data));
+                }
+                else if(token->type == token_false)
+                {
+                    htab_listitem * hitem = htab_lookup(global.constant_symbol, token->data);
+                    if(hitem == NULL) create_const(token);
+
+                    uStack_push(TString *,var_stack,string_add(string_new(),token->data));
+                }
                 else if(token->type == token_identifier)
                 {
                     htab_listitem* hitem = VariableExists(token->data);
@@ -1012,8 +1026,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
     {
         if(Func_call == context_assign)
         {
+            TString * test = uStack_top(TString *, var_stack);
             print_debug(debug_generator, "result name: %s", result->name);
-            gen_code(ins_assign, string_add(string_new(), result->name), NULL, uStack_top(TString *, var_stack));
+            print_debug(debug_generator, "result name: %s", result->name);
+
+            gen_code(ins_assign, string_add(string_new(), result->name), NULL, test);
         }
         else
         {
@@ -1024,7 +1041,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
     }
     else if(Func_call == context_if || Func_call == context_while || Func_call == context_repeat)
     {
-        if(uStack_top(TList *,global.ins_list_stack)->last != NULL)
+        if(uStack_top(TList *,global.ins_list_stack)->last != NULL && ((TIns *)uStack_top(TList *,global.ins_list_stack)->last->data)->type)
         {
             TIns *ins = uStack_top(TList *,global.ins_list_stack)->last->data;
             ins->adr3 = string_add(string_new(), "cond1");
@@ -1032,7 +1049,12 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
         else
         {
             TString *var = uStack_top(TString *, var_stack);
-            if(var != NULL) gen_code(ins_assign,string_add(string_new(), result->name),NULL,var);
+            htab_listitem *hitem = VariableExists(var->data);
+            if (hitem == NULL) hitem = htab_lookup(global.constant_symbol, var->data);
+            if(var != NULL)
+            { 
+                if(hitem != NULL)   global.cond1 = hitem->ptr.variable; //gen_code(ins_assign,string_add(string_new(), result->name),NULL,var);
+            }
         }
     }
     //token_free(token);
