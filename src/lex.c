@@ -261,19 +261,21 @@ stare					buffer[buff_i] = c; buff_i++;
 					buffer[buff_i] = c; buff_i++;
 					state = state__double_e;
 				}
-				else if (c == EOF || c == '+' || c == ',' || c == '*' ||
+				/*else if (c == EOF || c == '+' || c == ',' || c == '*' ||
 						c == '/' || c == '-' || c == '=' || c == ')' ||
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
+stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_int;
 					token = token_data_add(token, buffer);
 					return token;
-				}
+				}*/
 				else
 				{
-					token->type=token_invalid;
+					ungetc(c, file);
+					token->type=token_int;
+					token = token_data_add(token, buffer);
 					return token;
 				}
 				break;
@@ -309,19 +311,21 @@ stare					buffer[buff_i] = c; buff_i++;
 					buffer[buff_i] = c; buff_i++;
 					state = state__double_e;
 				}
-				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
+				/*else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
+stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
 					token = token_data_add(token,buffer);
 					return token;
-				}
+				}*/
 				else
 				{
-					token->type=token_invalid;
+					ungetc(c, file);
+					token->type=token_double;
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				break;
@@ -384,19 +388,21 @@ stare						token = token_data_add(token,buffer);
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
 				}
-				else if (c == EOF || c == '+' || c == ',' || c == '*' || 
+				/*else if (c == EOF || c == '+' || c == ',' || c == '*' || 
 						c == '/' || c == '-' || c == '=' || c == ')' || 
 						c == ';' || c == '>' || c == '<' || c == '[' ||
-						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
+stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					ungetc(c, file);
 					token->type=token_double;
 					token = token_data_add(token,buffer);
 					return token;
-				}
+				}*/
 				else
 				{
-					token->type=token_invalid;
+					ungetc(c, file);
+					token->type=token_double;
+					token = token_data_add(token,buffer);
 					return token;
 				}
 				break;
@@ -404,6 +410,11 @@ stare						token = token_data_add(token,buffer);
 				if (c=='}')
 				{
 					state = state_init;
+				}
+				else if (c==EOF)
+				{
+					token->type=token_invalid;
+					return token;
 				}
 				break;
 			case state_colon:
@@ -467,7 +478,7 @@ stare						token = token_data_add(token,buffer);
 					{
 						ascii = 0;
 						c = fgetc(file);
-						if (c == '\'')
+						if (!isdigit(c))	//stara podminka c == '\''
 						{
 							token->type = token_invalid;
 							return token;
@@ -476,7 +487,7 @@ stare						token = token_data_add(token,buffer);
 						{
 							c = fgetc(file);
 						}
-						if (c == '\'')	//napr #00 
+						if (c == '\'' || !isdigit(c))	//napr #00 
 						{
 							token->type = token_invalid;
 							return token;
@@ -543,6 +554,11 @@ stare						token = token_data_add(token,buffer);
 						return token;
 					}
 				}
+				else if(c==EOF || c=='\n')
+					{
+						token->type = token_invalid;
+						return token;
+					}
 				//string_add_chr(token->data, c);
 				buffer[buff_i] = c; buff_i++;
 				break;
