@@ -45,8 +45,8 @@ typedef struct {
 do {											\
 	if(stack->count == 0)								\
 	{										\
-		stack->data = _malloc(sizeof(type)*2);					\
-		stack->allocated = 2;							\
+		stack->data = _malloc(sizeof(type)*8);					\
+		stack->allocated = 8;							\
 	}										\
 	else if(stack->allocated <= stack->count)					\
 	{										\
