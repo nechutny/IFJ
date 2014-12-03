@@ -33,6 +33,7 @@ typedef enum{
     error_function_is_var,
     error_function_already_defined,
     error_function_second_forward,
+    error_prototype_mismatch,
     error_var_already_defined,
     error_var_not_exists,
     error_read_invalid,
