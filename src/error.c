@@ -132,6 +132,11 @@ void throw_error(errors code)
             return_code = 3;
             break;
 
+        case error_var_already_defined:
+            fprintf(stderr,"Variable already defined");
+            return_code = 3;
+            break;
+
         case error_var_not_exists:
             fprintf(stderr,"Used variable not exists");
             return_code = 3;

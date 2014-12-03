@@ -117,8 +117,14 @@ void parser_var()
 		}
 		print_debug(debug_parser,"Variable %s",token->data);
 
+		if(htab_lookup(global.global_symbol, token->data) != NULL)
+		{
+			throw_error(error_var_already_defined);
+		}
+
 		if(local_context == context_global)
 		{ /* Add variable to global symbol table */
+
 			var = htab_create(global.global_symbol, token->data);
 			symbol_variable_init(var, token->data);
 		}
@@ -186,7 +192,7 @@ void parser_function()
 
 		/* check if is only prototpy or nothing */
 		var = htab_lookup(global.global_symbol, token->data);
-		if(var != NULL && var->type == type_function && var->ptr.function->defined)
+		if(var != NULL && ((var->type == type_function && var->ptr.function->defined) || var->type == type_variable))
 		{
 			throw_error(error_function_already_defined);
 		}
