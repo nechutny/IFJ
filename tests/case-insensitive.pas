@@ -8,12 +8,14 @@ var	cislo : integer;
 
 function funkce2() : integer; forward;
 
-function funkce1( arg1 : real, arg2 : integer ) : integer;
+function funkce1( arg1 : real; arg2 : integer ) : integer;
 begin
 	write( arg1, cislo);
 
 	for cislo := 1 to 15 do
+	begin
 		fUnkce1 := 2
+	end
 end;
 
 function funkce2() : integer;
@@ -36,7 +38,9 @@ begin
 		arG1 := 5+var1;
 		var1 := funkce2();
 		repeat
-			var1 := (arg1 +  5) * funkce1(1.2, 123);
+		begin
+			var1 := (arg1 +  5) * funkce1(1.2, 123)
+		end
 		until False
 	end else begin
 		arg1 := -arg1*5

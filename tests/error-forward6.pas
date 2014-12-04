@@ -8,7 +8,7 @@ var	cislo : integer;
 
 function funkce1( arg1 : integer) : integer; forward;
 
-function funkce1( arg1 : integer, arg2 : real  ) : integer;
+function funkce1( arg1 : integer; arg2 : real  ) : integer;
 begin
 	arg2 := 123.5;
 	funkce1 := 123

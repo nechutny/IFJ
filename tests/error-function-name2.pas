@@ -2,14 +2,18 @@ var	a : integer;
 	b : integer;
 	ret : integer;
 
-function sort(num1 : integer, num2: integer): integer;
+function sort(num1 : integer; num2: integer): integer;
 var result: integer;
 
 begin
 	if (num1 > num2) then
-		result := num1;
+	begin
+		result := num1
+	end
 	else
-		result := num2;
+	begin
+		result := num2
+	end;
 
 	sort := result
 end;

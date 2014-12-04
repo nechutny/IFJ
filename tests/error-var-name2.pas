@@ -1,7 +1,7 @@
 var foo : integer;
 
 
-function foox( arg1 : real, arg2 : integer ) : integer;
+function foox( arg1 : real; arg2 : integer ) : integer;
 var foox : integer;
 begin
 	write(arg1, arg2);

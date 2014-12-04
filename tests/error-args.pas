@@ -8,12 +8,14 @@ var	cislo : integer;
 
 function funkce2() : integer; forward;
 
-function funkce1( arg1 : real, arg2 : integer ) : integer;
+function funkce1( arg1 : real; arg2 : integer ) : integer;
 begin
 	write( arg1, cislo);
 
 	for cislo := 1 to 15 do
+	begin
 		funkce1 := 2
+	end
 end;
 
 function funkce2() : integer;

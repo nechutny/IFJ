@@ -6,7 +6,7 @@ var	cislo : integer;
 
 { foo }
 
-function funkce1( arg1 : real, arg2 : integer ) : integer;
+function funkce1( arg1 : real; arg2 : integer ) : integer;
 begin
 	write(arg1, arg2)
 end;

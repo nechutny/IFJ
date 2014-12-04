@@ -1,4 +1,4 @@
-function funkce1( arg1 : real, arg2 : integer ) : integer;
+function funkce1( arg1 : real; arg2 : integer ) : integer;
 begin
 	funkce1 := 123
 end;

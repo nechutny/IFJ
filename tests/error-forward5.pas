@@ -6,7 +6,7 @@ var	cislo : integer;
 
 { foo }
 
-function funkce1( arg1 : integer, arg2 : real ) : integer; forward;
+function funkce1( arg1 : integer; arg2 : real ) : integer; forward;
 
 function funkce1( arg1 : integer ) : integer;
 begin

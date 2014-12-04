@@ -366,8 +366,8 @@ void parser_args(symbolFunction* func, functionArgs* prototype, int count)
 				token_free(token);
 				token_free(token2);
 				token = token_get();
-				if(token->type == token_comma)
-				{ /* Comma, so check for more arguments? */
+				if(token->type == token_semicolon)
+				{ /* Semmicolon, so check for more arguments? */
 					token_free(token);
 					parser_args(func, prototype, count);
 				}
@@ -618,9 +618,8 @@ void parser_if()
 		check_semicolon();
 	}
 	else
-	{ /* Only one command without begin/end */
-		token_return_token(token);
-		parser_code();
+	{
+		throw_error(error_begin);
 	}
 
 	/* inser jump for skipping else block */
@@ -641,9 +640,8 @@ void parser_if()
 			check_semicolon();
 		}
 		else
-		{ /* only one command */
-			token_return_token(token);
-			parser_code();
+		{
+			throw_error(error_begin);
 		}
 	}
 	else
@@ -712,8 +710,7 @@ void parser_while()
 	}
 	else
 	{ /* Only one command */
-		token_return_token(token);
-		parser_code();
+		throw_error(error_begin);
 	}
 	gen_code(ins_jmp, NULL, NULL, n_start);
 	list_insert_node(uStack_top(TList *,global.ins_list_stack), n_end);
@@ -749,12 +746,11 @@ void parser_repeat()
 	{ /* Code block */
 		token_free(token);
 		parser_main();
-		token = token_get();
+		check_semicolon();
 	}
 	else
-	{ /* Only one command */
-		token_return_token(token);
-		parser_code();
+	{
+		throw_error(error_begin);
 	}
 
 	token = token_get();
@@ -833,12 +829,11 @@ void parser_for()
 	{ /* Code block */
 		token_free(token);
 		parser_main();
-		token = token_get();
+		check_semicolon();
 	}
 	else
 	{ /* Only one command */
-		token_return_token(token);
-		parser_code();
+		throw_error(error_begin);
 	}
 
 	print_debug(debug_parser,"end for");
@@ -943,7 +938,7 @@ void static inline check_semicolon()
 		}
 		token_return_token(token);
 	}
-	else if(token->type != token_end && token->type != token_else)
+	else if(token->type != token_end && token->type != token_else && token->type != token_until)
 	{
 		throw_error(error_semicolon);
 	}
