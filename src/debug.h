@@ -16,7 +16,7 @@
 #define DEBUG_MESSAGE_PARSER        0
 #define DEBUG_MESSAGE_PREC      0
 #define DEBUG_MESSAGE_SYMBOL        0
-#define DEBUG_MESSAGE_INTERPRET     1
+#define DEBUG_MESSAGE_INTERPRET     0
 #define DEBUG_MESSAGE_GENERATOR     0
 
 typedef enum {

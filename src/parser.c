@@ -185,6 +185,7 @@ void parser_function()
 	TToken * token = token_get();
 	htab_listitem* var, *var2, *var3 = NULL;
 	functionArgs* tmp = NULL;
+	int count = 0;
 	unsigned long offset = ftell(global.file);
 
 	if(token->type == token_function)
@@ -210,6 +211,7 @@ void parser_function()
 			if(var3 != NULL && var3->type == type_function)
 			{
 				tmp = _malloc(sizeof(functionArgs)*var3->ptr.function->args_count);
+				count = var3->ptr.function->args_count;
 				memcpy(tmp, var3->ptr.function->args, sizeof(functionArgs)*var3->ptr.function->args_count);
 			}
 			var = htab_create(global.global_symbol, token->data);
@@ -230,7 +232,7 @@ void parser_function()
 		uStack_push(htab_t*, global.local_symbols, table);
 
 		/* Function arguments */
-		parser_args(var->ptr.function, tmp, var3 == NULL ? 0 : var3->ptr.function->args_count);
+		parser_args(var->ptr.function, tmp, count);
 
 		token = token_get();
 		if(token->type != token_parenthesis_right)

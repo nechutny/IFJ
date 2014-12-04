@@ -1,1 +1,1 @@
-Error: Function forward declaration doesn't match definition on line 11. Readed '' (type id: 23).
+Error: Second forward for function on line 11. Readed 'forward' (type id: 62).
