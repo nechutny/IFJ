@@ -240,7 +240,7 @@ void throw_error(errors code)
             break;
 
         case error_to_many_args:
-            fprintf(stderr, "To many arguments");
+            fprintf(stderr, "Too many arguments");
             return_code = 4;
             break;
 
