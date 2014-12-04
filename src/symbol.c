@@ -94,7 +94,7 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
 		var1->type = var2->type;
 	}
 
-	if(var2->type != var1->type)
+	if(var2->type != var1->type && var1->type != variable_boolean)
 	{
 		print_debug(debug_symbol, "var1 type: %d, var2 type: %d",var1->type,var2->type);
 		throw_error(error_incopatible_types);
@@ -112,7 +112,25 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
 			var1->value.value_double = var2->value.value_double;
 			break;
 		case variable_boolean:
-			var1->value.value_boolean = var2->value.value_boolean;
+			switch(var2->type)
+			{
+				case variable_boolean:
+					var1->value.value_boolean = var2->value.value_boolean;
+					break;
+				case variable_integer:
+					var1->value.value_boolean = var2->value.value_number;
+					break;
+				case variable_double:
+					if(var2->value.value_double == 0)	var1->value.value_boolean = 0;
+					else								var1->value.value_boolean = 1;
+					break;
+				case variable_string:
+					if(strcmp(var2->value.value_string,""))	var1->value.value_boolean = 1;
+					else									var1->value.value_boolean = 0;
+					break;
+				default:
+					break;
+			}
 			break;
 		case variable_string:
 			strcpy(var1->value.value_string, var2->value.value_string);
@@ -171,13 +189,13 @@ symbolVariable* create_const(TToken *token)
 			return var;
 
 		case token_true:
-			var->type = variable_integer;
-			var->value.value_number = 1;
+			var->type = variable_boolean;
+			var->value.value_boolean = 1;
 			var->inicialized = 1;
 			return var;
 		case token_false:
-			var->type = variable_integer;
-			var->value.value_number = 0;
+			var->type = variable_boolean;
+			var->value.value_boolean = 0;
 			var->inicialized = 1;
 			return var;
 		default:

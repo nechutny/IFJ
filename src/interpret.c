@@ -119,7 +119,9 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		throw_error(error_string);
 	}
 
-	if(adr1->type == variable_double || adr2->type == variable_double)
+	if(adr1->type == variable_boolean && adr1->type == variable_boolean)
+		adr3->type = variable_boolean;
+	else if(adr1->type == variable_double || adr2->type == variable_double)
 		adr3->type = variable_double;
 	else
 		adr3->type = variable_integer;
@@ -128,6 +130,8 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		a = adr1->value.value_double;
 	else if(adr1->type == variable_integer)
 		a = adr1->value.value_number;
+	else if(adr1->type == variable_boolean)
+		a = adr1->value.value_boolean;
 	else
 	{
 		throw_error(error_incopatible_types);
@@ -137,6 +141,8 @@ void do_math(char c, symbolVariable *adr1, symbolVariable *adr2, symbolVariable 
 		b = adr2->value.value_double;
 	else if( adr2->type == variable_integer)
 		b = adr2->value.value_number;
+	else if(adr2->type == variable_boolean)
+		b = adr1->value.value_boolean;
 	else
 	{
 		throw_error(error_incopatible_types);

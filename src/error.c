@@ -177,6 +177,12 @@ void throw_error(errors code)
             return_code = 2;
             break;
 
+
+        case error_readln_without_argument:
+            fprintf(stderr,"Missing argument in readln");
+            return_code = 2;
+            break;
+
         case error_sign_less_precedence:
             fprintf(stderr,"Excpects: < in expression");
             return_code = 2;
@@ -246,6 +252,11 @@ void throw_error(errors code)
         case error_uninicialized_return_func:
             fprintf(stderr, "Function return unicialized");
             return_code = 7;
+            break;
+
+        case error_lex:
+            fprintf(stderr, "Invalid token");
+            return_code = 1;
             break;
 
         default:

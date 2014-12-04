@@ -567,7 +567,7 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 print_debug(debug_generator,"generuju volani funkce: %s",func->name->data);
                             }
 
-				if(i >= func->args_count)   throw_error(error_to_many_args);
+                if(i >= func->args_count)   throw_error(error_to_many_args);
 
                             gen_code(ins_assign, string_add(string_new(), func->args[i].name->data), NULL, uStack_top(TString *,var_stack));
                             i++;
@@ -821,6 +821,11 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 uStack_remove(stack);
                                 if (uStack_top(int, stack) == sign_less)
                                 {
+                                    if (Func_call == context_readln){// this is when readln has no arguments 
+                                        throw_error(error_readln_without_argument);
+                                    }
+                                    
+                                    
                                     uStack_remove(stack);
                                     uStack_push(int, stack,operator_non_term);
                                     if(func != NULL)

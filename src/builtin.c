@@ -41,6 +41,11 @@ void pascal_write(uStack_t* args)
 				printf("%g", symbol->value.value_double);
 				break;
 
+			case variable_boolean:
+				printf("%s", symbol->value.value_boolean ? "TRUE" : "FALSE");
+				//printf("%d", symbol->value.value_boolean);
+				break;
+
 			default:
 				fprintf(stderr, "WTF value");
 		}
