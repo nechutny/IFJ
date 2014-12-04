@@ -217,8 +217,7 @@ TToken *token_get() {
 						}
 						else
 						{
-							token->type = token_invalid;
-							return token;
+							throw_error(error_lex);
 						}
 				}
 				break;
@@ -289,8 +288,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				}
 				else
 				{
-					token->type=token_invalid;
-					return token;
+					throw_error(error_lex);
 				}
 				break;
 			case state_double:
@@ -360,8 +358,7 @@ stare						token = token_data_add(token,buffer);
 				}
 				else
 				{
-					token->type=token_invalid;
-					return token;
+					throw_error(error_lex);
 				}
 				break;
 			case state__double_e:
@@ -378,8 +375,7 @@ stare						token = token_data_add(token,buffer);
 				}
 				else
 				{
-					token->type=token_invalid;
-					return token;
+					throw_error(error_lex);
 				}
 				break;
 			case state_double_e:
@@ -413,8 +409,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				}
 				else if (c==EOF)
 				{
-					token->type=token_invalid;
-					return token;
+					throw_error(error_lex);
 				}
 				break;
 			case state_colon:
@@ -480,8 +475,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 						c = fgetc(file);
 						if (!isdigit(c))	//stara podminka c == '\''
 						{
-							token->type = token_invalid;
-							return token;
+							throw_error(error_lex);
 						}
 						while (c == '0')
 						{
@@ -489,15 +483,13 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 						}
 						if (c == '\'' || !isdigit(c))	//napr #00 
 						{
-							token->type = token_invalid;
-							return token;
+							throw_error(error_lex);
 						}
 						else
 						{
 							if (!isdigit(c))
 							{
-								token->type = token_invalid;
-								return token;
+								throw_error(error_lex);
 							}
 							else
 							{
@@ -510,8 +502,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 								}
 								else if (!isdigit(c))
 								{
-									token->type = token_invalid;
-									return token;
+									throw_error(error_lex);
 								}
 								else
 								{
@@ -524,8 +515,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 									}
 									else if (!isdigit(c))
 									{
-										token->type = token_invalid;
-										return token;
+										throw_error(error_lex);
 									}
 									else
 									{
@@ -533,8 +523,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 										c = fgetc(file);
 										if (c != '\'' || ascii > 255)
 										{
-											token->type = token_invalid;
-											return token;
+											throw_error(error_lex);
 										}
 										else
 										{
@@ -556,8 +545,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				}
 				else if(c==EOF || c=='\n')
 					{
-						token->type = token_invalid;
-						return token;
+						throw_error(error_lex);
 					}
 				//string_add_chr(token->data, c);
 				buffer[buff_i] = c; buff_i++;

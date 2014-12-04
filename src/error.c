@@ -254,6 +254,11 @@ void throw_error(errors code)
             return_code = 7;
             break;
 
+        case error_lex:
+            fprintf(stderr, "Invalid token");
+            return_code = 1;
+            break;
+
         default:
             fprintf(stderr, "Unkown error");
             return_code = 9;
