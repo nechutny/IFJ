@@ -78,14 +78,14 @@ void token_free( TToken * token ) {
 //set correct type of token (is it keyword or indentifier?)
 void set_identifier(TToken *token){
  	char * keywords[]={"var","in","do","repeat","until","case",
- 						"of","to","id","mod","div","not","and","or",
+ 						"of","to","id","mod","not","and","or",
  						"begin","end","while","for","if","then","else",
  						"function","true","false","null",
  						"integer","real","char","boolean","string","array",
  						"xor","forward","find","readln","write","sort",
  						"length","copy"};
  	TToken_type tokens[]={token_var,token_in,token_do,token_repeat,token_until,
- 		token_case,token_of,token_to,token_id,token_mod,token_div,token_not,
+ 		token_case,token_of,token_to,token_id,token_mod,token_not,
  						token_and,token_or,token_begin,token_end,token_while,
  						token_for,token_if,token_then,token_else,
  						token_function,token_true,
@@ -95,7 +95,7 @@ void set_identifier(TToken *token){
  						token_write,token_f_sort,token_f_length,token_f_copy};
 
  	token->type = token_identifier;
- 	for (int i = 0; i <= 38; i++)
+ 	for (int i = 0; i <= 37; i++)
  	{
  		if (strcmp(keywords[i],token->data)==0)
  		{
@@ -543,7 +543,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 						return token;
 					}
 				}
-				else if(c==EOF || c=='\n')
+				else if(c==EOF || c=='\n' || c<=31)
 					{
 						throw_error(error_lex);
 					}
