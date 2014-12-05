@@ -64,15 +64,19 @@ void pascal_readln(symbolVariable* var)
 	switch(var->type)
 	{
 		case variable_string:
-			readed = scanf("%255s", (var->value.value_string));
+			readed = scanf("%[^\n]\n", (var->value.value_string));
+//			readed = getline(&var->value.value_string, &len, stdin);
+//			readed = gets(var->value.value_string);
 			break;
 
 		case variable_integer:
 			readed = scanf("%d", &(var->value.value_number));
+			while(getchar() != '\n');
 			break;
 
 		case variable_double:
 			readed = scanf("%lf", &(var->value.value_double));
+			while(getchar() != '\n');
 			break;
 
 		case variable_boolean:
