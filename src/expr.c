@@ -621,6 +621,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
                                         print_debug(debug_prec, "Precedence syntax used rule 20: E -> func(E)");
+                                        if (Func_call == context_copy || Func_call == context_find){
+                                            throw_error(error_readln_without_argument);
+                                        }
 
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
                                         {
@@ -736,6 +739,10 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                         uStack_remove(stack);
                                         uStack_push(int, stack,operator_non_term);
 
+                                        if ((Func_call == context_copy && number_param != 3 ) || (Func_call == context_find && number_param != 2 ) ){
+                                            throw_error(error_readln_without_argument);
+                                        }
+
                                         if(Func_call != context_write && Func_call != context_readln && Func_call != context_sort && Func_call != context_find && Func_call != context_copy && Func_call != context_length)
                                         {
                                             if(func != NULL)
@@ -822,7 +829,9 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                                 uStack_remove(stack);
                                 if (uStack_top(int, stack) == sign_less)
                                 {
-                                    if (Func_call == context_readln){// this is when readln has no arguments 
+                                    if ((Func_call == context_readln) || (Func_call == context_sort) || \
+                                    (Func_call == context_length) || (Func_call == context_find) || \
+                                    (Func_call == context_copy) ){// this is when integrated functions has no arguments 
                                         throw_error(error_readln_without_argument);
                                     }
                                     
