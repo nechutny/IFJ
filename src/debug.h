@@ -12,12 +12,12 @@
 #include <stdarg.h>
 
 
-#define DEBUG_MESSAGES          	0
-#define DEBUG_MESSAGE_PARSER        	1
-#define DEBUG_MESSAGE_PREC      	0
-#define DEBUG_MESSAGE_SYMBOL        	1
-#define DEBUG_MESSAGE_INTERPRET     	0
-#define DEBUG_MESSAGE_GENERATOR     	0
+#define DEBUG_MESSAGES              0
+#define DEBUG_MESSAGE_PARSER            0
+#define DEBUG_MESSAGE_PREC          1
+#define DEBUG_MESSAGE_SYMBOL            1
+#define DEBUG_MESSAGE_INTERPRET         0
+#define DEBUG_MESSAGE_GENERATOR         0
 
 typedef enum {
     debug_parser,
