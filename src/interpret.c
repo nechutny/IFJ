@@ -510,7 +510,8 @@ void interpret(){
 						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
 						var->type = variable_integer;
 						var->value.value_number = pascal_length(get_var(ins->adr2));
-							break;
+						var->inicialized = 1;
+						break;
 					default:
 						print_debug(debug_interpret, "NOT yet\n");
 				}
