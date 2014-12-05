@@ -87,6 +87,12 @@ void parser_vars()
 	if(token->type == token_var)
 	{ /* Found variable delcaration(s) */
 		token_free(token);
+		token = token_get();
+		if(token->type != token_identifier)
+		{
+			throw_error(error_identifier);
+		}
+		token_return_token(token);
 		parser_var();
 	}
 	else
