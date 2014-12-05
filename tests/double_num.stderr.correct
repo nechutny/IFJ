@@ -1,1 +1,1 @@
-/bin/sh: tests/double_num.stdin: Adresář nebo soubor neexistuje
+/bin/sh: 1: cannot open tests/double_num.stdin: No such file

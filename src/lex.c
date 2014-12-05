@@ -83,7 +83,7 @@ void set_identifier(TToken *token){
  						"function","true","false","null",
  						"integer","real","char","boolean","string","array",
  						"xor","forward","find","readln","write","sort",
- 						"length","copy"};
+ 						"length","copy","downto"};
  	TToken_type tokens[]={token_var,token_in,token_do,token_repeat,token_until,
  		token_case,token_of,token_to,token_id,token_mod,token_not,
  						token_and,token_or,token_begin,token_end,token_while,
@@ -92,10 +92,10 @@ void set_identifier(TToken *token){
  						token_false,token_null,token_integer,token_real,
  						token_char,token_boolean,token_string_var,token_array,
  						token_xor,token_forward,token_f_find,token_readln,
- 						token_write,token_f_sort,token_f_length,token_f_copy};
+ 						token_write,token_f_sort,token_f_length,token_f_copy,token_downto};
 
  	token->type = token_identifier;
- 	for (int i = 0; i <= 37; i++)
+ 	for (int i = 0; i <= 38; i++)
  	{
  		if (strcmp(keywords[i],token->data)==0)
  		{
@@ -205,6 +205,7 @@ TToken *token_get() {
 						else if (isdigit(c))
 						{
 							state = state_int;
+							printf("int\n");
 							//number_state = state_int;
 							//string_add_chr(token->data, c);
 							buffer[buff_i] = c; buff_i++;
@@ -283,6 +284,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
+					printf("int %s\n",buffer);
 					state = state_double;
 //					number_state = state_double;
 				}
