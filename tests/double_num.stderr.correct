@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 Error: Wrong syntax in expression on line 10. Readed 'cislo2' (type id: 26).
-=======
-/bin/sh: 1: cannot open tests/double_num.stdin: No such file
->>>>>>> 6b401111c0e9ad1beacf8a718428a3f7e48fc042
