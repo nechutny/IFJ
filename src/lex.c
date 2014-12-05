@@ -205,7 +205,7 @@ TToken *token_get() {
 						else if (isdigit(c))
 						{
 							state = state_int;
-							printf("int\n");
+						//	printf("int\n");
 							//number_state = state_int;
 							//string_add_chr(token->data, c);
 							buffer[buff_i] = c; buff_i++;
@@ -284,7 +284,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				{
 					//string_add_chr(token->data, c);
 					buffer[buff_i] = c; buff_i++;
-					printf("int %s\n",buffer);
+		//			printf("int %s\n",buffer);
 					state = state_double;
 //					number_state = state_double;
 				}
@@ -553,7 +553,7 @@ stare						c == ']' || c=='{' || isspace(c))	// '(' shouldnt be there)
 				buffer[buff_i] = c; buff_i++;
 				break;
 			default:
-				printf("Chuck Norris\n");
+	//			printf("Chuck Norris\n");
 				break; //you shouldnt get there
 		}
 		
