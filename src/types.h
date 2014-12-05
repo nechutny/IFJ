@@ -30,7 +30,7 @@ typedef struct _TVar {
 /* types of tokes */
 typedef enum {
 	token_invalid,			// 0
-	token_string,			// 1 
+	token_string,			// 1
 	token_comma,			// 2
 	token_var,			// 3
 	token_assign,			// 4
@@ -41,7 +41,7 @@ typedef enum {
 	token_sub,			// 8
 	token_div,			// 9
 	token_mod,			// 10
-	
+
 	token_in,			// 11
 	token_dot,			// 12
 //comaring
@@ -113,7 +113,9 @@ typedef enum {
 	token_f_length,
 	token_f_sort,
 
-			
+	token_downto,
+
+
 } TToken_type;
 
 typedef struct _TToken {
