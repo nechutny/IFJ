@@ -813,7 +813,7 @@ void parser_for()
 	}
 
 	token = token_get();
-	if(token->type != token_to)
+	if(token->type != token_to && token->type != token_downto)
 	{
 		throw_error(error_to);
 	}
