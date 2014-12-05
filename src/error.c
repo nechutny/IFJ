@@ -179,8 +179,8 @@ void throw_error(errors code)
 
 
         case error_readln_without_argument:
-            fprintf(stderr,"Missing argument in readln");
-            return_code = 2;
+            fprintf(stderr,"Wrong argument in integrated functions");
+            return_code = 4;
             break;
 
         case error_sign_less_precedence:
