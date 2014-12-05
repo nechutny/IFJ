@@ -1,1 +1,1 @@
-/bin/sh: tests/double_num.stdin: Adresář nebo soubor neexistuje
+Error: Wrong syntax in expression on line 10. Readed 'cislo2' (type id: 26).

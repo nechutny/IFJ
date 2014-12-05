@@ -1,1 +1,1 @@
-/bin/sh: tests/error-double2.stdin: Adresář nebo soubor neexistuje
+Error: Got error sign from precedence table on line 6. Readed '' (type id: 12).

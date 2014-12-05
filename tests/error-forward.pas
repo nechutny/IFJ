@@ -1,24 +1,24 @@
-var	cislo : integer;
-	cislo2 : integer;
-	desetine : real;
-	text : string;
-	znak : char;
+var cislo : integer;
+    cislo2 : integer;
+    desetine : real;
+    text : string;
+    
 
 { foo }
 
 function funkce1( arg1 : real; arg2 : integer ) : integer;
 begin
-	arg2 := funkce2();
-	funkce1 := 123;
+    arg2 := funkce2();
+    funkce1 := 123;
 end;
 
 function funkce2() : integer;
 var xyz : real;
 begin
-	funkce2 := 1;
+    funkce2 := 1;
 end;
 
 
 begin
-	funkce1(1.5, 5);
+    funkce1(1.5, 5);
 end.
