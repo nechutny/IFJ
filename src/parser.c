@@ -542,26 +542,6 @@ void parser_code()
             precedence(global.file, context_readln, NULL, NULL);
             break;
 
-        case token_f_find:
-            print_debug(debug_parser,"find");
-            precedence(global.file, context_find, NULL, NULL);
-            break;
-
-        case token_f_copy:
-            print_debug(debug_parser,"copy");
-            precedence(global.file, context_copy, NULL, NULL);
-            break;
-
-        case token_f_length:
-            print_debug(debug_parser,"length");
-            precedence(global.file, context_length, NULL, NULL);
-            break;
-
-        case token_f_sort:
-            print_debug(debug_parser,"sort");
-            precedence(global.file, context_sort, NULL, NULL);
-            break;
-
         default:
             /* Unkown command */
             throw_error(error_unkown_command);
@@ -819,7 +799,7 @@ void parser_for()
             throw_error(error_to);
         }
     }
-    
+
     token_free(token);
 
     /* Target value */
