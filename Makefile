@@ -6,6 +6,7 @@ CC=gcc
 CFLAGS=-O2 -std=c99 -lm -Wall -pedantic -g -rdynamic
 OBJFILES=$(patsubst src/%.c, build/%.c.o, $(shell ls src/*.c))
 TESTFILES=$(patsubst tests/%.pas, tests/%, $(shell ls tests/*.pas));
+SHELL=bash
 
 # build
 all: ifj
@@ -45,7 +46,10 @@ tests: ifj $(TESTFILES)
 	# Done
 
 tests/%: tests/%.pas
+	@echo -e "\n"
+	-$(shell valgrind ./ifj $< < $@.stdin > /dev/null 2> $@.valgrind.real; /bin/echo -e "#"; grep "ERROR SUMMARY:" $@.valgrind.real; if [ $$(grep "ERROR SUMMARY: 0 errors from 0 contexts" $@.valgrind.real | wc -l) = "1" ]; then rm $@.valgrind.real; fi;  )
 	-$(shell ./ifj $< > $@.stdout.real 2> $@.stderr.real < $@.stdin;echo "$$?" > $@.exit.real;diff $@.stdout.real $@.stdout.correct > /dev/null;if [ "$$?" = "0" ]; then diff $@.stderr.real $@.stderr.correct > /dev/null;if [ "$$?" = "0" ]; then diff $@.exit.real $@.exit.correct > /dev/null; if [ "$$?" = "0" ]; then echo "# OK ... $@"; rm $@.stdout.real $@.stderr.real $@.exit.real; else echo "# ERROR ... $@"; fi; else echo "# ERROR ... $@"; fi; else echo "# ERROR ... $@"; fi)
+
 
 # Documentation
 documentation: doc/dokumentace.tex
