@@ -239,6 +239,8 @@ void compare(TInsType type, symbolVariable *adr1, symbolVariable *adr2, symbolVa
 	if( adr1->type == variable_string)
 		x = strcmp(adr1->value.value_string,adr2->value.value_string);
 
+	print_debug(debug_interpret, "compare a: %d b: %d",a,b);
+
 	switch(type){
 		case ins_equal:
 			if( adr1->type == variable_string)
@@ -471,13 +473,16 @@ void interpret(){
 				switch(((long long)ins->adr1))
 				{
 					case 0:
+						print_debug(debug_interpret, "write");
 						pascal_write(get_var_in_stack(ins->adr2));
 						break;
 					case 1:
+						print_debug(debug_interpret, "read");
 						pascal_readln(get_var(ins->adr2));
 						break;
 					case 2:
 						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
+						print_debug(debug_interpret, "sort");
 						var = sort(get_var(ins->adr2));
 						copy_variable(get_var(ins->adr3), var);
 						break;
@@ -489,6 +494,7 @@ void interpret(){
 						if(!tmp1->inicialized)	throw_error(error_uninicialized);
 						if(!tmp2->inicialized)	throw_error(error_uninicialized);
 
+						print_debug(debug_interpret, "find");
 						var = find(tmp1, tmp2);
 						copy_variable(get_var(ins->adr3), var);
 						break;
@@ -502,10 +508,12 @@ void interpret(){
 						if(!tmp2->inicialized)	throw_error(error_uninicialized);
 						if(!tmp3->inicialized)	throw_error(error_uninicialized);
 
+						print_debug(debug_interpret, "copy");
 						var = copy(tmp1, tmp2, tmp3);
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 5:
+						print_debug(debug_interpret, "lenght");
 						var = get_var(ins->adr3);
 						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
 						var->type = variable_integer;

@@ -44,7 +44,7 @@ void symbol_variable_init(htab_listitem* var, char* name)
 symbolVariable *symbol_variable_init2(variableType type)
 {
 	char part[] = "help";
-	unsigned int length = sizeof(char)*(strlen(part)+1);
+	unsigned int length = sizeof(char)*(strlen(part)+2);
 	symbolVariable* var = _malloc(sizeof(symbolVariable)+length);
 
 	memcpy(var->name, part, length);

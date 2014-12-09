@@ -1,7 +1,8 @@
-var foo : integer;
+var foo,len : integer;
 
 begin
 
 	foo := 5;
-	foo := 5+length('aaaaaaa')+3
+	len := length('aaaaaaa');
+	foo := 5+len+3
 end.

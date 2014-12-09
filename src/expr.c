@@ -1043,8 +1043,6 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
         {
             TString * test = uStack_top(TString *, var_stack);
             print_debug(debug_generator, "result name: %s", result->name);
-            print_debug(debug_generator, "result name: %s", result->name);
-
             gen_code(ins_assign, string_add(string_new(), result->name), NULL, test);
         }
         else
@@ -1071,6 +1069,20 @@ int precedence(FILE *filename,parse_context Func_call, symbolVariable *result, s
                 if(hitem != NULL)   global.cond1 = hitem->ptr.variable; //gen_code(ins_assign,string_add(string_new(), result->name),NULL,var);
             }
         }
+    }
+    else if(result != NULL && (Func_call == context_for_to || context_for_init))
+    {
+            TString * test = uStack_top(TString *, var_stack);
+            //symbolVariable *var;
+            //htab_listitem *hitem= VariableExists(test->data);
+            //if(hitem == NULL)   hitem = htab_lookup(global.constant_symbol,test->data);
+            //if(hitem == NULL && !strcmp(test->data, "partresult"))  var = global.partresult;
+            //else                                                    var = hitem->ptr.variable;
+
+            //result->value.value_number = var->value.value_number;
+            gen_code(ins_assign, string_add(string_new(), result->name), NULL, test);
+            print_debug(debug_generator, "result name: %s", result->name);
+
     }
     //token_free(token);
 

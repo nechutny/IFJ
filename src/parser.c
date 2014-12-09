@@ -542,6 +542,27 @@ void parser_code()
             precedence(global.file, context_readln, NULL, NULL);
             break;
 
+        case token_f_length:
+            print_debug(debug_parser,"length");
+            precedence(global.file, context_length, NULL, NULL);
+            break;
+
+        case token_f_copy:
+            print_debug(debug_parser,"copy");
+            precedence(global.file, context_copy, NULL, NULL);
+            break;
+
+        case token_f_sort:
+            print_debug(debug_parser,"sort");
+            precedence(global.file, context_sort, NULL, NULL);
+            break;
+
+        case token_f_find:
+            print_debug(debug_parser,"find");
+            precedence(global.file, context_find, NULL, NULL);
+            break;
+
+
         default:
             /* Unkown command */
             throw_error(error_unkown_command);
@@ -762,6 +783,56 @@ void parser_repeat()
  */
 void parser_for()
 {
+
+    TString *cond = string_add(string_new(), "cond1");
+    TString *jedna_s = string_add(string_new(), "1");
+    TString *expr1_s = string_add(string_new(), "expr1");
+    TString *expr2_s = string_add(string_new(), "expr2");
+
+    int downto = 0;
+
+    htab_listitem *hitem_c = htab_create(global.constant_symbol, "1");
+    hitem_c->type = type_variable;
+    hitem_c->ptr.variable = _malloc(sizeof(symbolVariable));
+    hitem_c->ptr.variable->inicialized = 1;
+    hitem_c->ptr.variable->value.value_number = 1;
+
+    symbolVariable *expr1 = symbol_variable_init2(variable_integer),
+                   *expr2 = symbol_variable_init2(variable_integer);
+
+    unsigned int length = sizeof(char)*(strlen("expr1")+1);
+    memcpy(expr1->name, "expr1", length);
+    memcpy(expr2->name, "expr2", length);
+
+    htab_listitem* hitem_expr1 = htab_create(global.global_symbol, "expr1");
+    htab_listitem* hitem_expr2 = htab_create(global.global_symbol, "expr2");
+
+    hitem_expr1->ptr.variable = expr1;
+    hitem_expr2->ptr.variable = expr2;
+
+    hitem_expr1->type = type_variable;
+    hitem_expr2->type = type_variable;
+
+
+    TIns *start = _malloc(sizeof(TIns)),
+         *end = _malloc(sizeof(TIns));
+
+    TNode   *n_start = _malloc(sizeof(TNode)),
+            *n_end = _malloc(sizeof(TNode));
+
+    start->type = ins_lab;
+    start->adr1 = NULL;
+    start->adr2 = NULL;
+    start->adr3 = NULL;
+
+    end->type = ins_lab;
+    end->adr1 = NULL;
+    end->adr2 = NULL;
+    end->adr3 = NULL;
+
+    n_start->data = start;
+    n_end->data = end;
+
     htab_listitem* hitem;
     print_debug(debug_parser,"for");
 
@@ -776,7 +847,7 @@ void parser_for()
     { /* Not variable */
         throw_error(error_var_not_exists);
     }
-
+    hitem->ptr.variable = expr1;
     token_free(token);
 
     token = token_get();
@@ -786,11 +857,12 @@ void parser_for()
     }
     token_free(token);
 
-    /* Inicial. value */
-    if(precedence(global.file, context_for_init, NULL, NULL))
+    /* Inicial. value*/
+    if(precedence(global.file, context_for_init, expr1, NULL))
     {
         throw_error(error_expresion);
     }
+
 
     token = token_get();
     if(token->type != token_to )
@@ -798,15 +870,24 @@ void parser_for()
         if (token->type != token_downto){
             throw_error(error_to);
         }
+        downto = 1;
     }
 
     token_free(token);
 
+    //var 2
     /* Target value */
-    if(precedence(global.file, context_for_to, NULL, NULL))
+    if(precedence(global.file, context_for_to, expr2, NULL))
     {
         throw_error(error_expresion);
     }
+
+    //begin label
+    list_insert_node(uStack_top(TList *,global.ins_list_stack), n_start);
+
+    //inser less,greater ins
+    if(downto) gen_code(ins_greateq, expr1_s, expr2_s, cond);
+    else       gen_code(ins_lesseq, expr1_s, expr2_s, cond);
 
     token = token_get();
     if(token->type != token_do)
@@ -814,6 +895,9 @@ void parser_for()
         throw_error(error_do);
     }
     token_free(token);
+
+    //jmp cond
+    gen_code(ins_jmp, cond, NULL, n_end);
 
     token = token_get();
     if(token->type == token_begin)
@@ -826,6 +910,15 @@ void parser_for()
     { /* Only one command */
         throw_error(error_begin);
     }
+   
+    expr1->inicialized = 1;
+    expr2->inicialized = 1;
+
+    if(downto)  gen_code(ins_subb,expr1_s,jedna_s,expr1_s);
+    else        gen_code(ins_add,expr1_s,jedna_s,expr1_s);
+    
+    gen_code(ins_jmp, NULL, NULL, n_start);
+    list_insert_node(uStack_top(TList *,global.ins_list_stack), n_end);
 
     print_debug(debug_parser,"end for");
 }
