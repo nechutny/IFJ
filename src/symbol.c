@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "string.h"
 #include "symbol.h"
-#include "htable.h"
+#include "ial.h"
 #include "garbage.h"
 #include "error.h"
 #include "list.h"
@@ -53,7 +53,7 @@ symbolVariable *symbol_variable_init2(variableType type)
 
 	// Due to IEE 754 and memory structure we can use this speed tweak
 	var->value.value_double = 0.0;
-	
+
 	/*
 	switch(var->type)
 	{
@@ -102,7 +102,7 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
 
 	// Faster is switch
 	//memcpy(&var1->value,&var2->value,sizeof(var1->value));
-	
+
 	switch(var1->type)
 	{
 		case variable_integer:
@@ -136,7 +136,7 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
  * @return	Pointer to new symbolVariable structure
  */
 symbolVariable* create_const(TToken *token)
-{	
+{
 	char part[] = "partresult";
 	unsigned int length = sizeof(char)*(strlen(part)+1);
 	symbolVariable* var = _malloc(sizeof(symbolVariable)+length);
@@ -156,13 +156,13 @@ symbolVariable* create_const(TToken *token)
 			var->value.value_number = atoi(token->data);
 			var->inicialized = 1;
 			return var;
-			
+
 		case token_double:
 			var->type = variable_double;
 			var->value.value_double = atof(token->data);
 			var->inicialized = 1;
 			return var;
-		
+
 		case token_string:
 			var->type = variable_string;
 			strncpy(var->value.value_string, token->data, 255);
@@ -209,7 +209,7 @@ void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 	var->type = type_function;
 
 	var->ptr.function = _malloc(sizeof(symbolFunction));
-	
+
 	var->ptr.function->args_count = 0;
 	var->ptr.function->args = NULL;
 	var->ptr.function->defined = 0;
@@ -230,7 +230,7 @@ void symbol_function_init(htab_listitem* var, char* name, unsigned long offset)
 void symbol_function_arg_add(symbolFunction* func, char* name, TToken_type token_type)
 {
 	(func->args_count)++;
-	
+
 	if(func->args_count == 1)
 	{
 		func->args = _malloc(sizeof(functionArgs));
@@ -239,14 +239,14 @@ void symbol_function_arg_add(symbolFunction* func, char* name, TToken_type token
 	{
 		func->args = _realloc(func->args, sizeof(functionArgs)*func->args_count);
 	}
-	
+
 	if(func->args == NULL)
 	{
 		fprintf(stderr,"Error: NUll pointer in symbol_function_arg_add\n");
 	}
-	
+
 	func->args[ func->args_count-1 ].type = symbol_type(token_type);
-	
+
 	func->args[ func->args_count-1 ].name = string_new();
 	func->args[func->args_count-1].name = string_add(func->args[func->args_count-1].name, name);
 }

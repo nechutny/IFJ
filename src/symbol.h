@@ -12,14 +12,7 @@
 #include "string.h"
 #include "types.h"
 #include "list.h"
-#include "htable.h"
 #include "error.h"
-
-
-#define VariableExists(name)							\
-	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : ((htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL )  ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
-
-
 
 typedef enum {
 	variable_integer,
@@ -48,7 +41,7 @@ typedef struct TsymbolVariable {
 	char name[];			// Variable name
 } symbolVariable;
 
-//#include "htable.h"
+#include "ial.h"
 
 typedef struct TsymbolFunction {
 	TString* name;
@@ -71,6 +64,10 @@ symbolVariable *create_const(TToken *token);
 void symbol_function_init(htab_listitem* var, char* name, unsigned long offset);
 void symbol_function_type_set(symbolFunction* variable, TToken_type token_type);
 void symbol_function_arg_add(symbolFunction* variable, char* name, TToken_type token_type);
+
+#define VariableExists(name)							\
+	(uStack_count(global.local_symbols) == 0 ? htab_lookup(global.global_symbol,name) : ((htab_lookup(uStack_top(htab_t*, global.local_symbols), name) == NULL )  ? htab_lookup(global.global_symbol,name) : htab_lookup(uStack_top(htab_t*, global.local_symbols), name)))
+
 
 /**
  * Translate token_type to variableType
@@ -105,7 +102,7 @@ variableType inline symbol_type(TToken_type token_type)
 		case token_array:
 			return variable_array;
 			break;
-			
+
 		default:
 			fprintf(stderr, "Error: Chuck Norris? No way how to get there!\n");
 	}

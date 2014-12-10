@@ -11,18 +11,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
-#include "htable.h"
+#include "ial.h"
 #include "symbol.h"
 #include "uStack.h"
 
 /*
- *   __      __  _____    _____   _______    ____    _____  
- *   \ \    / / |_   _|  / ____| |__   __|  / __ \  |  __ \ 
+ *   __      __  _____    _____   _______    ____    _____
+ *   \ \    / / |_   _|  / ____| |__   __|  / __ \  |  __ \
  *    \ \  / /    | |   | |         | |    | |  | | | |__) |
- *     \ \/ /     | |   | |         | |    | |  | | |  _  / 
- *      \  /     _| |_  | |____     | |    | |__| | | | \ \ 
+ *     \ \/ /     | |   | |         | |    | |  | | |  _  /
+ *      \  /     _| |_  | |____     | |    | |__| | | | \ \
  *       \/     |_____|  \_____|    |_|     \____/  |_|  \_\
- * 
+ *
  *            The Cleaner v1.0
  */
 
@@ -46,7 +46,7 @@ struct TGlobal
 	struct TAllocItem* allocated_last;
 
 	FILE* file;
-	
+
 	uStack_t* ins_list_stack;
 
 	htab_t* global_symbol;
