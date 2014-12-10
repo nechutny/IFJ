@@ -1,1 +1,1 @@
-Error: incopatibile type in expresion on line 30. Readed '' (type id: 21).
+tests/div-int-by-real.pas:30:0: Error: incopatibile type in expresion Readed '' (type id: 21).

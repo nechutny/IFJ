@@ -15,7 +15,11 @@ void throw_error(errors code)
 {
     int return_code = 1;
 
-    fprintf(stderr,"Error: ");
+	int column = 0;
+	int line = file_line(&column);
+
+    fprintf(stderr,"%s:%d:%d: Error: ", global.file_name, line, column);
+
     switch(code)
     {
         case error_program:
@@ -182,7 +186,7 @@ void throw_error(errors code)
             fprintf(stderr,"Wrong argument in integrated functions");
             return_code = 4;
             break;
-            
+
         case error_readln_arguments:
             fprintf(stderr, "Wrong number of arguments in readln");
             return_code = 2;
@@ -270,26 +274,29 @@ void throw_error(errors code)
             break;
     }
 
-    fprintf(stderr," on line %d. Readed '%s' (type id: %d).\n", file_line(), token_last->data, token_last->type);
+    fprintf(stderr," Readed '%s' (type id: %d).\n", token_last->data, token_last->type);
 
     exit(return_code);
 }
 
-int file_line()
+int file_line(int *column)
 {
     long pos = ftell(global.file);
 
     long line = 1;
     long readed = 0;
     int character;
+    (*column) = 0;
 
     rewind(global.file);
     while(readed < pos)
     {
+	(*column)++;
         character = fgetc(global.file);
         if(character == '\n')
         {
             line++;
+            (*column) = 0;
         }
         readed++;
     }

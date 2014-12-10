@@ -1,1 +1,1 @@
-Error: Invalid token on line 5. Readed '' (type id: 0).
+tests/error-float2.pas:5:0: Error: Invalid token Readed '' (type id: 0).

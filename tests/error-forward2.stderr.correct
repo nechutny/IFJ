@@ -1,1 +1,1 @@
-Error: Second forward for function on line 11. Readed 'forward' (type id: 62).
+tests/error-forward2.pas:11:66: Error: Second forward for function Readed 'forward' (type id: 62).

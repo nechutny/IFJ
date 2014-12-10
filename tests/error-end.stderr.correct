@@ -1,1 +1,1 @@
-Error: Expected '.' on line 25. Readed '' (type id: 24).
+tests/error-end.pas:25:4: Error: Expected '.' Readed '' (type id: 24).

@@ -1,1 +1,1 @@
-Error: Variable already defined on line 3. Readed 'p' (type id: 26).
+tests/error-vars.pas:3:5: Error: Variable already defined Readed 'p' (type id: 26).

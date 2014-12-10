@@ -491,21 +491,4 @@ symbolVariable * copy(symbolVariable *text,symbolVariable *start,symbolVariable 
 
 	copied->value.value_string[end->value.value_number] = '\0';
 	return copied;
-}/*
-symbolVariable * copy(symbolVariable *text,symbolVariable *start,symbolVariable *end)
-{
-int j = 0;
-if (text->type!=variable_string || start->value.value_number>end->value.value_number || start->value.value_number>255 || end->value.value_number>255)
-return NULL;
-symbolVariable * copied=symbol_variable_init2(variable_string);
-copied->inicialized = 1;
-for (int i=start->value.value_number; i < end->value.value_number+1; i++)
-{
-
-copied->value.value_string[j]=text->value.value_string[i-1];
-j++;
 }
-if (text->value.value_string[end->value.value_number+1]!='\0')
-copied->value.value_string[end->value.value_number+1]='\0';
-return copied;
-}*/

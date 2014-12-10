@@ -1,1 +1,1 @@
-Error: Expected ':' on line 1. Readed '' (type id: 2).
+tests/vars.pas:1:9: Error: Expected ':' Readed '' (type id: 2).

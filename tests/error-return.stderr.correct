@@ -1,1 +1,1 @@
-Error: Function return unicialized on line 19. Readed '' (type id: 21).
+tests/error-return.pas:19:0: Error: Function return unicialized Readed '' (type id: 21).

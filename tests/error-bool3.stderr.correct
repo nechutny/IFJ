@@ -1,1 +1,1 @@
-Error: incopatibile type in expresion on line 8. Readed '' (type id: 21).
+tests/error-bool3.pas:8:0: Error: incopatibile type in expresion Readed '' (type id: 21).

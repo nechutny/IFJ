@@ -1,1 +1,1 @@
-Error: Need more arguments on line 27. Readed 'write' (type id: 64).
+tests/error-args2.pas:27:6: Error: Need more arguments Readed 'write' (type id: 64).
