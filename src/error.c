@@ -178,9 +178,14 @@ void throw_error(errors code)
             break;
 
 
-        case error_readln_without_argument:
+        case error_wrong_number_of_argument:
             fprintf(stderr,"Wrong argument in integrated functions");
             return_code = 4;
+            break;
+            
+        case error_readln_arguments:
+            fprintf(stderr, "Wrong number of arguments in readln");
+            return_code = 2;
             break;
 
         case error_sign_less_precedence:

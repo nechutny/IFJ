@@ -59,7 +59,8 @@ typedef enum{
     error_uninicialized_return_func,
     error_semicolon_before_end,
     error_semicolon_unexpected,
-    error_readln_without_argument,
+    error_wrong_number_of_argument,
+    error_readln_arguments,
     error_lex
 } errors;
 
