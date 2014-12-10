@@ -1,1 +1,1 @@
-Error: Function already defined on line 4. Readed 'foo' (type id: 26).
+tests/error-function-name.pas:4:12: Error: Function already defined Readed 'foo' (type id: 26).

@@ -22,11 +22,13 @@ int main(int argc, char* argv[])
 	{
 		return 99;
 	}
-	
+
 	global_init();
 
 	if( (global.file = fopen(argv[1], "r")) == NULL)
 		return 99;
+
+	global.file_name = argv[1];
 
 	parser_file();
 

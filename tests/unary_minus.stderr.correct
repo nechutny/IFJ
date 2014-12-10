@@ -1,1 +1,1 @@
-Error: Expected identifier on line 1. Readed '2' (type id: 19).
+tests/unary_minus.pas:1:5: Error: Expected identifier Readed '2' (type id: 19).

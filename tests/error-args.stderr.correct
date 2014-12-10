@@ -1,1 +1,1 @@
-Error: Too many arguments on line 31. Readed '' (type id: 23).
+tests/error-args.pas:31:39: Error: Too many arguments Readed '' (type id: 23).

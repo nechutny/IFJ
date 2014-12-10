@@ -66,7 +66,7 @@ typedef enum{
 
 
 void throw_error(errors code);
-int file_line();
+int file_line(int *column);
 
 
 #endif
