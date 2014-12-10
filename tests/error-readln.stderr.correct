@@ -1,1 +1,1 @@
-Error: Wrong argument in integrated functions on line 3. Readed 'end' (type id: 28).
+tests/error-readln.pas:3:3: Error: Wrong number of arguments in readln Readed 'end' (type id: 28).

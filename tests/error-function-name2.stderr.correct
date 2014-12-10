@@ -1,1 +1,1 @@
-Error: Expected identifier on line 5. Readed 'sort' (type id: 68).
+tests/error-function-name2.pas:5:13: Error: Expected identifier Readed 'sort' (type id: 68).

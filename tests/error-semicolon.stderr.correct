@@ -1,1 +1,1 @@
-Error: Unexpected ';' on line 52. Readed '' (type id: 24).
+tests/error-semicolon.pas:52:16: Error: Unexpected ';' Readed '' (type id: 24).

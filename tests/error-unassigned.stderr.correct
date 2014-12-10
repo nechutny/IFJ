@@ -1,1 +1,1 @@
-Error: Unkown command  on line 25. Readed '' (type id: 22).
+tests/error-unassigned.pas:25:5: Error: Unkown command  Readed '' (type id: 22).

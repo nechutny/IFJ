@@ -1,1 +1,1 @@
-Error: Wrong argument in integrated functions on line 6. Readed 'end' (type id: 28).
+tests/error-copy1.pas:5:8: Error: Unkown command  Readed 'copy' (type id: 66).

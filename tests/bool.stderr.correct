@@ -1,1 +1,1 @@
-Error: Invalid token on line 9. Readed '' (type id: 0).
+tests/bool.pas:9:15: Error: Invalid token Readed '' (type id: 0).

@@ -1,1 +1,1 @@
-Error: Got error sign from precedence table on line 6. Readed '' (type id: 12).
+tests/error-double2.pas:6:15: Error: Got error sign from precedence table Readed '' (type id: 12).

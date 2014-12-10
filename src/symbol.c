@@ -102,7 +102,7 @@ void copy_variable(symbolVariable *var1, symbolVariable *var2)
 
 	// Faster is switch
 	//memcpy(&var1->value,&var2->value,sizeof(var1->value));
-
+	//print_debug(debug_symbol, "var1 type: %d, var2 type: %d",var1->type,var2->type);
 	switch(var1->type)
 	{
 		case variable_integer:

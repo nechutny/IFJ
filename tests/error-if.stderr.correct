@@ -1,1 +1,1 @@
-Error: Got error sign from precedence table on line 7. Readed '' (type id: 4).
+tests/error-if.pas:7:11: Error: Got error sign from precedence table Readed '' (type id: 4).

@@ -7,6 +7,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include "builtin.h"
 #include "symbol.h"
@@ -22,11 +23,11 @@
 void pascal_write(uStack_t* args)
 {
 	symbolVariable* symbol;
-	
+
 	for(int i = 0; i < uStack_count(args); i++)
 	{
 		symbol = uStack_offset(symbolVariable*, args, i);
-		
+
 		switch(symbol->type)
 		{
 			case variable_string:
@@ -61,12 +62,25 @@ void pascal_write(uStack_t* args)
 void pascal_readln(symbolVariable* var)
 {
 	int readed = 0;
+	char c;
 	switch(var->type)
 	{
 		case variable_string:
-			readed = scanf("%[^\n]\n", (var->value.value_string));
-//			readed = getline(&var->value.value_string, &len, stdin);
-//			readed = gets(var->value.value_string);
+
+			do
+			{
+				c = getc(stdin);
+			}
+			while(isspace(c));
+			ungetc(c, stdin);
+
+			if(fgets(var->value.value_string, 255, stdin) != NULL)
+			{
+				readed = strlen(var->value.value_string);
+				var->value.value_string[readed-1] = '\0';
+				readed = 1;
+			}
+
 			break;
 
 		case variable_integer:

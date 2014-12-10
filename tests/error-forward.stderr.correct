@@ -1,1 +1,1 @@
-Error: Called function not exists on line 11. Readed '' (type id: 22).
+tests/error-forward.pas:11:20: Error: Called function not exists Readed '' (type id: 22).
