@@ -74,12 +74,13 @@ void pascal_readln(symbolVariable* var)
 			while(isspace(c));
 			ungetc(c, stdin);
 
-			fgets(var->value.value_string, 255, stdin);
-//			readed = scanf("%[^\n]\n", (var->value.value_string));
-//			readed = getline(&var->value.value_string, &len, stdin);
-//			readed = gets(var->value.value_string);
+			if(fgets(var->value.value_string, 255, stdin) != NULL)
+			{
+				readed = strlen(var->value.value_string);
+				var->value.value_string[readed-1] = '\0';
+				readed = 1;
+			}
 
-			readed = 1;
 			break;
 
 		case variable_integer:
