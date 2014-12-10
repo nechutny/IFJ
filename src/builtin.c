@@ -61,49 +61,84 @@ void pascal_write(uStack_t* args)
  */
 void pascal_readln(symbolVariable* var)
 {
-	int readed = 0;
 	char c;
-	switch(var->type)
-	{
-		case variable_string:
+	char buffer[255];
+	char *ptr = buffer;
 
+	// Can't read bool
+	if(var->type == variable_boolean)
+	{
+		throw_error(error_read_to_bool);
+	}
+
+	// Ignore spaces at begin
+	do
+	{
+		c = getchar();
+	}
+	while(isspace(c));
+
+	// Integer/double
+	if(var->type == variable_integer || var->type == variable_double)
+	{
+		if(c == EOF)
+		{
+			throw_error(error_read_invalid);
+		}
+
+		(*ptr) = c;
+
+		for(unsigned int i = 0; i < 255 && !isspace(c) && c != EOF; i++)
+		{ // Read until space, EOF or buffer end
+			ptr++;
+			c = getchar();
+			(*ptr) = c;
+		}
+
+		*(ptr) = '\0';
+		ptr = NULL;
+
+		if(var->type == variable_integer)
+		{ // Integer
+			var->value.value_number = (int)strtol(buffer, &ptr, 10);
+		}
+		else
+		{ // Double
+			var->value.value_double = strtod(buffer, &ptr);
+		}
+
+		if(*ptr != '\0')
+		{ // Check if is readed valid input
+			throw_error(error_read_invalid);
+		}
+
+		var->inicialized = 1;
+
+		if(c != EOF && c != '\n')
+		{
 			do
 			{
-				c = getc(stdin);
+				c = getchar();
 			}
-			while(isspace(c));
-			ungetc(c, stdin);
-
-			if(fgets(var->value.value_string, 255, stdin) != NULL)
-			{
-				readed = strlen(var->value.value_string);
-				var->value.value_string[readed-1] = '\0';
-				readed = 1;
-			}
-
-			break;
-
-		case variable_integer:
-			readed = scanf("%d", &(var->value.value_number));
-			while(getchar() != '\n');
-			break;
-
-		case variable_double:
-			readed = scanf("%lf", &(var->value.value_double));
-			while(getchar() != '\n');
-			break;
-
-		case variable_boolean:
-			throw_error(error_read_to_bool);
-			break;
-
-		default:
-			fprintf(stderr, "WTF type");
+			while(c != EOF && c != '\n');
+		}
 	}
-	if(readed != 1)
-	{
-		throw_error(error_read_invalid);
+	else
+	{ // String
+		ptr = var->value.value_string;
+
+		(*ptr) = c;
+
+		for(unsigned int i = 0; i < 255 && c != EOF && c != '\n'; i++)
+		{ // Read until new line, EOF or buffer end
+			ptr++;
+			c = getchar();
+			(*ptr) = c;
+		}
+
+		*(ptr) = '\0';
+
+		var->inicialized = 1;
 	}
-	var->inicialized = 1;
 }
 
