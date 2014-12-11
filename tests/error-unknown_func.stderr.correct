@@ -1,0 +1,1 @@
+tests/error-unknown_func.pas:10:14: Error: Used variable not exists Readed '' (type id: 4).

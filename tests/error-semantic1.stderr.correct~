@@ -1,0 +1,1 @@
+tests/error-semantic1.pas:16:14: Error: Used variable not exists Readed '' (type id: 4).
