@@ -1,0 +1,1 @@
+tests/error-func_redef.pas:8:29: Error: Function forward declaration doesn't match definition Readed 'real' (type id: 53).
