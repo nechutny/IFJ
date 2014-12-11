@@ -493,9 +493,9 @@ void interpret(){
 						tmp2 = get_var(uStack_offset(TString *, ((uStack_t *)ins->adr2), 1));
 						if(!tmp1->inicialized)	throw_error(error_uninicialized);
 						if(!tmp2->inicialized)	throw_error(error_uninicialized);
-
 						print_debug(debug_interpret, "find");
 						var = find(tmp1, tmp2);
+						if(var == NULL)	throw_error(error_incopatible_types);
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 4:
@@ -510,6 +510,7 @@ void interpret(){
 
 						print_debug(debug_interpret, "copy");
 						var = copy(tmp1, tmp2, tmp3);
+						if(var == NULL)	throw_error(error_incopatible_types);
 						copy_variable(get_var(ins->adr3), var);
 						break;
 					case 5:
@@ -517,6 +518,8 @@ void interpret(){
 						var = get_var(ins->adr3);
 						if(!((symbolVariable*)ins->adr2)->inicialized)	throw_error(error_uninicialized);
 						var->type = variable_integer;
+						symbolVariable *lenght_variable = get_var(ins->adr2);
+						if(lenght_variable->type != variable_string) 	throw_error(error_incopatible_types);
 						var->value.value_number = pascal_length(get_var(ins->adr2));
 						var->inicialized = 1;
 						break;
