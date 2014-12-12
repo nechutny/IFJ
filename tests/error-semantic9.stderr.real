@@ -1,0 +1,1 @@
+tests/error-semantic9.pas:25:0: Error: Unicialized variable Readed '' (type id: 21).
