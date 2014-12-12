@@ -1,0 +1,1 @@
+tests/error-semantic4.pas:3:10: Error: Variable already defined Readed 'cislo2' (type id: 26).
