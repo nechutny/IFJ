@@ -370,6 +370,14 @@ symbolVariable * find(symbolVariable *text,symbolVariable *word)
 	int fail[text_length - 1];
 	int k, r, wind, tind;
 
+	if(text_length < word_length)
+	{
+		var=symbol_variable_init2(variable_integer);
+		var->value.value_number = 0;
+		var->inicialized = 1;
+		return var;
+	}
+
 	fail[0] = 0;
 	for (k = 1; k <= word_length; k++)
 	{

@@ -495,6 +495,7 @@ void interpret(){
 						if(!tmp2->inicialized)	throw_error(error_uninicialized);
 						print_debug(debug_interpret, "find");
 						var = find(tmp1, tmp2);
+						print_debug(debug_interpret,"find: %d %d",var,ins);
 						if(var == NULL)	throw_error(error_incopatible_types);
 						copy_variable(get_var(ins->adr3), var);
 						break;

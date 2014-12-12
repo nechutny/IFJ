@@ -2,7 +2,7 @@ var s:string;
     num:integer;
 
 begin
-    s := 'ahojahoooojahooooojahojjjahooaahooojajjsjs';
+    s := 'ahojahoooojahooo';
     num := 0;
     num := find('ahoooj',s);
     write(num)
