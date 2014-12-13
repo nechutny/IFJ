@@ -1,1 +1,1 @@
-tests/error-semantic4.pas:3:10: Error: Variable already defined Readed 'cislo2' (type id: 26).
+tests/error-semantic8.pas:8:13: Error: Function already defined Readed 'sort' (type id: 68).
