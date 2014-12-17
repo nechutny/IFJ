@@ -495,7 +495,7 @@ symbolVariable * copy(symbolVariable *text,symbolVariable *start,symbolVariable 
 	symbolVariable * copied = symbol_variable_init2(variable_string);
 	copied->inicialized = 1;
 
-	strncpy(&(copied->value.value_string), &(text->value.value_string[ start->value.value_number-1 ]), end->value.value_number);
+	strncpy((char*)&(copied->value.value_string), (char*)&(text->value.value_string[ start->value.value_number-1 ]), end->value.value_number);
 
 	copied->value.value_string[end->value.value_number] = '\0';
 	return copied;
